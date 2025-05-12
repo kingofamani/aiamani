@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google OAuth Test for API (GIS)</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        .hidden { display: none; }
+        #userInfo, #apiForm { margin-top: 20px; }
+        textarea { width: 95%; min-height: 60px; margin-bottom: 10px; }
+        pre { background-color: #f4f4f4; padding: 10px; border: 1px solid #ddd; white-space: pre-wrap; word-wrap: break-word; }
+        button { padding: 8px 15px; margin-right: 10px; cursor: pointer; }
+        .g_id_signin { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Google OAuth 2.0 Test for /api/chat (Using Google Identity Services)</h2>
+        
+        <div id="g_id_onload"
+             data-client_id="183355166158-j5ran3m2sh1p0f368gv974gl7sr9jtrk.apps.googleusercontent.com" 
+             data-callback="handleCredentialResponse">
+        </div>
+        <div class="g_id_signin"
+             data-type="standard"
+             data-size="large"
+             data-theme="outline"
+             data-text="sign_in_with"
+             data-shape="rectangular"
+             data-logo_alignment="left">
+        </div>
+        
+        <div id="userInfo" class="hidden">
+            <h3>User Information (from ID Token - frontend decoded)</h3>
+            <p>Welcome, <span id="userName"></span>!</p>
+            <p>Email: <span id="userEmail"></span></p>
+            <button onclick="signOut()">Sign Out</button>
+        </div>
+
+        <div id="apiForm" class="hidden">
+            <h3>Call Protected API (/api/chat)</h3>
+            <p><strong>API Endpoint URL:</strong> <input type="text" id="apiUrl" value="http://localhost:5000/api/chat" style="width: 70%;"></p>
+            <p><em>(Remember to replace YOUR_GOOGLE_CLIENT_ID in the div attributes above with your actual Client ID. Also, ensure the API endpoint URL is correct for your backend.)</em></p>
+            
+            <label for="message">Message to send:</label><br>
+            <textarea id="message" placeholder="Enter your message here...">Hello, what can you do with GIS?</textarea><br>
+            
+            <label for="model">Model (optional):</label>
+            <input type="text" id="model" placeholder="e.g., gpt-4o"><br><br>
+            
+            <label for="temperature">Temperature (optional):</label>
+            <input type="number" id="temperature" step="0.1" placeholder="e.g., 0.7"><br><br>
+
+            <button onclick="callApi()">Call API</button>
+        </div>
+
+        <h3>API Response:</h3>
+        <pre id="apiResponse">Awaiting API call...</pre>
+    </div>
+
+    <script>
+        let googleIdToken = null;
+
+        function decodeJwtResponse(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                return JSON.parse(jsonPayload);
+            } catch (e) {
+                console.error("Error decoding JWT: ", e);
+                return null;
+            }
+        }
+
+        function handleCredentialResponse(response) {
+            console.log('Google Sign-In Success (GIS)');
+            googleIdToken = response.credential;
+            
+            const idTokenPayload = decodeJwtResponse(googleIdToken);
+
+            if (idTokenPayload) {
+                document.getElementById('userName').innerText = idTokenPayload.name || 'N/A';
+                document.getElementById('userEmail').innerText = idTokenPayload.email || 'N/A';
+            } else {
+                document.getElementById('userName').innerText = 'Error decoding token';
+                document.getElementById('userEmail').innerText = 'Error decoding token';
+            }
+            
+            document.querySelector('.g_id_signin').classList.add('hidden');
+            document.getElementById('userInfo').classList.remove('hidden');
+            document.getElementById('apiForm').classList.remove('hidden');
+            document.getElementById('apiResponse').innerText = "Signed in with GIS. Ready to call API.";
+            
+            console.log("ID Token (GIS): ", googleIdToken.substring(0, 30) + "...");
+        }
+
+        function signOut() {
+            googleIdToken = null;
+            if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
+                google.accounts.id.disableAutoSelect();
+            }
+            console.log('User signed out (GIS).');
+            
+            document.querySelector('.g_id_signin').classList.remove('hidden'); 
+            document.getElementById('userInfo').classList.add('hidden');
+            document.getElementById('apiForm').classList.add('hidden');
+            document.getElementById('userName').innerText = "";
+            document.getElementById('userEmail').innerText = "";
+            document.getElementById('apiResponse').innerText = "Signed out. Please sign in again to call API.";
+        }
+
+        async function callApi() {
+            if (!googleIdToken) {
+                document.getElementById('apiResponse').innerText = "Error: User not signed in or ID token not available.";
+                return;
+            }
+
+            const apiUrl = document.getElementById('apiUrl').value;
+            const userMessage = document.getElementById('message').value;
+            const model = document.getElementById('model').value;
+            const temperature = document.getElementById('temperature').value;
+
+            if (!userMessage) {
+                document.getElementById('apiResponse').innerText = "Error: Message cannot be empty.";
+                return;
+            }
+
+            const requestBody = {
+                messages: [
+                    { role: "user", content: userMessage }
+                ]
+            };
+
+            if (model) {
+                requestBody.model = model;
+            }
+            if (temperature) {
+                try {
+                    const tempFloat = parseFloat(temperature);
+                    if (!isNaN(tempFloat)) {
+                        requestBody.temperature = tempFloat;
+                    } else if (temperature.trim() !== '') {
+                        console.warn("Invalid temperature value, not including in request: ", temperature);
+                    }
+                } catch (e) {
+                     console.warn("Error parsing temperature, not including in request: ", temperature, e);
+                }
+            }
+
+            document.getElementById('apiResponse').innerText = "Calling API...";
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + googleIdToken
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const responseData = await response.json();
+                document.getElementById('apiResponse').innerText = JSON.stringify(responseData, null, 2);
+                
+                if (!response.ok) {
+                    console.error("API Error Status:", response.status);
+                    console.error("API Error Response:", responseData);
+                } else {
+                    console.log("API Success Response:", responseData);
+                }
+
+            } catch (error) {
+                console.error('Error calling API:', error);
+                document.getElementById('apiResponse').innerText = 'Error calling API: \n' + error.toString() + '\n\nCheck console for more details. Ensure backend is running and CORS is configured if necessary.';
+            }
+        }
+
+    </script>
+</body>
+</html> 
