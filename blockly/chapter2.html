@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>安裝與設置 - Blockly 視覺化程式設計教學</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/prism.css">
+</head>
+<body>
+  <!-- 導航欄 -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">Blockly 教學</a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">首頁</a>
+        <a href="chapter1.html" class="nav-link">認識 Blockly</a>
+        <a href="chapter2.html" class="nav-link">安裝與設置</a>
+        <a href="chapter3.html" class="nav-link">基本使用</a>
+        <a href="chapter4.html" class="nav-link">自定義積木</a>
+        <a href="chapter5.html" class="nav-link">程式碼生成</a>
+        <a href="chapter6.html" class="nav-link">整合到網站</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 章節內容 -->
+  <section class="chapter">
+    <div class="container">
+      <div class="chapter-container">
+        <div class="chapter-sidebar">
+          <div class="chapter-nav">
+            <h3 class="chapter-nav-title">章節目錄</h3>
+            <ul class="chapter-nav-list">
+              <li class="chapter-nav-item"><a href="#intro" class="chapter-nav-link">安裝與設置</a></li>
+              <li class="chapter-nav-item"><a href="#installation" class="chapter-nav-link">安裝 Blockly</a></li>
+              <li class="chapter-nav-item"><a href="#project-structure" class="chapter-nav-link">專案結構說明</a></li>
+              <li class="chapter-nav-item"><a href="#basic-setup" class="chapter-nav-link">基本設置</a></li>
+              <li class="chapter-nav-item"><a href="#validation" class="chapter-nav-link">驗證安裝</a></li>
+              <li class="chapter-nav-item"><a href="#troubleshooting" class="chapter-nav-link">常見問題與解決方案</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="chapter-content">
+          <h1 id="intro" class="chapter-title">第二章：安裝與設置 Blockly</h1>
+          
+          <p class="chapter-text">
+            在開始使用 Blockly 建立視覺化程式設計環境之前，我們需要先完成安裝與基本設置。Blockly 是一個客戶端的 JavaScript 庫，可以通過多種方式引入到您的網頁專案中。本章將詳細介紹不同的安裝方法，以及如何進行基本設置。
+          </p>
+
+          <h2 id="installation" class="chapter-subtitle">安裝 Blockly</h2>
+          
+          <p class="chapter-text">
+            Blockly 提供了多種安裝方式，您可以根據自己的專案需求選擇最適合的方法。以下是三種常見的安裝方式：
+          </p>
+          
+          <h3>方法一：使用 npm 安裝</h3>
+          
+          <p class="chapter-text">
+            如果您的專案使用 Node.js 和 npm 進行管理，這是推薦的安裝方式。通過 npm 安裝 Blockly 可以讓您更容易地管理依賴關係和版本更新。
+          </p>
+          
+          <p class="chapter-text">
+            首先，在您的專案目錄中打開終端機，執行以下命令：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-bash">npm install blockly</code></pre>
+          </div>
+          
+          <p class="chapter-text">
+            安裝完成後，您可以在 JavaScript 檔案中引入 Blockly：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">// ES6 模組語法
+import * as Blockly from 'blockly';
+
+// 如果需要特定語言的生成器，可以單獨引入
+import 'blockly/javascript';
+import 'blockly/python';</code></pre>
+          </div>
+          
+          <h3>方法二：使用 CDN 引用</h3>
+          
+          <p class="chapter-text">
+            如果您想快速開始使用 Blockly，或者不想設置 npm 環境，可以通過 CDN 直接在 HTML 中引入 Blockly。
+          </p>
+          
+          <p class="chapter-text">
+            在您的 HTML 檔案的 `&lt;head&gt;` 或 `&lt;body&gt;` 底部添加以下代碼：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-html">&lt;script src="https://unpkg.com/blockly/blockly.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- 如果需要特定語言的生成器，可以單獨引入 --&gt;
+&lt;script src="https://unpkg.com/blockly/javascript_compressed.js"&gt;&lt;/script&gt;
+&lt;script src="https://unpkg.com/blockly/python_compressed.js"&gt;&lt;/script&gt;</code></pre>
+          </div>
+          
+          <h3>方法三：下載源碼</h3>
+          
+          <p class="chapter-text">
+            您也可以直接從 GitHub 下載 Blockly 的源碼，然後手動引入到您的專案中。
+          </p>
+          
+          <p class="chapter-text">
+            1. 前往 <a href="https://github.com/google/blockly/releases" target="_blank">Blockly GitHub 倉庫</a><br>
+            2. 下載最新版本的源碼（通常是 .zip 或 .tar.gz 檔案）<br>
+            3. 解壓縮檔案，將需要的 JavaScript 檔案複製到您的專案中<br>
+            4. 在 HTML 中引入這些檔案：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-html">&lt;script src="path/to/blockly_compressed.js"&gt;&lt;/script&gt;
+&lt;script src="path/to/blocks_compressed.js"&gt;&lt;/script&gt;
+
+&lt;!-- 如果需要特定語言的生成器，可以單獨引入 --&gt;
+&lt;script src="path/to/javascript_compressed.js"&gt;&lt;/script&gt;
+&lt;script src="path/to/python_compressed.js"&gt;&lt;/script&gt;
+
+&lt;!-- 如果需要多語言支援，引入對應的語言檔案 --&gt;
+&lt;script src="path/to/msg/zh-hant.js"&gt;&lt;/script&gt;</code></pre>
+          </div>
+
+          <h2 id="project-structure" class="chapter-subtitle">專案結構說明</h2>
+          
+          <p class="chapter-text">
+            一個典型的 Blockly 專案結構如下：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-text">my-blockly-project/
+├── index.html          # 主 HTML 檔案
+├── style.css           # 樣式表
+├── script.js           # 主 JavaScript 檔案
+├── node_modules/       # npm 安裝的依賴（如果使用 npm）
+│   └── blockly/        # Blockly 庫
+└── custom/             # 自定義積木和生成器
+    ├── custom_blocks.js    # 自定義積木定義
+    └── custom_generators.js # 自定義生成器</code></pre>
+          </div>
+
+          <h2 id="basic-setup" class="chapter-subtitle">基本設置</h2>
+          
+          <p class="chapter-text">
+            安裝完 Blockly 後，我們需要進行一些基本設置才能開始使用。以下是設置 Blockly 工作區的基本步驟：
+          </p>
+          
+          <h3>步驟一：準備 HTML 容器</h3>
+          
+          <p class="chapter-text">
+            首先，在 HTML 中創建一個容器元素，用於放置 Blockly 工作區：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;title&gt;Blockly 示例&lt;/title&gt;
+    &lt;style&gt;
+        #blocklyDiv {
+            height: 480px;
+            width: 100%;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id="blocklyDiv"&gt;&lt;/div&gt;
+    
+    &lt;!-- 引入 Blockly 庫 --&gt;
+    &lt;script src="https://unpkg.com/blockly/blockly.min.js"&gt;&lt;/script&gt;
+    &lt;script src="https://unpkg.com/blockly/javascript_compressed.js"&gt;&lt;/script&gt;
+    &lt;script src="https://unpkg.com/blockly/python_compressed.js"&gt;&lt;/script&gt;
+    
+    &lt;!-- 自定義腳本 --&gt;
+    &lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+          </div>
+          
+          <h3>步驟二：初始化 Blockly 工作區</h3>
+          
+          <p class="chapter-text">
+            接下來，在 JavaScript 檔案中初始化 Blockly 工作區：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">// script.js
+document.addEventListener('DOMContentLoaded', function() {
+    // 定義工具箱
+    const toolbox = {
+        kind: 'categoryToolbox',
+        contents: [
+            {
+                kind: 'category',
+                name: '邏輯',
+                colour: '%{BKY_LOGIC_HUE}',
+                contents: [
+                    {
+                        kind: 'block',
+                        type: 'controls_if'
+                    },
+                    {
+                        kind: 'block',
+                        type: 'logic_compare'
+                    },
+                    {
+                        kind: 'block',
+                        type: 'logic_operation'
+                    },
+                    {
+                        kind: 'block',
+                        type: 'logic_negate'
+                    },
+                    {
+                        kind: 'block',
+                        type: 'logic_boolean'
+                    }
+                ]
+            },
+            {
+                kind: 'category',
+                name: '迴圈',
+                colour: '%{BKY_LOOPS_HUE}',
+                contents: [
+                    {
+                        kind: 'block',
+                        type: 'controls_repeat_ext'
+                    },
+                    {
+                        kind: 'block',
+                        type: 'controls_whileUntil'
+                    },
+                    {
+                        kind: 'block',
+                        type: 'controls_for'
+                    },
+                    {
+                        kind: 'block',
+                        type: 'controls_forEach'
+                    }
+                ]
+            },
+            {
+                kind: 'category',
+                name: '數學',
+                colour: '%{BKY_MATH_HUE}',
+                contents: [
+                    {
+                        kind: 'block',
+                        type: 'math_number'
+                    },
+                    {
+                        kind: 'block',
+                        type: 'math_arithmetic'
+                    },
+                    {
+                        kind: 'block',
+                        type: 'math_single'
+                    }
+                ]
+            },
+            {
+                kind: 'category',
+                name: '文字',
+                colour: '%{BKY_TEXTS_HUE}',
+                contents: [
+                    {
+                        kind: 'block',
+                        type: 'text'
+                    },
+                    {
+                        kind: 'block',
+                        type: 'text_join'
+                    },
+                    {
+                        kind: 'block',
+                        type: 'text_append'
+                    }
+                ]
+            },
+            {
+                kind: 'category',
+                name: '變數',
+                colour: '%{BKY_VARIABLES_HUE}',
+                custom: 'VARIABLE'
+            },
+            {
+                kind: 'category',
+                name: '函數',
+                colour: '%{BKY_PROCEDURES_HUE}',
+                custom: 'PROCEDURE'
+            }
+        ]
+    };
+
+    // 初始化 Blockly 工作區
+    const workspace = Blockly.inject('blocklyDiv', {
+        toolbox: toolbox,
+        grid: {
+            spacing: 20,
+            length: 3,
+            colour: '#ccc',
+            snap: true
+        },
+        zoom: {
+            controls: true,
+            wheel: true,
+            startScale: 1.0,
+            maxScale: 3,
+            minScale: 0.3,
+            scaleSpeed: 1.2
+        },
+        trashcan: true
+    });
+
+    // 監聽工作區變化事件
+    workspace.addChangeListener(function(event) {
+        if (event.type === Blockly.Events.BLOCK_CHANGE || 
+            event.type === Blockly.Events.BLOCK_CREATE || 
+            event.type === Blockly.Events.BLOCK_DELETE || 
+            event.type === Blockly.Events.BLOCK_MOVE) {
+            
+            // 生成 JavaScript 程式碼
+            const jsCode = Blockly.JavaScript.workspaceToCode(workspace);
+            console.log('JavaScript 程式碼：', jsCode);
+            
+            // 生成 Python 程式碼
+            const pythonCode = Blockly.Python.workspaceToCode(workspace);
+            console.log('Python 程式碼：', pythonCode);
+        }
+    });
+});</code></pre>
+          </div>
+          
+          <h3>步驟三：配置選項說明</h3>
+          
+          <p class="chapter-text">
+            在上面的例子中，我們使用了一些配置選項來初始化 Blockly 工作區。以下是這些選項的詳細說明：
+          </p>
+          
+          <p class="chapter-text">
+            <strong>toolbox</strong>：定義工具箱的內容，包括可用的積木類別和積木類型。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>grid</strong>：配置工作區的網格，包括網格間距、線長、顏色和是否自動對齊。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>zoom</strong>：配置縮放功能，包括是否顯示縮放控制按鈕、是否啟用滾輪縮放、初始縮放比例、最大和最小縮放比例以及縮放速度。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>trashcan</strong>：是否顯示垃圾桶圖標，用於刪除積木。
+          </p>
+
+          <h2 id="validation" class="chapter-subtitle">驗證安裝</h2>
+          
+          <p class="chapter-text">
+            完成上述步驟後，打開您的 HTML 檔案，您應該能夠看到一個功能完整的 Blockly 工作區，包括工具箱、積木拖曳區域和垃圾桶。
+          </p>
+          
+          <p class="chapter-text">
+            您可以嘗試從工具箱中拖出一些積木，連接它們，然後查看控制台中生成的 JavaScript 和 Python 程式碼。
+          </p>
+
+          <h2 id="troubleshooting" class="chapter-subtitle">常見問題與解決方案</h2>
+          
+          <p class="chapter-text">
+            <strong>問題：Blockly 工作區沒有顯示或顯示不完整</strong>
+          </p>
+          
+          <p class="chapter-text">
+            解決方案：確保容器元素（例如 `#blocklyDiv`）有明確的高度和寬度設置。Blockly 工作區的大小取決於其容器元素的大小。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>問題：無法拖曳積木或工作區操作不正常</strong>
+          </p>
+          
+          <p class="chapter-text">
+            解決方案：檢查瀏覽器控制台是否有錯誤訊息。確保所有必要的 Blockly 檔案都已正確引入，並且沒有 JavaScript 錯誤。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>問題：自定義積木不顯示在工具箱中</strong>
+          </p>
+          
+          <p class="chapter-text">
+            解決方案：確保您已正確定義自定義積木，並將其添加到工具箱配置中。自定義積木的定義應該在初始化工作區之前完成。
+          </p>
+          
+          <p class="chapter-text">
+            在下一章中，我們將深入探討如何使用 Blockly 的基本功能，包括積木拖曳、連接、刪除以及程式碼生成等操作。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 頁尾 -->
+  <footer class="footer">
+    <div class="container">
+      <p class="footer-text">© 2025 Blockly 視覺化程式設計教學網站</p>
+      <div class="footer-links">
+        <a href="https://github.com/google/blockly/" class="footer-link" target="_blank">GitHub</a>
+        <a href="https://developers.google.com/blockly" class="footer-link" target="_blank">官方文件</a>
+      </div>
+    </div>
+  </footer>
+
+  <a href="#" class="back-to-top">&uarr;</a>
+
+  <script src="js/prism.js"></script>
+  <script src="js/scripts.js"></script>
+</body>
+</html>

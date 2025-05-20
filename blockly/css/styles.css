@@ -1,0 +1,542 @@
+/* 全域樣式 */
+:root {
+  --primary-color: #FFFFFF;
+  --background-color: #F5F5F7;
+  --text-color: #333333;
+  --accent-color: #0066CC;
+  --secondary-accent: #4CAF50;
+  --spacing-small: 20px;
+  --spacing-medium: 40px;
+  --spacing-large: 80px;
+  --border-radius: 8px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-small);
+}
+
+/* 導航欄 */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 30px;
+}
+
+.nav-link {
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: var(--accent-color);
+}
+
+.nav-link.active {
+  color: var(--accent-color);
+  font-weight: 500;
+}
+
+/* 頁首區域 */
+.hero {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 20px;
+  background-color: var(--primary-color);
+}
+
+.hero-title {
+  font-size: 48px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  font-size: 24px;
+  font-weight: 400;
+  margin-bottom: 40px;
+  max-width: 700px;
+}
+
+.cta-button {
+  display: inline-block;
+  background-color: var(--accent-color);
+  color: white;
+  padding: 12px 30px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+  background-color: #0055aa;
+}
+
+/* 核心價值區 */
+.features {
+  padding: var(--spacing-large) 0;
+  background-color: var(--background-color);
+}
+
+.features-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.feature {
+  flex: 1;
+  padding: 30px;
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius);
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.feature-icon {
+  font-size: 40px;
+  color: var(--accent-color);
+  margin-bottom: 20px;
+}
+
+.feature-title {
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 15px;
+}
+
+.feature-description {
+  font-size: 16px;
+  color: #666;
+}
+
+/* 學習路徑區 */
+.learning-path {
+  padding: var(--spacing-large) 0;
+}
+
+.section-title {
+  font-size: 36px;
+  font-weight: 600;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.timeline {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.timeline::after {
+  content: '';
+  position: absolute;
+  width: 2px;
+  background-color: #e0e0e0;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  margin-left: -1px;
+}
+
+.timeline-item {
+  padding: 10px 40px;
+  position: relative;
+  width: 50%;
+  box-sizing: border-box;
+}
+
+.timeline-item:nth-child(odd) {
+  left: 0;
+}
+
+.timeline-item:nth-child(even) {
+  left: 50%;
+}
+
+.timeline-content {
+  padding: 20px;
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.timeline-title {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.timeline-description {
+  font-size: 14px;
+  color: #666;
+}
+
+/* 互動示範區 */
+.demo {
+  padding: var(--spacing-large) 0;
+  background-color: var(--background-color);
+}
+
+.demo-container {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+}
+
+.demo-workspace {
+  flex: 3;
+  height: 500px;
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.demo-output {
+  flex: 2;
+  height: 500px;
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  overflow: auto;
+}
+
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.code-title {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.code-copy {
+  background: none;
+  border: none;
+  color: var(--accent-color);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.code-block {
+  background-color: #f8f8f8;
+  border-radius: 4px;
+  padding: 15px;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-x: auto;
+  margin-bottom: 20px;
+}
+
+/* 章節內容 */
+.chapter {
+  padding: var(--spacing-large) 0;
+}
+
+.chapter-container {
+  display: flex;
+  gap: 30px;
+}
+
+.chapter-sidebar {
+  flex: 1;
+  position: sticky;
+  top: 100px;
+  height: fit-content;
+}
+
+.chapter-content {
+  flex: 3;
+}
+
+.chapter-nav {
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.chapter-nav-title {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.chapter-nav-list {
+  list-style: none;
+}
+
+.chapter-nav-item {
+  margin-bottom: 10px;
+}
+
+.chapter-nav-link {
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.3s ease;
+  display: block;
+  padding: 5px 0;
+}
+
+.chapter-nav-link:hover {
+  color: var(--accent-color);
+}
+
+.chapter-nav-link.active {
+  color: var(--accent-color);
+  font-weight: 500;
+}
+
+.chapter-title {
+  font-size: 36px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.chapter-subtitle {
+  font-size: 24px;
+  font-weight: 500;
+  margin: 40px 0 20px;
+}
+
+.chapter-text {
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+/* 程式碼區塊 */
+.code-container {
+  position: relative;
+  margin: 30px 0;
+}
+
+.code-language {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 2px 8px;
+  font-size: 12px;
+  border-radius: 0 4px 0 4px;
+}
+
+.copy-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.copy-button:hover {
+  background-color: rgba(255, 255, 255, 1);
+}
+
+/* 頁尾 */
+.footer {
+  background-color: var(--background-color);
+  padding: var(--spacing-medium) 0;
+  text-align: center;
+}
+
+.footer-text {
+  font-size: 14px;
+  color: #666;
+}
+
+.footer-links {
+  margin-top: 20px;
+}
+
+.footer-link {
+  color: var(--accent-color);
+  text-decoration: none;
+  margin: 0 10px;
+  font-size: 14px;
+}
+
+.back-to-top {
+  display: inline-block;
+  background-color: var(--accent-color);
+  color: white;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  transition: background-color 0.3s;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 1000;
+}
+
+.back-to-top.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.back-to-top:hover {
+  background-color: #0055aa;
+}
+
+/* 響應式設計 */
+@media (max-width: 1024px) {
+  .container {
+    padding: 0 var(--spacing-small);
+  }
+  
+  .features-container {
+    flex-direction: column;
+  }
+  
+  .demo-container {
+    flex-direction: column;
+  }
+  
+  .demo-workspace, .demo-output {
+    width: 100%;
+  }
+  
+  .chapter-container {
+    flex-direction: column;
+  }
+  
+  .chapter-sidebar {
+    position: static;
+    margin-bottom: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 36px;
+  }
+  
+  .hero-subtitle {
+    font-size: 18px;
+  }
+  
+  .section-title {
+    font-size: 28px;
+  }
+  
+  .timeline::after {
+    left: 31px;
+  }
+  
+  .timeline-item {
+    width: 100%;
+    padding-left: 70px;
+    padding-right: 25px;
+  }
+  
+  .timeline-item:nth-child(even) {
+    left: 0;
+  }
+  
+  .nav-links {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 28px;
+  }
+  
+  .hero-subtitle {
+    font-size: 16px;
+  }
+  
+  .cta-button {
+    padding: 10px 20px;
+  }
+}
+
+/* 動畫效果 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease forwards;
+}
+
+.delay-1 {
+  animation-delay: 0.2s;
+}
+
+.delay-2 {
+  animation-delay: 0.4s;
+}
+
+.delay-3 {
+  animation-delay: 0.6s;
+}

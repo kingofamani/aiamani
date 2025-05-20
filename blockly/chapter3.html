@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>基本使用 - Blockly 視覺化程式設計教學</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/prism.css">
+</head>
+<body>
+  <!-- 導航欄 -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">Blockly 教學</a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">首頁</a>
+        <a href="chapter1.html" class="nav-link">認識 Blockly</a>
+        <a href="chapter2.html" class="nav-link">安裝與設置</a>
+        <a href="chapter3.html" class="nav-link">基本使用</a>
+        <a href="chapter4.html" class="nav-link">自定義積木</a>
+        <a href="chapter5.html" class="nav-link">程式碼生成</a>
+        <a href="chapter6.html" class="nav-link">整合到網站</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 章節內容 -->
+  <section class="chapter">
+    <div class="container">
+      <div class="chapter-container">
+        <div class="chapter-sidebar">
+          <div class="chapter-nav">
+            <h3 class="chapter-nav-title">章節目錄</h3>
+            <ul class="chapter-nav-list">
+              <li class="chapter-nav-item"><a href="#intro" class="chapter-nav-link">基本使用</a></li>
+              <li class="chapter-nav-item"><a href="#workspace" class="chapter-nav-link">工作區介面</a></li>
+              <li class="chapter-nav-item"><a href="#blocks" class="chapter-nav-link">積木類型與使用</a></li>
+              <li class="chapter-nav-item"><a href="#toolbox" class="chapter-nav-link">工具箱配置</a></li>
+              <li class="chapter-nav-item"><a href="#workspace-config" class="chapter-nav-link">工作區配置</a></li>
+              <li class="chapter-nav-item"><a href="#theme" class="chapter-nav-link">主題設定</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="chapter-content">
+          <h1 id="intro" class="chapter-title">第三章：基本使用</h1>
+          
+          <p class="chapter-text">
+            在前面的章節中，我們已經了解了 Blockly 的基本概念，並完成了安裝與設置。本章將深入探討 Blockly 的基本使用方法，包括工作區介面、積木類型、工具箱配置、工作區配置以及主題設定等方面。
+          </p>
+
+          <h2 id="workspace" class="chapter-subtitle">工作區介面</h2>
+          
+          <p class="chapter-text">
+            Blockly 工作區是使用者拖曳和連接積木的主要區域。它由以下幾個主要部分組成：
+          </p>
+          
+          <p class="chapter-text">
+            <strong>工具箱（Toolbox）</strong>：位於工作區左側，包含可用的積木類別和積木。使用者可以從工具箱中拖曳積木到工作區。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>積木區域</strong>：工作區的主要部分，使用者可以在這裡拖曳、連接和組織積木。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>垃圾桶</strong>：位於工作區右下角，用於刪除不需要的積木。使用者可以將積木拖曳到垃圾桶中刪除，或者右鍵點擊積木選擇刪除選項。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>縮放控制</strong>：位於工作區右下角，用於放大或縮小工作區視圖。
+          </p>
+
+          <h2 id="blocks" class="chapter-subtitle">積木類型與使用</h2>
+          
+          <p class="chapter-text">
+            Blockly 提供了多種類型的積木，每種類型都有特定的形狀和功能。以下是一些常見的積木類型：
+          </p>
+          
+          <h3>值積木（Value Blocks）</h3>
+          
+          <p class="chapter-text">
+            值積木用於表示數值、文字、布林值等數據。它們通常有圓角的外形，可以插入到其他積木的值輸入槽中。
+          </p>
+          
+          <p class="chapter-text">
+            例如，數字積木、文字積木、布林積木等都是值積木。
+          </p>
+          
+          <h3>語句積木（Statement Blocks）</h3>
+          
+          <p class="chapter-text">
+            語句積木用於表示程式中的語句或指令。它們通常有上下連接點，可以垂直連接形成程式的執行流程。
+          </p>
+          
+          <p class="chapter-text">
+            例如，條件判斷積木、迴圈積木、函數定義積木等都是語句積木。
+          </p>
+          
+          <h3>事件積木（Event Blocks）</h3>
+          
+          <p class="chapter-text">
+            事件積木用於響應特定事件，如點擊按鈕、按下鍵盤等。它們通常是程式的入口點，沒有上連接點，只有下連接點。
+          </p>
+          
+          <p class="chapter-text">
+            例如，「當程式啟動時」、「當按鈕被點擊時」等都是事件積木。
+          </p>
+          
+          <h3>積木的連接與分離</h3>
+          
+          <p class="chapter-text">
+            使用者可以通過拖曳積木來連接或分離它們：
+          </p>
+          
+          <p class="chapter-text">
+            <strong>連接積木</strong>：將一個積木拖曳到另一個積木的連接點附近，當出現連接提示時，鬆開滑鼠即可連接。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>分離積木</strong>：點擊並拖曳要分離的積木，將其從當前位置拖離即可。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>複製積木</strong>：按住 Ctrl 鍵（Mac 上是 Cmd 鍵）並拖曳積木，可以創建該積木的副本。
+          </p>
+
+          <h2 id="toolbox" class="chapter-subtitle">工具箱配置</h2>
+          
+          <p class="chapter-text">
+            工具箱是 Blockly 工作區中包含所有可用積木的面板。您可以根據需要自定義工具箱的內容和外觀。
+          </p>
+          
+          <h3>基本工具箱配置</h3>
+          
+          <p class="chapter-text">
+            工具箱可以通過 JSON 配置來定義。以下是一個基本的工具箱配置示例：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">const toolbox = {
+  kind: 'categoryToolbox',
+  contents: [
+    {
+      kind: 'category',
+      name: '邏輯',
+      colour: '%{BKY_LOGIC_HUE}',
+      contents: [
+        {
+          kind: 'block',
+          type: 'controls_if'
+        },
+        {
+          kind: 'block',
+          type: 'logic_compare'
+        },
+        {
+          kind: 'block',
+          type: 'logic_operation'
+        },
+        {
+          kind: 'block',
+          type: 'logic_negate'
+        },
+        {
+          kind: 'block',
+          type: 'logic_boolean'
+        }
+      ]
+    },
+    {
+      kind: 'category',
+      name: '迴圈',
+      colour: '%{BKY_LOOPS_HUE}',
+      contents: [
+        {
+          kind: 'block',
+          type: 'controls_repeat_ext'
+        },
+        {
+          kind: 'block',
+          type: 'controls_whileUntil'
+        },
+        {
+          kind: 'block',
+          type: 'controls_for'
+        },
+        {
+          kind: 'block',
+          type: 'controls_forEach'
+        }
+      ]
+    },
+    // 更多類別...
+  ]
+};</code></pre>
+          </div>
+          
+          <h3>工具箱類型</h3>
+          
+          <p class="chapter-text">
+            Blockly 支援兩種類型的工具箱：
+          </p>
+          
+          <p class="chapter-text">
+            <strong>類別工具箱（Category Toolbox）</strong>：將積木分組到不同的類別中，使用者可以點擊類別查看其中的積木。適合包含大量積木的情況。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>簡單工具箱（Simple Toolbox）</strong>：直接顯示所有積木，沒有分類。適合只有少量積木的簡單應用。
+          </p>
+          
+          <h3>動態工具箱</h3>
+          
+          <p class="chapter-text">
+            您可以在運行時動態更新工具箱的內容：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">// 獲取工作區
+const workspace = Blockly.getMainWorkspace();
+
+// 更新工具箱
+const newToolboxConfig = {
+  // 新的工具箱配置...
+};
+
+workspace.updateToolbox(newToolboxConfig);</code></pre>
+          </div>
+
+          <h2 id="workspace-config" class="chapter-subtitle">工作區配置</h2>
+          
+          <p class="chapter-text">
+            除了工具箱外，您還可以配置工作區的其他方面，如網格、縮放、滾動條等。
+          </p>
+          
+          <h3>網格設置</h3>
+          
+          <p class="chapter-text">
+            您可以配置工作區的網格，包括是否顯示網格、網格間距、網格顏色等：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">const workspace = Blockly.inject('blocklyDiv', {
+  toolbox: toolbox,
+  grid: {
+    spacing: 20,        // 網格間距
+    length: 3,          // 網格線長度
+    colour: '#ccc',     // 網格顏色
+    snap: true          // 是否自動對齊網格
+  }
+});</code></pre>
+          </div>
+          
+          <h3>縮放設置</h3>
+          
+          <p class="chapter-text">
+            您可以配置工作區的縮放功能，包括是否顯示縮放控制按鈕、是否啟用滾輪縮放、縮放範圍等：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">const workspace = Blockly.inject('blocklyDiv', {
+  toolbox: toolbox,
+  zoom: {
+    controls: true,      // 是否顯示縮放控制按鈕
+    wheel: true,         // 是否啟用滾輪縮放
+    startScale: 1.0,     // 初始縮放比例
+    maxScale: 3,         // 最大縮放比例
+    minScale: 0.3,       // 最小縮放比例
+    scaleSpeed: 1.2      // 縮放速度
+  }
+});</code></pre>
+          </div>
+          
+          <h3>其他配置選項</h3>
+          
+          <p class="chapter-text">
+            Blockly 還提供了許多其他配置選項，如：
+          </p>
+          
+          <p class="chapter-text">
+            <strong>trashcan</strong>：是否顯示垃圾桶圖標。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>scrollbars</strong>：是否顯示滾動條。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>sounds</strong>：是否啟用音效。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>readOnly</strong>：是否為只讀模式（不允許編輯）。
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">const workspace = Blockly.inject('blocklyDiv', {
+  toolbox: toolbox,
+  trashcan: true,       // 顯示垃圾桶
+  scrollbars: true,     // 顯示滾動條
+  sounds: true,         // 啟用音效
+  readOnly: false       // 非只讀模式
+});</code></pre>
+          </div>
+
+          <h2 id="theme" class="chapter-subtitle">主題設定</h2>
+          
+          <p class="chapter-text">
+            Blockly 允許您自定義工作區的視覺外觀，包括積木顏色、字體、間距等。
+          </p>
+          
+          <h3>使用內建主題</h3>
+          
+          <p class="chapter-text">
+            Blockly 提供了一些內建的主題，如默認主題、高對比度主題等：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">// 使用高對比度主題
+const workspace = Blockly.inject('blocklyDiv', {
+  toolbox: toolbox,
+  theme: Blockly.Themes.HighContrast
+});</code></pre>
+          </div>
+          
+          <h3>創建自定義主題</h3>
+          
+          <p class="chapter-text">
+            您也可以創建自己的主題，自定義各種視覺元素：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">// 定義自定義主題
+const customTheme = Blockly.Theme.defineTheme('customTheme', {
+  'base': Blockly.Themes.Classic,
+  'componentStyles': {
+    'workspaceBackgroundColour': '#1e1e1e',
+    'toolboxBackgroundColour': '#333',
+    'toolboxForegroundColour': '#fff',
+    'flyoutBackgroundColour': '#252526',
+    'flyoutForegroundColour': '#ccc',
+    'flyoutOpacity': 1,
+    'scrollbarColour': '#797979',
+    'insertionMarkerColour': '#fff',
+    'insertionMarkerOpacity': 0.3,
+    'scrollbarOpacity': 0.4,
+    'cursorColour': '#d0d0d0',
+  },
+  'blockStyles': {
+    'logic_blocks': {
+      'colourPrimary': '#5b80a5',
+      'colourSecondary': '#496684',
+      'colourTertiary': '#374e64',
+    },
+    'loop_blocks': {
+      'colourPrimary': '#5ba55b',
+      'colourSecondary': '#468446',
+      'colourTertiary': '#346334',
+    },
+    'math_blocks': {
+      'colourPrimary': '#5b67a5',
+      'colourSecondary': '#465a84',
+      'colourTertiary': '#344564',
+    },
+    'text_blocks': {
+      'colourPrimary': '#5ba58c',
+      'colourSecondary': '#46846e',
+      'colourTertiary': '#346353',
+    },
+    'variable_blocks': {
+      'colourPrimary': '#a55b5b',
+      'colourSecondary': '#844646',
+      'colourTertiary': '#633434',
+    },
+    'procedure_blocks': {
+      'colourPrimary': '#995ba5',
+      'colourSecondary': '#774684',
+      'colourTertiary': '#573464',
+    },
+  },
+  'categoryStyles': {
+    'logic_category': {
+      'colour': '#5b80a5',
+    },
+    'loops_category': {
+      'colour': '#5ba55b',
+    },
+    'math_category': {
+      'colour': '#5b67a5',
+    },
+    'text_category': {
+      'colour': '#5ba58c',
+    },
+    'variables_category': {
+      'colour': '#a55b5b',
+    },
+    'procedures_category': {
+      'colour': '#995ba5',
+    },
+  },
+});
+
+// 使用自定義主題
+const workspace = Blockly.inject('blocklyDiv', {
+  toolbox: toolbox,
+  theme: customTheme
+});</code></pre>
+          </div>
+          
+          <h3>動態切換主題</h3>
+          
+          <p class="chapter-text">
+            您可以在運行時動態切換工作區的主題：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">// 獲取工作區
+const workspace = Blockly.getMainWorkspace();
+
+// 切換到高對比度主題
+workspace.setTheme(Blockly.Themes.HighContrast);
+
+// 切換到自定義主題
+workspace.setTheme(customTheme);</code></pre>
+          </div>
+          
+          <p class="chapter-text">
+            在本章中，我們探討了 Blockly 的基本使用方法，包括工作區介面、積木類型、工具箱配置、工作區配置以及主題設定等方面。掌握這些基本知識後，您就可以開始使用 Blockly 創建自己的視覺化程式設計環境了。
+          </p>
+          
+          <p class="chapter-text">
+            在下一章中，我們將學習如何創建自定義積木，以擴展 Blockly 的功能，滿足特定的應用需求。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 頁尾 -->
+  <footer class="footer">
+    <div class="container">
+      <p class="footer-text">© 2025 Blockly 視覺化程式設計教學網站</p>
+      <div class="footer-links">
+        <a href="https://github.com/google/blockly/" class="footer-link" target="_blank">GitHub</a>
+        <a href="https://developers.google.com/blockly" class="footer-link" target="_blank">官方文件</a>
+      </div>
+    </div>
+  </footer>
+
+  <a href="#" class="back-to-top">&uarr;</a>
+
+  <script src="js/prism.js"></script>
+  <script src="js/scripts.js"></script>
+</body>
+</html>

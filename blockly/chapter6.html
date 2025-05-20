@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>整合到網站 - Blockly 視覺化程式設計教學</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/prism.css">
+</head>
+<body>
+  <!-- 導航欄 -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">Blockly 教學</a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">首頁</a>
+        <a href="chapter1.html" class="nav-link">認識 Blockly</a>
+        <a href="chapter2.html" class="nav-link">安裝與設置</a>
+        <a href="chapter3.html" class="nav-link">基本使用</a>
+        <a href="chapter4.html" class="nav-link">自定義積木</a>
+        <a href="chapter5.html" class="nav-link">程式碼生成</a>
+        <a href="chapter6.html" class="nav-link">整合到網站</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 章節內容 -->
+  <section class="chapter">
+    <div class="container">
+      <div class="chapter-container">
+        <div class="chapter-sidebar">
+          <div class="chapter-nav">
+            <h3 class="chapter-nav-title">章節目錄</h3>
+            <ul class="chapter-nav-list">
+              <li class="chapter-nav-item"><a href="#intro" class="chapter-nav-link">整合到網站</a></li>
+              <li class="chapter-nav-item"><a href="#embedding" class="chapter-nav-link">將 Blockly 嵌入網頁</a></li>
+              <li class="chapter-nav-item"><a href="#events" class="chapter-nav-link">事件處理</a></li>
+              <li class="chapter-nav-item"><a href="#save-load" class="chapter-nav-link">儲存與讀取功能</a></li>
+              <li class="chapter-nav-item"><a href="#responsive" class="chapter-nav-link">響應式設計考量</a></li>
+              <li class="chapter-nav-item"><a href="#case-study" class="chapter-nav-link">實際案例：教學平台</a></li>
+              <li class="chapter-nav-item"><a href="#best-practices" class="chapter-nav-link">最佳實踐與注意事項</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="chapter-content">
+          <h1 id="intro" class="chapter-title">第六章：整合到網站</h1>
+          
+          <p class="chapter-text">
+            在前面的章節中，我們已經學習了 Blockly 的基本概念、安裝設置、使用方法、自定義積木以及程式碼生成。本章將探討如何將 Blockly 整合到現有的網站中，包括如何處理事件、儲存和讀取積木配置，以及響應式設計考量等方面。
+          </p>
+
+          <h2 id="embedding" class="chapter-subtitle">將 Blockly 嵌入網頁</h2>
+          
+          <p class="chapter-text">
+            將 Blockly 嵌入到網頁中是一個相對簡單的過程，但需要注意一些細節以確保良好的使用者體驗。
+          </p>
+          
+          <h3>基本嵌入步驟</h3>
+          
+          <p class="chapter-text">
+            以下是將 Blockly 嵌入網頁的基本步驟：
+          </p>
+          
+          <p class="chapter-text">
+            1. <strong>引入 Blockly 庫</strong>：在 HTML 頁面中引入必要的 Blockly 腳本檔案。<br>
+            2. <strong>創建容器元素</strong>：為 Blockly 工作區創建一個容器元素。<br>
+            3. <strong>初始化 Blockly 工作區</strong>：使用 `Blockly.inject()` 函數初始化工作區。<br>
+            4. <strong>配置工具箱</strong>：定義工具箱的內容和結構。<br>
+            5. <strong>處理事件</strong>：設置事件監聽器以響應使用者操作。
+          </p>
+          
+          <h3>完整的嵌入示例</h3>
+          
+          <p class="chapter-text">
+            以下是一個完整的示例，展示如何將 Blockly 嵌入到網頁中：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-html"><!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blockly 整合示例</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .header {
+      background-color: #f5f5f7;
+      padding: 20px;
+      text-align: center;
+    }
+    .content {
+      display: flex;
+      flex: 1;
+    }
+    #blocklyDiv {
+      flex: 2;
+      height: 100%;
+    }
+    .output {
+      flex: 1;
+      padding: 20px;
+      background-color: #f9f9f9;
+      overflow: auto;
+    }
+    .code {
+      white-space: pre-wrap;
+      font-family: monospace;
+      background-color: #f0f0f0;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .footer {
+      background-color: #f5f5f7;
+      padding: 10px;
+      text-align: center;
+    }
+    @media (max-width: 768px) {
+      .content {
+        flex-direction: column;
+      }
+      #blocklyDiv {
+        height: 60vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Blockly 整合示例</h1>
+    </div>
+    <div class="content">
+      <div id="blocklyDiv"></div>
+      <div class="output">
+        <h3>JavaScript 程式碼</h3>
+        <div id="jsCode" class="code"></div>
+        <h3>Python 程式碼</h3>
+        <div id="pythonCode" class="code"></div>
+        <button id="saveButton">儲存</button>
+        <button id="loadButton">載入</button>
+        <button id="runButton">運行</button>
+      </div>
+    </div>
+    <div class="footer">
+      <p>© 2025 Blockly 教學</p>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+  <script src="https://unpkg.com/blockly/javascript_compressed.js"></script>
+  <script src="https://unpkg.com/blockly/python_compressed.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // 定義工具箱
+      const toolbox = {
+        kind: 'categoryToolbox',
+        contents: [
+          {
+            kind: 'category',
+            name: '邏輯',
+            colour: '%{BKY_LOGIC_HUE}',
+            contents: [
+              { kind: 'block', type: 'controls_if' },
+              { kind: 'block', type: 'logic_compare' },
+              { kind: 'block', type: 'logic_operation' },
+              { kind: 'block', type: 'logic_negate' },
+              { kind: 'block', type: 'logic_boolean' }
+            ]
+          },
+          {
+            kind: 'category',
+            name: '迴圈',
+            colour: '%{BKY_LOOPS_HUE}',
+            contents: [
+              { kind: 'block', type: 'controls_repeat_ext' },
+              { kind: 'block', type: 'controls_whileUntil' },
+              { kind: 'block', type: 'controls_for' },
+              { kind: 'block', type: 'controls_forEach' }
+            ]
+          },
+          {
+            kind: 'category',
+            name: '數學',
+            colour: '%{BKY_MATH_HUE}',
+            contents: [
+              { kind: 'block', type: 'math_number' },
+              { kind: 'block', type: 'math_arithmetic' },
+              { kind: 'block', type: 'math_single' }
+            ]
+          },
+          {
+            kind: 'category',
+            name: '文字',
+            colour: '%{BKY_TEXTS_HUE}',
+            contents: [
+              { kind: 'block', type: 'text' },
+              { kind: 'block', type: 'text_join' },
+              { kind: 'block', type: 'text_append' }
+            ]
+          },
+          {
+            kind: 'category',
+            name: '變數',
+            colour: '%{BKY_VARIABLES_HUE}',
+            custom: 'VARIABLE'
+          },
+          {
+            kind: 'category',
+            name: '函數',
+            colour: '%{BKY_PROCEDURES_HUE}',
+            custom: 'PROCEDURE'
+          }
+        ]
+      };
+
+      // 初始化 Blockly 工作區
+      const workspace = Blockly.inject('blocklyDiv', {
+        toolbox: toolbox,
+        grid: {
+          spacing: 20,
+          length: 3,
+          colour: '#ccc',
+          snap: true
+        },
+        zoom: {
+          controls: true,
+          wheel: true,
+          startScale: 1.0,
+          maxScale: 3,
+          minScale: 0.3,
+          scaleSpeed: 1.2
+        },
+        trashcan: true
+      });
+
+      // 監聽工作區變化事件
+      workspace.addChangeListener(function(event) {
+        if (event.type === Blockly.Events.BLOCK_CHANGE || 
+            event.type === Blockly.Events.BLOCK_CREATE || 
+            event.type === Blockly.Events.BLOCK_DELETE || 
+            event.type === Blockly.Events.BLOCK_MOVE) {
+          
+          // 生成 JavaScript 程式碼
+          const jsCode = Blockly.JavaScript.workspaceToCode(workspace);
+          document.getElementById('jsCode').textContent = jsCode || '// 沒有積木';
+          
+          // 生成 Python 程式碼
+          const pythonCode = Blockly.Python.workspaceToCode(workspace);
+          document.getElementById('pythonCode').textContent = pythonCode || '# 沒有積木';
+        }
+      });
+
+      // 儲存按鈕點擊事件
+      document.getElementById('saveButton').addEventListener('click', function() {
+        const xml = Blockly.Xml.workspaceToDom(workspace);
+        const xmlText = Blockly.Xml.domToText(xml);
+        localStorage.setItem('blocklyWorkspace', xmlText);
+        alert('工作區已儲存');
+      });
+
+      // 載入按鈕點擊事件
+      document.getElementById('loadButton').addEventListener('click', function() {
+        const xmlText = localStorage.getItem('blocklyWorkspace');
+        if (xmlText) {
+          workspace.clear();
+          const xml = Blockly.Xml.textToDom(xmlText);
+          Blockly.Xml.domToWorkspace(xml, workspace);
+          alert('工作區已載入');
+        } else {
+          alert('沒有找到儲存的工作區');
+        }
+      });
+
+      // 運行按鈕點擊事件
+      document.getElementById('runButton').addEventListener('click', function() {
+        const jsCode = Blockly.JavaScript.workspaceToCode(workspace);
+        if (!jsCode) {
+          alert('請先添加一些積木');
+          return;
+        }
+        
+        try {
+          // 使用 Function 構造函數創建一個函數
+          const runCode = new Function(jsCode);
+          runCode();
+        } catch (e) {
+          alert('運行錯誤: ' + e.message);
+        }
+      });
+
+      // 載入上次儲存的工作區（如果有）
+      const savedWorkspace = localStorage.getItem('blocklyWorkspace');
+      if (savedWorkspace) {
+        const xml = Blockly.Xml.textToDom(savedWorkspace);
+        Blockly.Xml.domToWorkspace(xml, workspace);
+      }
+    });
+  </script>
+</body>
+</html></code></pre>
+          </div>
+
+          <h2 id="events" class="chapter-subtitle">事件處理</h2>
+          
+          <p class="chapter-text">
+            Blockly 提供了豐富的事件系統，允許您監聽和響應使用者的操作。
+          </p>
+          
+          <h3>常見事件類型</h3>
+          
+          <p class="chapter-text">
+            以下是一些常見的 Blockly 事件類型：
+          </p>
+          
+          <p class="chapter-text">
+            - <strong>Blockly.Events.BLOCK_CHANGE</strong>：積木屬性變更（如字段值）。<br>
+            - <strong>Blockly.Events.BLOCK_CREATE</strong>：創建新積木。<br>
+            - <strong>Blockly.Events.BLOCK_DELETE</strong>：刪除積木。<br>
+            - <strong>Blockly.Events.BLOCK_MOVE</strong>：移動積木。<br>
+            - <strong>Blockly.Events.VAR_CREATE</strong>：創建新變數。<br>
+            - <strong>Blockly.Events.VAR_DELETE</strong>：刪除變數。<br>
+            - <strong>Blockly.Events.VAR_RENAME</strong>：重命名變數。<br>
+            - <strong>Blockly.Events.UI</strong>：使用者界面事件（如選擇積木）。
+          </p>
+          
+          <h3>監聽事件</h3>
+          
+          <p class="chapter-text">
+            您可以使用 `workspace.addChangeListener()` 方法來監聽工作區事件：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">workspace.addChangeListener(function(event) {
+  // 檢查事件類型
+  if (event.type === Blockly.Events.BLOCK_CHANGE) {
+    console.log('積木變更:', event);
+  } else if (event.type === Blockly.Events.BLOCK_CREATE) {
+    console.log('積木創建:', event);
+  } else if (event.type === Blockly.Events.BLOCK_DELETE) {
+    console.log('積木刪除:', event);
+  } else if (event.type === Blockly.Events.BLOCK_MOVE) {
+    console.log('積木移動:', event);
+  }
+  
+  // 更新程式碼顯示
+  updateCodeDisplay();
+});
+
+function updateCodeDisplay() {
+  const jsCode = Blockly.JavaScript.workspaceToCode(workspace);
+  document.getElementById('jsCode').textContent = jsCode || '// 沒有積木';
+  
+  const pythonCode = Blockly.Python.workspaceToCode(workspace);
+  document.getElementById('pythonCode').textContent = pythonCode || '# 沒有積木';
+}</code></pre>
+          </div>
+          
+          <h3>自定義事件</h3>
+          
+          <p class="chapter-text">
+            您也可以創建和觸發自定義事件：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">// 創建自定義事件類
+class CustomEvent extends Blockly.Events.Abstract {
+  constructor(block) {
+    super(block);
+    this.type = 'custom_event';
+  }
+  
+  // 實現必要的方法
+  toJson() {
+    const json = super.toJson();
+    return json;
+  }
+  
+  fromJson(json) {
+    super.fromJson(json);
+  }
+}
+
+// 註冊自定義事件類
+Blockly.Events.registerClass(CustomEvent.prototype.type, CustomEvent);
+
+// 觸發自定義事件
+function triggerCustomEvent(block) {
+  const event = new CustomEvent(block);
+  Blockly.Events.fire(event);
+}</code></pre>
+          </div>
+
+          <h2 id="save-load" class="chapter-subtitle">儲存與讀取功能</h2>
+          
+          <p class="chapter-text">
+            在實際應用中，我們通常需要儲存使用者創建的積木配置，以便稍後載入。Blockly 提供了多種方式來序列化和反序列化工作區狀態。
+          </p>
+          
+          <h3>使用 XML</h3>
+          
+          <p class="chapter-text">
+            XML 是 Blockly 傳統的序列化格式：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">// 儲存工作區到 XML
+function saveWorkspaceToXml() {
+  const xmlDom = Blockly.Xml.workspaceToDom(workspace);
+  const xmlText = Blockly.Xml.domToText(xmlDom);
+  
+  // 儲存到本地存儲
+  localStorage.setItem('blocklyWorkspace', xmlText);
+  
+  // 或者儲存到伺服器
+  fetch('/save-workspace', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ xml: xmlText }),
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('儲存成功:', data);
+  })
+  .catch(error => {
+    console.error('儲存失敗:', error);
+  });
+}
+
+// 從 XML 載入工作區
+function loadWorkspaceFromXml() {
+  // 從本地存儲載入
+  const xmlText = localStorage.getItem('blocklyWorkspace');
+  if (xmlText) {
+    workspace.clear();
+    const xmlDom = Blockly.Xml.textToDom(xmlText);
+    Blockly.Xml.domToWorkspace(xmlDom, workspace);
+  }
+  
+  // 或者從伺服器載入
+  fetch('/load-workspace')
+  .then(response => response.json())
+  .then(data => {
+    if (data.xml) {
+      workspace.clear();
+      const xmlDom = Blockly.Xml.textToDom(data.xml);
+      Blockly.Xml.domToWorkspace(xmlDom, workspace);
+    }
+  })
+  .catch(error => {
+    console.error('載入失敗:', error);
+  });
+}</code></pre>
+          </div>
+          
+          <h3>使用 JSON</h3>
+          
+          <p class="chapter-text">
+            JSON 是 Blockly 較新的序列化格式，提供了更多的靈活性：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">// 儲存工作區到 JSON
+function saveWorkspaceToJson() {
+  const json = Blockly.serialization.workspaces.save(workspace);
+  
+  // 儲存到本地存儲
+  localStorage.setItem('blocklyWorkspaceJson', JSON.stringify(json));
+  
+  // 或者儲存到伺服器
+  fetch('/save-workspace-json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ workspace: json }),
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('儲存成功:', data);
+  })
+  .catch(error => {
+    console.error('儲存失敗:', error);
+  });
+}
+
+// 從 JSON 載入工作區
+function loadWorkspaceFromJson() {
+  // 從本地存儲載入
+  const jsonText = localStorage.getItem('blocklyWorkspaceJson');
+  if (jsonText) {
+    const json = JSON.parse(jsonText);
+    workspace.clear();
+    Blockly.serialization.workspaces.load(json, workspace);
+  }
+  
+  // 或者從伺服器載入
+  fetch('/load-workspace-json')
+  .then(response => response.json())
+  .then(data => {
+    if (data.workspace) {
+      workspace.clear();
+      Blockly.serialization.workspaces.load(data.workspace, workspace);
+    }
+  })
+  .catch(error => {
+    console.error('載入失敗:', error);
+  });
+}</code></pre>
+          </div>
+
+          <h2 id="responsive" class="chapter-subtitle">響應式設計考量</h2>
+          
+          <p class="chapter-text">
+            在現代網頁設計中，響應式設計是非常重要的，以確保您的應用程式在各種設備上都能良好運行。
+          </p>
+          
+          <h3>自適應工作區大小</h3>
+          
+          <p class="chapter-text">
+            Blockly 工作區的大小應該能夠適應不同的螢幕尺寸：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">// 監聽視窗大小變化
+window.addEventListener('resize', function() {
+  // 調整 Blockly 工作區大小
+  Blockly.svgResize(workspace);
+});
+
+// 初始調整大小
+Blockly.svgResize(workspace);</code></pre>
+          </div>
+          
+          <h3>使用 CSS 媒體查詢</h3>
+          
+          <p class="chapter-text">
+            使用 CSS 媒體查詢來調整佈局：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-css">/* 桌面佈局 */
+.content {
+  display: flex;
+  flex-direction: row;
+}
+
+#blocklyDiv {
+  flex: 2;
+  height: 100%;
+}
+
+.output {
+  flex: 1;
+  padding: 20px;
+}
+
+/* 平板和手機佈局 */
+@media (max-width: 768px) {
+  .content {
+    flex-direction: column;
+  }
+  
+  #blocklyDiv {
+    height: 60vh;
+  }
+  
+  .output {
+    height: 40vh;
+    overflow: auto;
+  }
+}</code></pre>
+          </div>
+          
+          <h3>觸控支援</h3>
+          
+          <p class="chapter-text">
+            確保您的 Blockly 應用程式在觸控設備上也能良好運行：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">// 在初始化 Blockly 工作區時啟用觸控支援
+const workspace = Blockly.inject('blocklyDiv', {
+  toolbox: toolbox,
+  // 其他配置...
+  touch: {
+    longPressDelay: 750,  // 長按延遲（毫秒）
+    scrollDelay: 500,     // 滾動延遲（毫秒）
+    tapDelay: 250         // 點擊延遲（毫秒）
+  }
+});</code></pre>
+          </div>
+
+          <h2 id="case-study" class="chapter-subtitle">實際案例：創建一個互動式教學平台</h2>
+          
+          <p class="chapter-text">
+            讓我們通過一個實際案例來綜合應用上述知識，創建一個互動式的 Blockly 教學平台，它包含多個教學關卡，每個關卡都有特定的任務和目標。
+          </p>
+          
+          <h3>HTML 結構</h3>
+          
+          <div class="code-container">
+            <pre><code class="language-html"><!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blockly 教學平台</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Blockly 教學平台</h1>
+      <div class="level-selector">
+        <label for="levelSelect">選擇關卡：</label>
+        <select id="levelSelect">
+          <option value="1">關卡 1：基本操作</option>
+          <option value="2">關卡 2：條件判斷</option>
+          <option value="3">關卡 3：迴圈</option>
+          <option value="4">關卡 4：函數</option>
+        </select>
+      </div>
+    </div>
+    <div class="content">
+      <div class="task-panel">
+        <h2 id="levelTitle">關卡 1：基本操作</h2>
+        <div id="levelDescription">
+          在這個關卡中，您需要使用基本積木來完成一個簡單的任務：計算兩個數字的和，並顯示結果。
+        </div>
+        <div class="task-buttons">
+          <button id="resetButton">重置</button>
+          <button id="checkButton">檢查</button>
+          <button id="hintButton">提示</button>
+        </div>
+      </div>
+      <div id="blocklyDiv"></div>
+      <div class="output-panel">
+        <h3>程式碼</h3>
+        <div id="codeDiv" class="code"></div>
+        <h3>輸出</h3>
+        <div id="outputDiv" class="output"></div>
+        <button id="runButton">運行</button>
+      </div>
+    </div>
+    <div class="footer">
+      <p>© 2025 Blockly 教學平台</p>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+  <script src="https://unpkg.com/blockly/javascript_compressed.js"></script>
+  <script src="script.js"></script>
+</body>
+</html></code></pre>
+          </div>
+          
+          <h3>CSS 樣式</h3>
+          
+          <div class="code-container">
+            <pre><code class="language-css">/* styles.css */
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.header {
+  background-color: #f5f5f7;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.level-selector {
+  display: flex;
+  align-items: center;
+}
+
+.level-selector select {
+  margin-left: 10px;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.content {
+  display: flex;
+  flex: 1;
+}
+
+.task-panel {
+  width: 250px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  overflow: auto;
+}
+
+#blocklyDiv {
+  flex: 1;
+  height: 100%;
+}
+
+.output-panel {
+  width: 300px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  overflow: auto;
+}
+
+.code {
+  white-space: pre-wrap;
+  font-family: monospace;
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.output {
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  min-height: 100px;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 8px 16px;
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+button:hover {
+  background-color: #0055aa;
+}
+
+.task-buttons {
+  margin-top: 20px;
+}
+
+.footer {
+  background-color: #f5f5f7;
+  padding: 10px;
+  text-align: center;
+}
+
+/* 響應式設計 */
+@media (max-width: 1024px) {
+  .content {
+    flex-direction: column;
+  }
+  
+  .task-panel, .output-panel {
+    width: auto;
+    max-height: 200px;
+  }
+  
+  #blocklyDiv {
+    height: 50vh;
+  }
+}</code></pre>
+          </div>
+          
+          <h3>JavaScript 代碼</h3>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">// script.js
+document.addEventListener('DOMContentLoaded', function() {
+  // 定義關卡配置
+  const levels = {
+    1: {
+      title: '關卡 1：基本操作',
+      description: '在這個關卡中，您需要使用基本積木來完成一個簡單的任務：計算兩個數字的和，並顯示結果。',
+      toolbox: {
+        kind: 'categoryToolbox',
+        contents: [
+          {
+            kind: 'category',
+            name: '數學',
+            colour: '%{BKY_MATH_HUE}',
+            contents: [
+              { kind: 'block', type: 'math_number' },
+              { kind: 'block', type: 'math_arithmetic' }
+            ]
+          },
+          {
+            kind: 'category',
+            name: '輸出',
+            colour: '#5C81A6',
+            contents: [
+              {
+                kind: 'block',
+                type: 'text_print'
+              }
+            ]
+          }
+        ]
+      },
+      checkFn: function(code) {
+        // 檢查是否使用了數學運算和輸出
+        return code.includes('console.log') && code.includes('+');
+      },
+      hint: '嘗試使用數學積木來計算兩個數字的和，然後使用輸出積木來顯示結果。'
+    },
+    2: {
+      title: '關卡 2：條件判斷',
+      description: '在這個關卡中，您需要使用條件判斷積木來檢查一個數字是否大於 10，如果是，則輸出「大於 10」，否則輸出「不大於 10」。',
+      toolbox: {
+        kind: 'categoryToolbox',
+        contents: [
+          {
+            kind: 'category',
+            name: '邏輯',
+            colour: '%{BKY_LOGIC_HUE}',
+            contents: [
+              { kind: 'block', type: 'controls_if' },
+              { kind: 'block', type: 'logic_compare' },
+              { kind: 'block', type: 'logic_operation' },
+              { kind: 'block', type: 'logic_negate' },
+              { kind: 'block', type: 'logic_boolean' }
+            ]
+          },
+          {
+            kind: 'category',
+            name: '數學',
+            colour: '%{BKY_MATH_HUE}',
+            contents: [
+              { kind: 'block', type: 'math_number' }
+            ]
+          },
+          {
+            kind: 'category',
+            name: '文字',
+            colour: '%{BKY_TEXTS_HUE}',
+            contents: [
+              { kind: 'block', type: 'text' }
+            ]
+          },
+          {
+            kind: 'category',
+            name: '輸出',
+            colour: '#5C81A6',
+            contents: [
+              {
+                kind: 'block',
+                type: 'text_print'
+              }
+            ]
+          }
+        ]
+      },
+      checkFn: function(code) {
+        // 檢查是否使用了條件判斷和輸出
+        return code.includes('if') && code.includes('console.log') && code.includes('>');
+      },
+      hint: '使用「如果」積木來檢查一個數字是否大於 10，然後在不同的條件下使用輸出積木。'
+    },
+    // 更多關卡...
+  };
+
+  let currentLevel = 1;
+  let workspace;
+
+  // 初始化 Blockly 工作區
+  function initBlockly() {
+    if (workspace) {
+      workspace.dispose();
+    }
+
+    const level = levels[currentLevel];
+    
+    workspace = Blockly.inject('blocklyDiv', {
+      toolbox: level.toolbox,
+      grid: {
+        spacing: 20,
+        length: 3,
+        colour: '#ccc',
+        snap: true
+      },
+      zoom: {
+        controls: true,
+        wheel: true,
+        startScale: 1.0,
+        maxScale: 3,
+        minScale: 0.3,
+        scaleSpeed: 1.2
+      },
+      trashcan: true,
+      scrollbars: true,
+      sounds: true
+    });
+
+    // 監聽工作區變化事件
+    workspace.addChangeListener(function(event) {
+      if (event.type === Blockly.Events.BLOCK_CHANGE || 
+          event.type === Blockly.Events.BLOCK_CREATE || 
+          event.type === Blockly.Events.BLOCK_DELETE || 
+          event.type === Blockly.Events.BLOCK_MOVE) {
+        
+        // 生成 JavaScript 程式碼
+        const code = Blockly.JavaScript.workspaceToCode(workspace);
+        document.getElementById('codeDiv').textContent = code || '// 沒有積木';
+      }
+    });
+
+    // 調整工作區大小
+    Blockly.svgResize(workspace);
+  }
+
+  // 載入關卡
+  function loadLevel(levelNum) {
+    currentLevel = levelNum;
+    const level = levels[currentLevel];
+    
+    document.getElementById('levelTitle').textContent = level.title;
+    document.getElementById('levelDescription').textContent = level.description;
+    document.getElementById('levelSelect').value = currentLevel;
+    
+    initBlockly();
+    document.getElementById('codeDiv').textContent = '// 沒有積木';
+    document.getElementById('outputDiv').textContent = '';
+  }
+
+  // 初始載入第一關
+  loadLevel(1);
+
+  // 關卡選擇事件
+  document.getElementById('levelSelect').addEventListener('change', function() {
+    loadLevel(parseInt(this.value));
+  });
+
+  // 重置按鈕事件
+  document.getElementById('resetButton').addEventListener('click', function() {
+    workspace.clear();
+    document.getElementById('codeDiv').textContent = '// 沒有積木';
+    document.getElementById('outputDiv').textContent = '';
+  });
+
+  // 檢查按鈕事件
+  document.getElementById('checkButton').addEventListener('click', function() {
+    const code = Blockly.JavaScript.workspaceToCode(workspace);
+    const level = levels[currentLevel];
+    
+    if (level.checkFn(code)) {
+      alert('恭喜！您已完成這個關卡的任務。');
+      
+      // 如果有下一關，詢問是否前進
+      if (levels[currentLevel + 1]) {
+        if (confirm('是否前進到下一關？')) {
+          loadLevel(currentLevel + 1);
+        }
+      }
+    } else {
+      alert('任務尚未完成，請再試一次。');
+    }
+  });
+
+  // 提示按鈕事件
+  document.getElementById('hintButton').addEventListener('click', function() {
+    const level = levels[currentLevel];
+    alert(level.hint);
+  });
+
+  // 運行按鈕事件
+  document.getElementById('runButton').addEventListener('click', function() {
+    const code = Blockly.JavaScript.workspaceToCode(workspace);
+    const outputDiv = document.getElementById('outputDiv');
+    
+    if (!code) {
+      outputDiv.textContent = '請先添加一些積木';
+      return;
+    }
+    
+    // 清空輸出區域
+    outputDiv.textContent = '';
+    
+    // 重定向 console.log 到輸出區域
+    const originalConsoleLog = console.log;
+    console.log = function() {
+      const output = Array.from(arguments).join(' ');
+      outputDiv.textContent += output + '\n';
+    };
+    
+    try {
+      // 運行程式碼
+      eval(code);
+    } catch (e) {
+      outputDiv.textContent += '運行錯誤: ' + e.message;
+    } finally {
+      // 恢復原始的 console.log
+      console.log = originalConsoleLog;
+    }
+  });
+
+  // 監聽視窗大小變化
+  window.addEventListener('resize', function() {
+    Blockly.svgResize(workspace);
+  });
+});</code></pre>
+          </div>
+
+          <h2 id="best-practices" class="chapter-subtitle">最佳實踐與注意事項</h2>
+          
+          <p class="chapter-text">
+            在將 Blockly 整合到網站時，以下是一些最佳實踐和注意事項：
+          </p>
+          
+          <p class="chapter-text">
+            <strong>性能優化</strong>：對於複雜的工作區，考慮使用虛擬化技術或分頁加載來優化性能。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>安全性考慮</strong>：在運行生成的程式碼時，使用沙箱環境或其他安全機制，特別是在處理用戶生成的程式碼時。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>可訪問性</strong>：確保您的 Blockly 實現考慮到可訪問性，包括鍵盤導航、屏幕閱讀器支持和高對比度模式等。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>國際化</strong>：如果您的網站需要支援多種語言，使用 Blockly 的國際化功能來提供翻譯。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>備份和恢復</strong>：實現自動保存和恢復功能，避免使用者丟失工作。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>漸進式增強</strong>：設計您的應用程式，使其在不支援 JavaScript 或有限制的環境中仍能提供基本功能。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>測試</strong>：在不同的瀏覽器和設備上徹底測試您的 Blockly 實現，確保它在各種環境中都能正常工作。
+          </p>
+          
+          <p class="chapter-text">
+            在本章中，我們探討了如何將 Blockly 整合到網站中，包括基本嵌入步驟、事件處理、儲存與讀取功能，以及響應式設計考量。我們還通過一個實際案例展示了如何創建一個互動式的 Blockly 教學平台。
+          </p>
+          
+          <p class="chapter-text">
+            Blockly 是一個強大而靈活的工具，可以為您的網站添加視覺化程式設計功能。通過本教學，您應該已經掌握了使用 Blockly 的基本知識和技能，能夠開始在自己的專案中實現視覺化程式設計。
+          </p>
+          
+          <p class="chapter-text">
+            無論您是創建教育工具、遊戲開發平台，還是其他需要視覺化程式設計的應用程式，Blockly 都能為您提供一個強大的基礎。希望本教學能夠幫助您充分利用 Blockly 的潛力，創建出令人驚嘆的視覺化程式設計體驗。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 頁尾 -->
+  <footer class="footer">
+    <div class="container">
+      <p class="footer-text">© 2025 Blockly 視覺化程式設計教學網站</p>
+      <div class="footer-links">
+        <a href="https://github.com/google/blockly/" class="footer-link" target="_blank">GitHub</a>
+        <a href="https://developers.google.com/blockly" class="footer-link" target="_blank">官方文件</a>
+      </div>
+    </div>
+  </footer>
+
+  <a href="#" class="back-to-top">&uarr;</a>
+
+  <script src="js/prism.js"></script>
+  <script src="js/scripts.js"></script>
+</body>
+</html>

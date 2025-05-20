@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>認識 Blockly - Blockly 視覺化程式設計教學</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/prism.css">
+</head>
+<body>
+  <!-- 導航欄 -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">Blockly 教學</a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">首頁</a>
+        <a href="chapter1.html" class="nav-link">認識 Blockly</a>
+        <a href="chapter2.html" class="nav-link">安裝與設置</a>
+        <a href="chapter3.html" class="nav-link">基本使用</a>
+        <a href="chapter4.html" class="nav-link">自定義積木</a>
+        <a href="chapter5.html" class="nav-link">程式碼生成</a>
+        <a href="chapter6.html" class="nav-link">整合到網站</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 章節內容 -->
+  <section class="chapter">
+    <div class="container">
+      <div class="chapter-container">
+        <div class="chapter-sidebar">
+          <div class="chapter-nav">
+            <h3 class="chapter-nav-title">章節目錄</h3>
+            <ul class="chapter-nav-list">
+              <li class="chapter-nav-item"><a href="#intro" class="chapter-nav-link">認識 Blockly</a></li>
+              <li class="chapter-nav-item"><a href="#core-concepts" class="chapter-nav-link">核心概念</a></li>
+              <li class="chapter-nav-item"><a href="#advantages" class="chapter-nav-link">Blockly 的優勢</a></li>
+              <li class="chapter-nav-item"><a href="#applications" class="chapter-nav-link">應用場景</a></li>
+              <li class="chapter-nav-item"><a href="#comparison" class="chapter-nav-link">與其他工具比較</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="chapter-content">
+          <h1 id="intro" class="chapter-title">第一章：認識 Blockly</h1>
+          
+          <p class="chapter-text">
+            Blockly 是由 Google 開發的視覺化程式設計工具，它讓使用者能夠透過拖曳積木的方式來建立程式，而不需要直接撰寫程式碼。這種方式特別適合初學者，因為它消除了語法錯誤的困擾，讓使用者能夠專注於程式邏輯的建立。同時，Blockly 也能夠將這些視覺化的積木自動轉換為多種程式語言，包括 JavaScript 和 Python。
+          </p>
+
+          <h2 id="core-concepts" class="chapter-subtitle">Blockly 的核心概念</h2>
+          
+          <p class="chapter-text">
+            Blockly 的設計理念是將程式設計的基本概念視覺化。每個積木代表一個程式指令或概念，例如變數、邏輯判斷、迴圈等。這些積木的形狀設計成只有在邏輯上合理的情況下才能相互連接，這有助於避免常見的程式錯誤。
+          </p>
+          
+          <p class="chapter-text">
+            當我們使用 Blockly 時，實際上是在兩個層面上工作：
+          </p>
+          
+          <p class="chapter-text">
+            1. <strong>視覺層面</strong>：拖曳和連接積木，建立程式的視覺表示。<br>
+            2. <strong>程式碼層面</strong>：Blockly 會自動將這些積木轉換為實際的程式碼。
+          </p>
+          
+          <p class="chapter-text">
+            這種雙層設計讓 Blockly 成為學習程式設計和快速原型開發的理想工具。
+          </p>
+
+          <h2 id="advantages" class="chapter-subtitle">Blockly 的優勢</h2>
+          
+          <p class="chapter-text">
+            相較於傳統的程式設計方法，Blockly 提供了多項優勢：
+          </p>
+          
+          <p class="chapter-text">
+            <strong>直覺操作</strong>：拖曳積木比撰寫程式碼更加直覺，特別是對於初學者而言。使用者可以專注於解決問題的邏輯，而不是語法細節。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>即時反饋</strong>：積木的形狀和連接方式提供了即時的視覺反饋，幫助使用者理解程式結構。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>消除語法錯誤</strong>：由於積木只能以合理的方式連接，許多常見的語法錯誤被自動避免。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>多語言支援</strong>：Blockly 可以生成多種程式語言的程式碼，讓使用者能夠無縫過渡到文字程式設計。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>高度可自訂</strong>：開發者可以自定義積木和工作區，以適應特定的應用場景和教學需求。
+          </p>
+
+          <h2 id="applications" class="chapter-subtitle">Blockly 的應用場景</h2>
+          
+          <p class="chapter-text">
+            Blockly 的應用範圍非常廣泛，以下是一些常見的應用場景：
+          </p>
+          
+          <p class="chapter-text">
+            <strong>程式設計教育</strong>：Blockly 被廣泛用於各級教育機構，幫助學生學習程式設計的基本概念。例如，Code.org 和 Scratch 等平台都採用了類似的積木式程式設計方法。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>視覺化程式設計工具</strong>：許多應用程式和平台使用 Blockly 作為其視覺化程式設計界面，讓非程式設計師也能創建自動化流程。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>遊戲開發</strong>：一些遊戲開發平台使用 Blockly 讓玩家能夠自定義遊戲邏輯和行為。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>物聯網和機器人</strong>：Blockly 被用於控制機器人和物聯網設備，讓使用者能夠以視覺化方式程式設計這些設備的行為。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>資料處理和分析</strong>：一些資料分析工具使用 Blockly 讓使用者能夠以視覺化方式建立資料處理流程。
+          </p>
+
+          <h2 id="comparison" class="chapter-subtitle">Blockly 與其他視覺化程式設計工具的比較</h2>
+          
+          <p class="chapter-text">
+            市場上有多種視覺化程式設計工具，如 Scratch、App Inventor 和 Node-RED 等。Blockly 與這些工具相比有以下特點：
+          </p>
+          
+          <p class="chapter-text">
+            <strong>開源和可擴展</strong>：Blockly 是完全開源的，開發者可以自由擴展和修改它。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>專注於整合</strong>：Blockly 被設計為一個可以整合到其他應用程式中的庫，而不是一個獨立的應用程式。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>多語言生成</strong>：Blockly 可以生成多種程式語言的程式碼，而不僅僅是一種特定語言。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>輕量級</strong>：Blockly 是一個輕量級的庫，可以輕鬆整合到網頁應用程式中。
+          </p>
+          
+          <p class="chapter-text">
+            在接下來的章節中，我們將深入探討如何安裝和設置 Blockly，以及如何使用它來建立自己的視覺化程式設計環境。無論您是初學者還是有經驗的開發者，Blockly 都能為您提供一個強大而靈活的工具，幫助您實現視覺化程式設計的目標。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 頁尾 -->
+  <footer class="footer">
+    <div class="container">
+      <p class="footer-text">© 2025 Blockly 視覺化程式設計教學網站</p>
+      <div class="footer-links">
+        <a href="https://github.com/google/blockly/" class="footer-link" target="_blank">GitHub</a>
+        <a href="https://developers.google.com/blockly" class="footer-link" target="_blank">官方文件</a>
+      </div>
+    </div>
+  </footer>
+
+  <a href="#" class="back-to-top">&uarr;</a>
+
+  <script src="js/prism.js"></script>
+  <script src="js/scripts.js"></script>
+</body>
+</html>

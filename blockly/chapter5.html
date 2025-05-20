@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>程式碼生成 - Blockly 視覺化程式設計教學</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/prism.css">
+</head>
+<body>
+  <!-- 導航欄 -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">Blockly 教學</a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">首頁</a>
+        <a href="chapter1.html" class="nav-link">認識 Blockly</a>
+        <a href="chapter2.html" class="nav-link">安裝與設置</a>
+        <a href="chapter3.html" class="nav-link">基本使用</a>
+        <a href="chapter4.html" class="nav-link">自定義積木</a>
+        <a href="chapter5.html" class="nav-link">程式碼生成</a>
+        <a href="chapter6.html" class="nav-link">整合到網站</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 章節內容 -->
+  <section class="chapter">
+    <div class="container">
+      <div class="chapter-container">
+        <div class="chapter-sidebar">
+          <div class="chapter-nav">
+            <h3 class="chapter-nav-title">章節目錄</h3>
+            <ul class="chapter-nav-list">
+              <li class="chapter-nav-item"><a href="#intro" class="chapter-nav-link">程式碼生成</a></li>
+              <li class="chapter-nav-item"><a href="#basic-principles" class="chapter-nav-link">程式碼生成的基本原理</a></li>
+              <li class="chapter-nav-item"><a href="#javascript-generation" class="chapter-nav-link">JavaScript 程式碼生成</a></li>
+              <li class="chapter-nav-item"><a href="#python-generation" class="chapter-nav-link">Python 程式碼生成</a></li>
+              <li class="chapter-nav-item"><a href="#generator-functions" class="chapter-nav-link">生成器函數的詳細說明</a></li>
+              <li class="chapter-nav-item"><a href="#complex-structures" class="chapter-nav-link">處理複雜的程式結構</a></li>
+              <li class="chapter-nav-item"><a href="#case-study" class="chapter-nav-link">實際案例：計算器應用</a></li>
+              <li class="chapter-nav-item"><a href="#best-practices" class="chapter-nav-link">最佳實踐與注意事項</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="chapter-content">
+          <h1 id="intro" class="chapter-title">第五章：程式碼生成</h1>
+          
+          <p class="chapter-text">
+            在前面的章節中，我們已經學習了如何使用 Blockly 的基本功能以及如何創建自定義積木。本章將深入探討 Blockly 的另一個核心功能：程式碼生成。我們將學習如何將視覺化的積木轉換為 JavaScript 和 Python 程式碼，以及如何自定義和擴展這個過程。
+          </p>
+
+          <h2 id="basic-principles" class="chapter-subtitle">程式碼生成的基本原理</h2>
+          
+          <p class="chapter-text">
+            Blockly 的程式碼生成系統是將視覺化的積木結構轉換為文字形式的程式碼。這個過程是通過一系列的生成器函數完成的，每種積木類型都有對應的生成器函數，定義了如何將該積木轉換為特定語言的程式碼。
+          </p>
+          
+          <h3>程式碼生成的流程</h3>
+          
+          <p class="chapter-text">
+            程式碼生成的基本流程如下：
+          </p>
+          
+          <p class="chapter-text">
+            1. 從工作區中獲取所有頂層積木（沒有連接到其他積木頂部的積木）。<br>
+            2. 對每個頂層積木，遞迴地處理其所有子積木。<br>
+            3. 每個積木類型都有對應的生成器函數，定義了如何將該積木轉換為特定語言的程式碼。<br>
+            4. 將所有生成的程式碼片段組合成完整的程式碼。
+          </p>
+
+          <h2 id="javascript-generation" class="chapter-subtitle">JavaScript 程式碼生成</h2>
+          
+          <p class="chapter-text">
+            Blockly 內建了對 JavaScript 的支援，可以將積木直接轉換為 JavaScript 程式碼。
+          </p>
+          
+          <h3>基本用法</h3>
+          
+          <p class="chapter-text">
+            以下是生成 JavaScript 程式碼的基本方法：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">// 引入 JavaScript 生成器
+import 'blockly/javascript';
+
+// 生成 JavaScript 程式碼
+const code = Blockly.JavaScript.workspaceToCode(workspace);
+console.log(code);</code></pre>
+          </div>
+          
+          <h3>運行生成的 JavaScript 程式碼</h3>
+          
+          <p class="chapter-text">
+            生成的 JavaScript 程式碼可以通過多種方式運行：
+          </p>
+          
+          <p class="chapter-text">
+            <strong>使用 eval 函數</strong>（不推薦用於生產環境，因為有安全風險）：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">try {
+  eval(code);
+} catch (e) {
+  console.error('運行程式碼時發生錯誤:', e);
+}</code></pre>
+          </div>
+          
+          <p class="chapter-text">
+            <strong>使用 Function 構造函數</strong>（較安全，但仍有風險）：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">try {
+  const runCode = new Function(code);
+  runCode();
+} catch (e) {
+  console.error('運行程式碼時發生錯誤:', e);
+}</code></pre>
+          </div>
+          
+          <p class="chapter-text">
+            <strong>使用沙箱環境</strong>（最安全，但較複雜）：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">// 使用 iframe 作為沙箱
+const sandbox = document.createElement('iframe');
+sandbox.style.display = 'none';
+document.body.appendChild(sandbox);
+
+// 在沙箱中運行程式碼
+try {
+  const sandboxWindow = sandbox.contentWindow;
+  sandboxWindow.eval(code);
+} catch (e) {
+  console.error('運行程式碼時發生錯誤:', e);
+} finally {
+  document.body.removeChild(sandbox);
+}</code></pre>
+          </div>
+          
+          <h3>自定義 JavaScript 生成器</h3>
+          
+          <p class="chapter-text">
+            您可以自定義 JavaScript 生成器，以支援自定義積木或修改現有積木的程式碼生成：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">// 為自定義積木定義 JavaScript 生成器
+Blockly.JavaScript['custom_block'] = function(block) {
+  // 獲取積木的輸入值
+  const value = Blockly.JavaScript.valueToCode(block, 'VALUE', Blockly.JavaScript.ORDER_ATOMIC);
+  
+  // 生成 JavaScript 程式碼
+  const code = `console.log(${value});\n`;
+  
+  return code;
+};</code></pre>
+          </div>
+
+          <h2 id="python-generation" class="chapter-subtitle">Python 程式碼生成</h2>
+          
+          <p class="chapter-text">
+            Blockly 也內建了對 Python 的支援，可以將積木轉換為 Python 程式碼。
+          </p>
+          
+          <h3>基本用法</h3>
+          
+          <p class="chapter-text">
+            以下是生成 Python 程式碼的基本方法：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">// 引入 Python 生成器
+import 'blockly/python';
+
+// 生成 Python 程式碼
+const code = Blockly.Python.workspaceToCode(workspace);
+console.log(code);</code></pre>
+          </div>
+          
+          <h3>運行生成的 Python 程式碼</h3>
+          
+          <p class="chapter-text">
+            由於 Python 是一種伺服器端語言，您通常需要將生成的程式碼發送到伺服器進行運行。以下是一個簡單的例子：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">// 將生成的 Python 程式碼發送到伺服器
+fetch('/run-python', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ code: code }),
+})
+.then(response => response.json())
+.then(data => {
+  console.log('運行結果:', data.result);
+})
+.catch(error => {
+  console.error('運行程式碼時發生錯誤:', error);
+});</code></pre>
+          </div>
+          
+          <h3>自定義 Python 生成器</h3>
+          
+          <p class="chapter-text">
+            您可以自定義 Python 生成器，以支援自定義積木或修改現有積木的程式碼生成：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">// 為自定義積木定義 Python 生成器
+Blockly.Python['custom_block'] = function(block) {
+  // 獲取積木的輸入值
+  const value = Blockly.Python.valueToCode(block, 'VALUE', Blockly.Python.ORDER_ATOMIC);
+  
+  // 生成 Python 程式碼
+  const code = `print(${value})\n`;
+  
+  return code;
+};</code></pre>
+          </div>
+
+          <h2 id="generator-functions" class="chapter-subtitle">生成器函數的詳細說明</h2>
+          
+          <p class="chapter-text">
+            生成器函數是程式碼生成的核心，它定義了如何將特定類型的積木轉換為程式碼。以下是生成器函數的詳細說明：
+          </p>
+          
+          <h3>生成器函數的基本結構</h3>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">Blockly.JavaScript['block_type'] = function(block) {
+  // 獲取積木的輸入值
+  // 生成程式碼
+  // 返回程式碼
+};</code></pre>
+          </div>
+          
+          <h3>獲取積木輸入值的方法</h3>
+          
+          <p class="chapter-text">
+            <strong>valueToCode</strong>：獲取連接到值輸入槽的積木生成的程式碼。
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">const value = Blockly.JavaScript.valueToCode(block, 'INPUT_NAME', Blockly.JavaScript.ORDER_ATOMIC);</code></pre>
+          </div>
+          
+          <p class="chapter-text">
+            <strong>statementToCode</strong>：獲取連接到語句輸入槽的積木生成的程式碼。
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">const statements = Blockly.JavaScript.statementToCode(block, 'STATEMENTS');</code></pre>
+          </div>
+          
+          <p class="chapter-text">
+            <strong>getFieldValue</strong>：獲取積木上字段的值。
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">const fieldValue = block.getFieldValue('FIELD_NAME');</code></pre>
+          </div>
+          
+          <h3>運算符優先級</h3>
+          
+          <p class="chapter-text">
+            在生成程式碼時，需要考慮運算符優先級，以確保生成的程式碼在組合時保持正確的優先級。Blockly 提供了一系列的常量來表示不同的優先級：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">Blockly.JavaScript.ORDER_ATOMIC = 0;         // 0 ""
+Blockly.JavaScript.ORDER_MEMBER = 1;         // . []
+Blockly.JavaScript.ORDER_NEW = 1;            // new
+Blockly.JavaScript.ORDER_FUNCTION_CALL = 2;  // ()
+Blockly.JavaScript.ORDER_INCREMENT = 3;      // ++
+// ... 更多優先級常量</code></pre>
+          </div>
+          
+          <p class="chapter-text">
+            在返回值積木的生成器函數中，需要返回一個包含程式碼和優先級的數組：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];</code></pre>
+          </div>
+
+          <h2 id="complex-structures" class="chapter-subtitle">處理複雜的程式結構</h2>
+          
+          <p class="chapter-text">
+            在實際應用中，我們經常需要處理更複雜的程式結構，如變數、函數和類別等。
+          </p>
+          
+          <h3>變數處理</h3>
+          
+          <p class="chapter-text">
+            Blockly 內建了對變數的支援，可以自動處理變數的聲明和使用：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">// 獲取工作區中的所有變數
+const variables = Blockly.Variables.allUsedVarModels(workspace);
+
+// 生成變數聲明
+let declarations = '';
+for (const variable of variables) {
+  declarations += `let ${variable.name};\n`;
+}
+
+// 生成主程式碼
+const code = Blockly.JavaScript.workspaceToCode(workspace);
+
+// 組合完整的程式碼
+const fullCode = declarations + code;</code></pre>
+          </div>
+          
+          <h3>函數處理</h3>
+          
+          <p class="chapter-text">
+            Blockly 也支援函數的定義和調用：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">// 在 JavaScript 生成器中提供一個輔助函數
+Blockly.JavaScript.provideFunction_ = function(name, code) {
+  if (!this.definitions_[name]) {
+    this.definitions_[name] = code.join('\n');
+  }
+  return name;
+};
+
+// 在生成器函數中使用輔助函數
+const functionName = Blockly.JavaScript.provideFunction_(
+  'myFunction',
+  [
+    'function myFunction(param) {',
+    '  console.log(param);',
+    '}'
+  ]
+);
+
+// 生成調用函數的程式碼
+const code = `${functionName}(${value});\n`;</code></pre>
+          </div>
+
+          <h2 id="case-study" class="chapter-subtitle">實際案例：創建一個計算器應用</h2>
+          
+          <p class="chapter-text">
+            讓我們通過一個實際案例來綜合應用上述知識，創建一個簡單的計算器應用，它可以執行基本的數學運算。
+          </p>
+          
+          <h3>HTML 結構</h3>
+          
+          <div class="code-container">
+            <pre><code class="language-html"><!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Blockly 計算器</title>
+  <style>
+    #blocklyDiv {
+      height: 480px;
+      width: 600px;
+      float: left;
+    }
+    #outputDiv {
+      height: 480px;
+      width: 400px;
+      float: left;
+      margin-left: 10px;
+      overflow: auto;
+    }
+    .outputPanel {
+      margin-bottom: 10px;
+      padding: 10px;
+      background-color: #f5f5f5;
+      border-radius: 5px;
+    }
+    .codePanel {
+      white-space: pre-wrap;
+      font-family: monospace;
+    }
+    .resultPanel {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div id="blocklyDiv"></div>
+  <div id="outputDiv">
+    <h3>JavaScript 程式碼</h3>
+    <div id="jsCode" class="outputPanel codePanel"></div>
+    <h3>Python 程式碼</h3>
+    <div id="pythonCode" class="outputPanel codePanel"></div>
+    <h3>運行結果</h3>
+    <div id="result" class="outputPanel resultPanel"></div>
+    <button id="runButton">運行</button>
+  </div>
+
+  <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+  <script src="https://unpkg.com/blockly/javascript_compressed.js"></script>
+  <script src="https://unpkg.com/blockly/python_compressed.js"></script>
+  <script src="script.js"></script>
+</body>
+</html></code></pre>
+          </div>
+          
+          <h3>JavaScript 代碼</h3>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">// script.js
+document.addEventListener('DOMContentLoaded', function() {
+  // 定義工具箱
+  const toolbox = {
+    kind: 'categoryToolbox',
+    contents: [
+      {
+        kind: 'category',
+        name: '數學',
+        colour: '%{BKY_MATH_HUE}',
+        contents: [
+          {
+            kind: 'block',
+            type: 'math_number'
+          },
+          {
+            kind: 'block',
+            type: 'math_arithmetic'
+          },
+          {
+            kind: 'block',
+            type: 'math_single'
+          },
+          {
+            kind: 'block',
+            type: 'math_trig'
+          },
+          {
+            kind: 'block',
+            type: 'math_constant'
+          },
+          {
+            kind: 'block',
+            type: 'math_round'
+          }
+        ]
+      },
+      {
+        kind: 'category',
+        name: '變數',
+        colour: '%{BKY_VARIABLES_HUE}',
+        custom: 'VARIABLE'
+      },
+      {
+        kind: 'category',
+        name: '函數',
+        colour: '%{BKY_PROCEDURES_HUE}',
+        custom: 'PROCEDURE'
+      }
+    ]
+  };
+
+  // 初始化 Blockly 工作區
+  const workspace = Blockly.inject('blocklyDiv', {
+    toolbox: toolbox,
+    grid: {
+      spacing: 20,
+      length: 3,
+      colour: '#ccc',
+      snap: true
+    },
+    zoom: {
+      controls: true,
+      wheel: true,
+      startScale: 1.0,
+      maxScale: 3,
+      minScale: 0.3,
+      scaleSpeed: 1.2
+    },
+    trashcan: true
+  });
+
+  // 監聽工作區變化事件
+  workspace.addChangeListener(function(event) {
+    if (event.type === Blockly.Events.BLOCK_CHANGE || 
+        event.type === Blockly.Events.BLOCK_CREATE || 
+        event.type === Blockly.Events.BLOCK_DELETE || 
+        event.type === Blockly.Events.BLOCK_MOVE) {
+      
+      // 生成 JavaScript 程式碼
+      const jsCode = Blockly.JavaScript.workspaceToCode(workspace);
+      document.getElementById('jsCode').textContent = jsCode || '// 沒有積木';
+      
+      // 生成 Python 程式碼
+      const pythonCode = Blockly.Python.workspaceToCode(workspace);
+      document.getElementById('pythonCode').textContent = pythonCode || '# 沒有積木';
+    }
+  });
+
+  // 運行按鈕點擊事件
+  document.getElementById('runButton').addEventListener('click', function() {
+    // 生成 JavaScript 程式碼
+    const jsCode = Blockly.JavaScript.workspaceToCode(workspace);
+    
+    if (!jsCode) {
+      document.getElementById('result').textContent = '請先添加一些積木';
+      return;
+    }
+    
+    // 運行 JavaScript 程式碼
+    try {
+      // 使用 Function 構造函數創建一個函數
+      const runCode = new Function('return ' + jsCode);
+      const result = runCode();
+      
+      // 顯示結果
+      document.getElementById('result').textContent = result !== undefined ? result : '運行完成，沒有返回值';
+    } catch (e) {
+      document.getElementById('result').textContent = '運行錯誤: ' + e.message;
+    }
+  });
+});</code></pre>
+          </div>
+          
+          <h3>運行和測試</h3>
+          
+          <p class="chapter-text">
+            1. 從工具箱中拖出一些數學積木到工作區。<br>
+            2. 觀察生成的 JavaScript 和 Python 程式碼。<br>
+            3. 點擊「運行」按鈕，查看運行結果。
+          </p>
+
+          <h2 id="best-practices" class="chapter-subtitle">最佳實踐與注意事項</h2>
+          
+          <p class="chapter-text">
+            在使用 Blockly 生成程式碼時，以下是一些最佳實踐和注意事項：
+          </p>
+          
+          <p class="chapter-text">
+            <strong>安全性考慮</strong>：在運行生成的程式碼時，要注意安全性問題，特別是在處理用戶生成的程式碼時。考慮使用沙箱環境或其他安全機制。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>錯誤處理</strong>：添加適當的錯誤處理機制，以便在程式碼生成或運行過程中出現問題時能夠提供有用的反饋。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>程式碼格式化</strong>：考慮使用程式碼格式化工具，使生成的程式碼更易讀。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>性能優化</strong>：對於複雜的工作區，程式碼生成可能會變得較慢。考慮使用防抖動或節流技術來優化性能。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>多語言支援</strong>：如果您的應用需要支援多種程式語言，確保為每種語言提供適當的生成器。
+          </p>
+          
+          <p class="chapter-text">
+            在本章中，我們探討了 Blockly 的程式碼生成功能，包括如何生成 JavaScript 和 Python 程式碼，如何自定義生成器函數，以及如何處理複雜的程式結構。通過這些知識，您可以將 Blockly 積木轉換為實際可運行的程式碼，實現從視覺化程式設計到實際程式執行的完整流程。
+          </p>
+          
+          <p class="chapter-text">
+            在下一章中，我們將探討如何將 Blockly 整合到現有的網站中，包括如何處理事件、儲存和讀取積木配置，以及響應式設計考量等方面。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 頁尾 -->
+  <footer class="footer">
+    <div class="container">
+      <p class="footer-text">© 2025 Blockly 視覺化程式設計教學網站</p>
+      <div class="footer-links">
+        <a href="https://github.com/google/blockly/" class="footer-link" target="_blank">GitHub</a>
+        <a href="https://developers.google.com/blockly" class="footer-link" target="_blank">官方文件</a>
+      </div>
+    </div>
+  </footer>
+
+  <a href="#" class="back-to-top">&uarr;</a>
+
+  <script src="js/prism.js"></script>
+  <script src="js/scripts.js"></script>
+</body>
+</html>

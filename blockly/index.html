@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blockly 視覺化程式設計 - 教學網站</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/prism.css">
+  <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+  <script src="https://unpkg.com/blockly/javascript_compressed.js"></script>
+  <script src="https://unpkg.com/blockly/python_compressed.js"></script>
+</head>
+<body>
+  <!-- 導航欄 -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">Blockly 教學</a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">首頁</a>
+        <a href="chapter1.html" class="nav-link">認識 Blockly</a>
+        <a href="chapter2.html" class="nav-link">安裝與設置</a>
+        <a href="chapter3.html" class="nav-link">基本使用</a>
+        <a href="chapter4.html" class="nav-link">自定義積木</a>
+        <a href="chapter5.html" class="nav-link">程式碼生成</a>
+        <a href="chapter6.html" class="nav-link">整合到網站</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 頁首區域 -->
+  <section class="hero">
+    <h1 class="hero-title fade-in">Blockly 視覺化程式設計</h1>
+    <p class="hero-subtitle fade-in delay-1">輕鬆拖曳積木，打造專屬程式邏輯</p>
+    <a href="#features" class="cta-button fade-in delay-2">開始學習</a>
+  </section>
+
+  <!-- 核心價值區 -->
+  <section id="features" class="features">
+    <div class="container">
+      <h2 class="section-title">核心優勢</h2>
+      <div class="features-container">
+        <div class="feature fade-in">
+          <div class="feature-icon">🧩</div>
+          <h3 class="feature-title">直覺操作</h3>
+          <p class="feature-description">透過拖曳積木建立程式，無需擔心語法錯誤</p>
+        </div>
+        <div class="feature fade-in delay-1">
+          <div class="feature-icon">🔄</div>
+          <h3 class="feature-title">即時轉換</h3>
+          <p class="feature-description">自動將積木轉換為 JavaScript 或 Python 程式碼</p>
+        </div>
+        <div class="feature fade-in delay-2">
+          <div class="feature-icon">⚙️</div>
+          <h3 class="feature-title">完全客製化</h3>
+          <p class="feature-description">依照需求自訂積木與工作區，打造專屬程式環境</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 學習路徑區 -->
+  <section class="learning-path">
+    <div class="container">
+      <h2 class="section-title">學習路徑</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-content">
+            <h3 class="timeline-title">認識 Blockly</h3>
+            <p class="timeline-description">了解 Blockly 的基本概念與優勢</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-content">
+            <h3 class="timeline-title">安裝與設置</h3>
+            <p class="timeline-description">學習如何安裝與設置 Blockly 環境</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-content">
+            <h3 class="timeline-title">基本使用</h3>
+            <p class="timeline-description">掌握 Blockly 的基本操作與功能</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-content">
+            <h3 class="timeline-title">自定義積木</h3>
+            <p class="timeline-description">創建自己的積木，擴展 Blockly 功能</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-content">
+            <h3 class="timeline-title">程式碼生成</h3>
+            <p class="timeline-description">將積木轉換為 JavaScript 或 Python 程式碼</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-content">
+            <h3 class="timeline-title">整合到網站</h3>
+            <p class="timeline-description">將 Blockly 整合到您的網站或應用程式中</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 互動示範區 -->
+  <section class="demo">
+    <div class="container">
+      <h2 class="section-title">互動示範</h2>
+      <div class="demo-container">
+        <div id="blocklyDemo" class="demo-workspace"></div>
+        <div class="demo-output">
+          <div class="code-header">
+            <h3 class="code-title">JavaScript 程式碼</h3>
+          </div>
+          <pre class="code-block"><code id="jsOutput" class="language-javascript">// 拖曳左側積木到此處開始</code></pre>
+          
+          <div class="code-header">
+            <h3 class="code-title">Python 程式碼</h3>
+          </div>
+          <pre class="code-block"><code id="pythonOutput" class="language-python"># 拖曳左側積木到此處開始</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 頁尾 -->
+  <footer class="footer">
+    <div class="container">
+      <p class="footer-text">© 2025 Blockly 視覺化程式設計教學網站</p>
+      <div class="footer-links">
+        <a href="https://github.com/google/blockly/" class="footer-link" target="_blank">GitHub</a>
+        <a href="https://developers.google.com/blockly" class="footer-link" target="_blank">官方文件</a>
+      </div>
+    </div>
+  </footer>
+
+  <a href="#" class="back-to-top">&uarr;</a>
+
+  <script src="js/prism.js"></script>
+  <script src="js/scripts.js"></script>
+</body>
+</html>

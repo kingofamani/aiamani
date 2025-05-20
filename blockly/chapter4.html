@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>自定義積木 - Blockly 視覺化程式設計教學</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/prism.css">
+</head>
+<body>
+  <!-- 導航欄 -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">Blockly 教學</a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">首頁</a>
+        <a href="chapter1.html" class="nav-link">認識 Blockly</a>
+        <a href="chapter2.html" class="nav-link">安裝與設置</a>
+        <a href="chapter3.html" class="nav-link">基本使用</a>
+        <a href="chapter4.html" class="nav-link">自定義積木</a>
+        <a href="chapter5.html" class="nav-link">程式碼生成</a>
+        <a href="chapter6.html" class="nav-link">整合到網站</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 章節內容 -->
+  <section class="chapter">
+    <div class="container">
+      <div class="chapter-container">
+        <div class="chapter-sidebar">
+          <div class="chapter-nav">
+            <h3 class="chapter-nav-title">章節目錄</h3>
+            <ul class="chapter-nav-list">
+              <li class="chapter-nav-item"><a href="#intro" class="chapter-nav-link">自定義積木</a></li>
+              <li class="chapter-nav-item"><a href="#why-custom" class="chapter-nav-link">為何需要自定義積木</a></li>
+              <li class="chapter-nav-item"><a href="#block-definition" class="chapter-nav-link">積木定義基礎</a></li>
+              <li class="chapter-nav-item"><a href="#block-types" class="chapter-nav-link">積木類型與形狀</a></li>
+              <li class="chapter-nav-item"><a href="#developer-tools" class="chapter-nav-link">Blockly 開發者工具</a></li>
+              <li class="chapter-nav-item"><a href="#advanced-blocks" class="chapter-nav-link">進階積木功能</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="chapter-content">
+          <h1 id="intro" class="chapter-title">第四章：自定義積木</h1>
+          
+          <p class="chapter-text">
+            在前面的章節中，我們已經學習了如何使用 Blockly 的基本功能。然而，Blockly 的真正強大之處在於它的可擴展性，特別是創建自定義積木的能力。本章將深入探討如何創建自定義積木，以滿足特定的應用需求。
+          </p>
+
+          <h2 id="why-custom" class="chapter-subtitle">為何需要自定義積木</h2>
+          
+          <p class="chapter-text">
+            雖然 Blockly 提供了豐富的內建積木，但在實際應用中，我們經常需要創建自定義積木，原因如下：
+          </p>
+          
+          <p class="chapter-text">
+            <strong>特定領域功能</strong>：為特定領域（如機器人控制、數據分析、遊戲開發等）提供專門的積木。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>簡化複雜操作</strong>：將多個基本操作組合成一個積木，簡化使用者的操作。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>整合外部 API</strong>：創建與外部 API 或服務交互的積木。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>自定義視覺效果</strong>：創建具有特定視覺效果或行為的積木，以提升使用者體驗。
+          </p>
+
+          <h2 id="block-definition" class="chapter-subtitle">積木定義基礎</h2>
+          
+          <p class="chapter-text">
+            創建自定義積木的第一步是定義積木的結構和行為。Blockly 使用 JavaScript 對象來定義積木。
+          </p>
+          
+          <h3>基本積木定義</h3>
+          
+          <p class="chapter-text">
+            以下是一個基本的積木定義示例：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">Blockly.Blocks['example_block'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("這是一個示例積木");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(230);
+    this.setTooltip("這是一個示例積木的提示文字");
+    this.setHelpUrl("https://example.com/help");
+  }
+};</code></pre>
+          </div>
+          
+          <p class="chapter-text">
+            這個定義創建了一個名為 'example_block' 的積木，它有以下特性：
+          </p>
+          
+          <p class="chapter-text">
+            - 顯示文字「這是一個示例積木」<br>
+            - 可以連接到其他積木的上方和下方<br>
+            - 顏色為藍色（色調值 230）<br>
+            - 有提示文字和幫助 URL
+          </p>
+          
+          <h3>輸入類型</h3>
+          
+          <p class="chapter-text">
+            Blockly 積木可以有多種類型的輸入：
+          </p>
+          
+          <p class="chapter-text">
+            <strong>虛擬輸入（Dummy Input）</strong>：用於添加標籤、圖像等，不接受其他積木的連接。
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">this.appendDummyInput()
+    .appendField("標籤文字");</code></pre>
+          </div>
+          
+          <p class="chapter-text">
+            <strong>值輸入（Value Input）</strong>：接受返回值的積木連接。
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">this.appendValueInput("VALUE")
+    .setCheck("Number")  // 限制只接受數字類型的積木
+    .appendField("數值");</code></pre>
+          </div>
+          
+          <p class="chapter-text">
+            <strong>語句輸入（Statement Input）</strong>：接受語句積木的連接，用於創建包含其他語句的積木（如迴圈、條件判斷等）。
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">this.appendStatementInput("DO")
+    .appendField("執行");</code></pre>
+          </div>
+          
+          <h3>字段類型</h3>
+          
+          <p class="chapter-text">
+            字段是積木上的交互元素，如文字標籤、下拉菜單、複選框等。
+          </p>
+          
+          <p class="chapter-text">
+            <strong>文字字段</strong>：顯示固定文字。
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">this.appendDummyInput()
+    .appendField("文字標籤");</code></pre>
+          </div>
+          
+          <p class="chapter-text">
+            <strong>下拉菜單</strong>：允許使用者從預定義的選項中選擇。
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">this.appendDummyInput()
+    .appendField("選擇")
+    .appendField(new Blockly.FieldDropdown([
+      ["選項1", "OPTION1"],
+      ["選項2", "OPTION2"],
+      ["選項3", "OPTION3"]
+    ]), "DROPDOWN");</code></pre>
+          </div>
+          
+          <p class="chapter-text">
+            <strong>文字輸入</strong>：允許使用者輸入文字。
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">this.appendDummyInput()
+    .appendField("名稱")
+    .appendField(new Blockly.FieldTextInput("默認文字"), "NAME");</code></pre>
+          </div>
+          
+          <p class="chapter-text">
+            <strong>數字輸入</strong>：允許使用者輸入數字。
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">this.appendDummyInput()
+    .appendField("數量")
+    .appendField(new Blockly.FieldNumber(0, 0, 100), "QUANTITY");</code></pre>
+          </div>
+          
+          <p class="chapter-text">
+            <strong>複選框</strong>：允許使用者選擇是/否。
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">this.appendDummyInput()
+    .appendField("啟用")
+    .appendField(new Blockly.FieldCheckbox("TRUE"), "ENABLED");</code></pre>
+          </div>
+          
+          <p class="chapter-text">
+            <strong>顏色選擇器</strong>：允許使用者選擇顏色。
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">this.appendDummyInput()
+    .appendField("顏色")
+    .appendField(new Blockly.FieldColour("#ff0000"), "COLOUR");</code></pre>
+          </div>
+
+          <h2 id="block-types" class="chapter-subtitle">積木類型與形狀</h2>
+          
+          <p class="chapter-text">
+            Blockly 積木可以有不同的類型和形狀，取決於它們在程式中的角色。
+          </p>
+          
+          <h3>語句積木</h3>
+          
+          <p class="chapter-text">
+            語句積木代表程式中的一個語句或指令。它們有上下連接點，可以垂直連接形成程式的執行流程。
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">Blockly.Blocks['statement_block'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("執行操作");
+    this.setPreviousStatement(true, null);  // 允許連接到上方積木
+    this.setNextStatement(true, null);      // 允許連接到下方積木
+    this.setColour(230);
+  }
+};</code></pre>
+          </div>
+          
+          <h3>值積木</h3>
+          
+          <p class="chapter-text">
+            值積木返回一個值，可以插入到其他積木的值輸入槽中。它們通常有圓角的外形。
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">Blockly.Blocks['value_block'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("返回值");
+    this.setOutput(true, "Number");  // 設置為輸出積木，返回數字類型
+    this.setColour(160);
+  }
+};</code></pre>
+          </div>
+          
+          <h3>複合積木</h3>
+          
+          <p class="chapter-text">
+            複合積木結合了語句和值的特性，可以同時接受輸入和提供輸出。
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">Blockly.Blocks['compound_block'] = {
+  init: function() {
+    this.appendValueInput("INPUT")
+        .setCheck("Number")
+        .appendField("處理數值");
+    this.appendStatementInput("DO")
+        .appendField("執行");
+    this.setOutput(true, "Number");  // 設置為輸出積木
+    this.setColour(290);
+  }
+};</code></pre>
+          </div>
+
+          <h2 id="developer-tools" class="chapter-subtitle">Blockly 開發者工具</h2>
+          
+          <p class="chapter-text">
+            Blockly 提供了一個強大的開發者工具，可以幫助您可視化地創建自定義積木，而不需要手動編寫所有代碼。
+          </p>
+          
+          <h3>使用 Blockly 開發者工具</h3>
+          
+          <p class="chapter-text">
+            Blockly 開發者工具是一個網頁應用程式，可以在 <a href="https://blockly-demo.appspot.com/static/demos/blockfactory/index.html" target="_blank">https://blockly-demo.appspot.com/static/demos/blockfactory/index.html</a> 訪問。
+          </p>
+          
+          <p class="chapter-text">
+            使用步驟：
+          </p>
+          
+          <p class="chapter-text">
+            1. 在左側的工作區中，使用積木來設計您的自定義積木的外觀和行為。<br>
+            2. 右側會實時顯示生成的積木預覽和 JavaScript 代碼。<br>
+            3. 您可以複製生成的代碼，並將其粘貼到您的專案中。<br>
+            4. 您還可以保存您的積木設計，以便稍後繼續編輯。
+          </p>
+          
+          <h3>積木工廠示例</h3>
+          
+          <p class="chapter-text">
+            以下是使用 Blockly 開發者工具創建一個自定義積木的示例：
+          </p>
+          
+          <p class="chapter-text">
+            假設我們要創建一個「發送 HTTP 請求」的積木，它接受 URL 和方法作為輸入：
+          </p>
+          
+          <p class="chapter-text">
+            1. 在積木工廠中，拖曳積木來設計我們的自定義積木。<br>
+            2. 添加一個文字字段「發送 HTTP 請求」。<br>
+            3. 添加一個下拉菜單，包含 GET、POST、PUT、DELETE 等選項。<br>
+            4. 添加一個值輸入，用於 URL。<br>
+            5. 設置積木的顏色、提示文字等。<br>
+            6. 複製生成的代碼。
+          </p>
+          
+          <p class="chapter-text">
+            生成的代碼可能如下：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">Blockly.Blocks['http_request'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("發送 HTTP 請求")
+        .appendField(new Blockly.FieldDropdown([
+          ["GET", "GET"],
+          ["POST", "POST"],
+          ["PUT", "PUT"],
+          ["DELETE", "DELETE"]
+        ]), "METHOD");
+    this.appendValueInput("URL")
+        .setCheck("String")
+        .appendField("URL");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(230);
+    this.setTooltip("發送 HTTP 請求到指定的 URL");
+    this.setHelpUrl("");
+  }
+};</code></pre>
+          </div>
+
+          <h2 id="advanced-blocks" class="chapter-subtitle">進階積木功能</h2>
+          
+          <p class="chapter-text">
+            除了基本的積木定義外，Blockly 還提供了許多進階功能，可以創建更複雜和交互性更強的積木。
+          </p>
+          
+          <h3>互變數檢查</h3>
+          
+          <p class="chapter-text">
+            您可以使用 `setCheck` 方法來限制可以連接到輸入的積木類型：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">// 只接受數字類型的積木
+this.appendValueInput("NUMBER")
+    .setCheck("Number")
+    .appendField("數字");
+
+// 接受多種類型的積木
+this.appendValueInput("VALUE")
+    .setCheck(["Number", "String", "Boolean"])
+    .appendField("值");
+
+// 接受任何類型的積木
+this.appendValueInput("ANY")
+    .appendField("任何值");</code></pre>
+          </div>
+          
+          <h3>動態更新積木</h3>
+          
+          <p class="chapter-text">
+            您可以創建能夠根據使用者輸入或其他條件動態更新的積木：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">Blockly.Blocks['dynamic_block'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("類型")
+        .appendField(new Blockly.FieldDropdown([
+          ["數字", "NUMBER"],
+          ["文字", "TEXT"],
+          ["布林", "BOOLEAN"]
+        ], this.updateShape), "TYPE");
+    this.appendValueInput("VALUE")
+        .appendField("值");
+    this.setOutput(true, null);
+    this.setColour(230);
+  },
+  
+  // 當下拉菜單值變更時調用
+  updateShape: function(newValue) {
+    var block = this.getSourceBlock();
+    if (!block) return;
+    
+    // 獲取值輸入
+    var valueInput = block.getInput("VALUE");
+    
+    // 根據選擇的類型設置檢查
+    if (newValue === "NUMBER") {
+      valueInput.setCheck("Number");
+    } else if (newValue === "TEXT") {
+      valueInput.setCheck("String");
+    } else if (newValue === "BOOLEAN") {
+      valueInput.setCheck("Boolean");
+    }
+  }
+};</code></pre>
+          </div>
+          
+          <h3>可變參數積木</h3>
+          
+          <p class="chapter-text">
+            您可以創建具有可變數量參數的積木，類似於函數可以接受不同數量的參數：
+          </p>
+          
+          <div class="code-container">
+            <pre><code class="language-javascript">Blockly.Blocks['variable_params'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("函數")
+        .appendField(new Blockly.FieldTextInput("myFunction"), "NAME");
+    this.appendValueInput("PARAM0")
+        .setCheck(null)
+        .appendField("參數");
+    this.setMutator(new Blockly.Mutator(['param_item']));
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(290);
+    this.paramCount_ = 1;
+    this.updateShape_();
+  },
+  
+  // 保存積木的可變參數數量
+  mutationToDom: function() {
+    var container = document.createElement('mutation');
+    container.setAttribute('params', this.paramCount_);
+    return container;
+  },
+  
+  // 從 DOM 恢復積木的可變參數數量
+  domToMutation: function(xmlElement) {
+    this.paramCount_ = parseInt(xmlElement.getAttribute('params'), 10);
+    this.updateShape_();
+  },
+  
+  // 在 Mutator 對話框中顯示的積木
+  decompose: function(workspace) {
+    var containerBlock = workspace.newBlock('param_container');
+    containerBlock.initSvg();
+    
+    var connection = containerBlock.getInput('STACK').connection;
+    for (var i = 0; i < this.paramCount_; i++) {
+      var paramBlock = workspace.newBlock('param_item');
+      paramBlock.initSvg();
+      connection.connect(paramBlock.previousConnection);
+      connection = paramBlock.nextConnection;
+    }
+    
+    return containerBlock;
+  },
+  
+  // 從 Mutator 對話框更新積木
+  compose: function(containerBlock) {
+    var paramBlock = containerBlock.getInputTargetBlock('STACK');
+    var connections = [];
+    var i = 0;
+    while (paramBlock) {
+      connections[i] = paramBlock.valueConnection_;
+      paramBlock = paramBlock.nextConnection && paramBlock.nextConnection.targetBlock();
+      i++;
+    }
+    
+    this.paramCount_ = connections.length;
+    this.updateShape_();
+    
+    // 重新連接值積木
+    for (var i = 0; i < this.paramCount_; i++) {
+      if (connections[i]) {
+        this.getInput('PARAM' + i).connection.connect(connections[i]);
+      }
+    }
+  },
+  
+  // 保存連接
+  saveConnections: function(containerBlock) {
+    var paramBlock = containerBlock.getInputTargetBlock('STACK');
+    var i = 0;
+    while (paramBlock) {
+      var input = this.getInput('PARAM' + i);
+      paramBlock.valueConnection_ = input && input.connection.targetConnection;
+      paramBlock = paramBlock.nextConnection && paramBlock.nextConnection.targetBlock();
+      i++;
+    }
+  },
+  
+  // 更新積木形狀
+  updateShape_: function() {
+    // 刪除多餘的輸入
+    for (var i = this.paramCount_; this.getInput('PARAM' + i); i++) {
+      this.removeInput('PARAM' + i);
+    }
+    
+    // 添加新的輸入
+    for (var i = 0; i < this.paramCount_; i++) {
+      if (!this.getInput('PARAM' + i)) {
+        var input = this.appendValueInput('PARAM' + i)
+            .setCheck(null);
+        if (i === 0) {
+          input.appendField("參數");
+        }
+      }
+    }
+  }
+};
+
+// Mutator 對話框中使用的積木
+Blockly.Blocks['param_container'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("參數");
+    this.appendStatementInput('STACK');
+    this.setColour(290);
+  }
+};
+
+Blockly.Blocks['param_item'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("參數");
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour(290);
+    this.contextMenu = false;
+  }
+};</code></pre>
+          </div>
+          
+          <p class="chapter-text">
+            在本章中，我們探討了如何創建自定義積木，包括基本積木定義、輸入和字段類型、積木類型與形狀、使用 Blockly 開發者工具以及進階積木功能。通過創建自定義積木，您可以擴展 Blockly 的功能，使其更好地適應特定的應用需求。
+          </p>
+          
+          <p class="chapter-text">
+            在下一章中，我們將學習如何生成程式碼，將視覺化的積木轉換為 JavaScript 和 Python 等程式語言的程式碼。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 頁尾 -->
+  <footer class="footer">
+    <div class="container">
+      <p class="footer-text">© 2025 Blockly 視覺化程式設計教學網站</p>
+      <div class="footer-links">
+        <a href="https://github.com/google/blockly/" class="footer-link" target="_blank">GitHub</a>
+        <a href="https://developers.google.com/blockly" class="footer-link" target="_blank">官方文件</a>
+      </div>
+    </div>
+  </footer>
+
+  <a href="#" class="back-to-top">&uarr;</a>
+
+  <script src="js/prism.js"></script>
+  <script src="js/scripts.js"></script>
+</body>
+</html>
