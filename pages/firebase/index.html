@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Spark與Blaze方案比較 - 極簡指南</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 導航欄 -->
+    <nav>
+        <div class="container">
+            <div class="logo">Firebase 方案指南</div>
+            <ul class="nav-links">
+                <li><a href="#overview">概述</a></li>
+                <li><a href="#comparison">方案比較</a></li>
+                <li><a href="#use-cases">使用場景</a></li>
+                <li><a href="#pricing">計費細節</a></li>
+                <li><a href="#tips">注意事項</a></li>
+                <li><a href="#calculator">費用計算器</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 頂部英雄區 -->
+    <header class="hero">
+        <div class="container">
+            <h1>Firebase Spark與Blaze方案</h1>
+            <p class="subtitle">從免費到按量付費的完整指南</p>
+            <div class="cta-buttons">
+                <a href="#comparison" class="btn btn-primary">查看方案比較</a>
+                <a href="#calculator" class="btn btn-secondary">試算費用</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 概述區塊 -->
+    <section id="overview" class="section">
+        <div class="container">
+            <h2 class="section-title">方案概述</h2>
+            <div class="plan-cards">
+                <div class="plan-card spark">
+                    <div class="plan-header">
+                        <h3>Spark 方案</h3>
+                        <p class="plan-price">免費</p>
+                    </div>
+                    <div class="plan-body">
+                        <p class="plan-description">適合開發、測試或小型應用的免費方案，提供慷慨的使用限制。</p>
+                        <ul class="plan-features">
+                            <li>完全免費，無需信用卡</li>
+                            <li>有明確的資源與流量上限</li>
+                            <li>適合開發與測試環境</li>
+                            <li>可隨時升級至Blaze方案</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="plan-card blaze">
+                    <div class="plan-header">
+                        <h3>Blaze 方案</h3>
+                        <p class="plan-price">按量付費</p>
+                    </div>
+                    <div class="plan-body">
+                        <p class="plan-description">適合生產環境與成長型應用的彈性方案，僅對超出免費額度的部分收費。</p>
+                        <ul class="plan-features">
+                            <li>包含Spark方案的所有免費額度</li>
+                            <li>按實際使用量計費，無最低消費</li>
+                            <li>提供更多進階功能與服務</li>
+                            <li>無使用限制，可無限擴展</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 方案比較區塊 -->
+    <section id="comparison" class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">方案詳細比較</h2>
+            <div class="tabs">
+                <div class="tab-header">
+                    <button class="tab-btn active" data-tab="features">功能比較</button>
+                    <button class="tab-btn" data-tab="limits">資源限制</button>
+                    <button class="tab-btn" data-tab="pricing">計費模式</button>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="features">
+                        <!-- 功能比較表格將在JS中動態生成 -->
+                        <div class="comparison-table" id="features-table"></div>
+                    </div>
+                    <div class="tab-pane" id="limits">
+                        <!-- 資源限制表格將在JS中動態生成 -->
+                        <div class="comparison-table" id="limits-table"></div>
+                    </div>
+                    <div class="tab-pane" id="pricing">
+                        <!-- 計費模式表格將在JS中動態生成 -->
+                        <div class="comparison-table" id="pricing-table"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 使用場景區塊 -->
+    <section id="use-cases" class="section">
+        <div class="container">
+            <h2 class="section-title">適用場景</h2>
+            <div class="use-cases">
+                <div class="use-case-column">
+                    <h3>Spark方案適用場景</h3>
+                    <div class="use-case-cards" id="spark-use-cases">
+                        <!-- 使用場景卡片將在JS中動態生成 -->
+                    </div>
+                </div>
+                <div class="use-case-column">
+                    <h3>Blaze方案適用場景</h3>
+                    <div class="use-case-cards" id="blaze-use-cases">
+                        <!-- 使用場景卡片將在JS中動態生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 計費細節區塊 -->
+    <section id="pricing" class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">計費細節</h2>
+            <div class="pricing-details">
+                <div class="pricing-column">
+                    <h3>Spark方案計費</h3>
+                    <div class="pricing-content" id="spark-pricing">
+                        <!-- Spark方案計費內容將在JS中動態生成 -->
+                    </div>
+                </div>
+                <div class="pricing-column">
+                    <h3>Blaze方案計費</h3>
+                    <div class="pricing-content" id="blaze-pricing">
+                        <!-- Blaze方案計費內容將在JS中動態生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 注意事項與最佳實踐區塊 -->
+    <section id="tips" class="section">
+        <div class="container">
+            <h2 class="section-title">注意事項與避免意外費用</h2>
+            <div class="tips-container">
+                <div class="tips-category" id="general-tips">
+                    <h3>通用建議</h3>
+                    <!-- 通用建議內容將在JS中動態生成 -->
+                </div>
+                <div class="tips-category" id="database-tips">
+                    <h3>數據庫相關</h3>
+                    <!-- 數據庫相關內容將在JS中動態生成 -->
+                </div>
+                <div class="tips-category" id="functions-tips">
+                    <h3>Cloud Functions相關</h3>
+                    <!-- Cloud Functions相關內容將在JS中動態生成 -->
+                </div>
+                <div class="tips-category" id="storage-tips">
+                    <h3>Storage相關</h3>
+                    <!-- Storage相關內容將在JS中動態生成 -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 費用計算器區塊 -->
+    <section id="calculator" class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">費用計算器</h2>
+            <p class="section-description">估算您的Firebase專案可能產生的費用</p>
+            <div class="calculator-container">
+                <div class="calculator-form">
+                    <div class="form-group">
+                        <label for="auth-users">每月活躍用戶 (MAU)</label>
+                        <input type="number" id="auth-users" min="0" value="10000">
+                    </div>
+                    <div class="form-group">
+                        <label for="storage-gb">儲存空間 (GB)</label>
+                        <input type="number" id="storage-gb" min="0" value="3">
+                    </div>
+                    <div class="form-group">
+                        <label for="database-reads">Firestore 讀取 (每日)</label>
+                        <input type="number" id="database-reads" min="0" value="30000">
+                    </div>
+                    <div class="form-group">
+                        <label for="database-writes">Firestore 寫入 (每日)</label>
+                        <input type="number" id="database-writes" min="0" value="10000">
+                    </div>
+                    <div class="form-group">
+                        <label for="functions-invocations">Cloud Functions 調用 (每月)</label>
+                        <input type="number" id="functions-invocations" min="0" value="1000000">
+                    </div>
+                    <div class="form-group">
+                        <label for="bandwidth-gb">出站流量 (GB/月)</label>
+                        <input type="number" id="bandwidth-gb" min="0" value="50">
+                    </div>
+                    <button id="calculate-btn" class="btn btn-primary">計算費用</button>
+                </div>
+                <div class="calculator-results">
+                    <h3>估算結果</h3>
+                    <div class="result-card">
+                        <div class="result-item">
+                            <span class="result-label">Spark方案</span>
+                            <span class="result-value" id="spark-result">免費 (部分功能不可用)</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Blaze方案</span>
+                            <span class="result-value" id="blaze-result">計算中...</span>
+                        </div>
+                        <div class="result-details" id="cost-breakdown">
+                            <!-- 費用明細將在JS中動態生成 -->
+                        </div>
+                    </div>
+                    <p class="disclaimer">* 此計算器僅提供粗略估算，實際費用可能因使用模式、地區和其他因素而異。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 方案選擇建議區塊 -->
+    <section id="recommendation" class="section">
+        <div class="container">
+            <h2 class="section-title">方案選擇建議</h2>
+            <div class="recommendation-container">
+                <div class="recommendation-column">
+                    <h3>何時選擇Spark方案</h3>
+                    <ul class="recommendation-list" id="spark-recommendations">
+                        <!-- Spark方案建議將在JS中動態生成 -->
+                    </ul>
+                </div>
+                <div class="recommendation-column">
+                    <h3>何時選擇Blaze方案</h3>
+                    <ul class="recommendation-list" id="blaze-recommendations">
+                        <!-- Blaze方案建議將在JS中動態生成 -->
+                    </ul>
+                </div>
+                <div class="recommendation-column">
+                    <h3>何時從Spark升級到Blaze</h3>
+                    <ul class="recommendation-list" id="upgrade-recommendations">
+                        <!-- 升級建議將在JS中動態生成 -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 頁腳區塊 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>參考資源</h4>
+                    <ul class="footer-links">
+                        <li><a href="https://firebase.google.com/pricing" target="_blank">Firebase官方定價頁面</a></li>
+                        <li><a href="https://firebase.google.com/docs/projects/billing/avoid-surprise-bills" target="_blank">避免意外費用指南</a></li>
+                        <li><a href="https://blog.logto.io/zh-TW/firebase-authentication-pricing" target="_blank">Firebase Authentication定價解析</a></li>
+                        <li><a href="https://hackmd.io/@RainBowT/ry_rYUM61e" target="_blank">Firebase專案與應用程式理解</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>快速導航</h4>
+                    <ul class="footer-links">
+                        <li><a href="#overview">方案概述</a></li>
+                        <li><a href="#comparison">方案比較</a></li>
+                        <li><a href="#use-cases">使用場景</a></li>
+                        <li><a href="#pricing">計費細節</a></li>
+                        <li><a href="#tips">注意事項</a></li>
+                        <li><a href="#calculator">費用計算器</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>免責聲明</h4>
+                    <p class="footer-disclaimer">本網站提供的資訊僅供參考，實際定價與功能可能隨時變更。請以Firebase官方文件為準。</p>
+                    <p class="footer-copyright">© 2025 Firebase方案指南</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
