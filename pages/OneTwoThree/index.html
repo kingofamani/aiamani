@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一二三木頭人 - 選擇角色</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <h1>一二三木頭人</h1>
+    <div id="roleSelection" class="game-container">
+        <h2>選擇你的角色：</h2>
+        <button id="btnTeacher">我是老師</button>
+        <button id="btnStudent">我是學生</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/4.3.7/mqtt.min.js"></script>
+    <script src="js/common.js"></script>
+    <script>
+        // index.html 簡易導向邏輯
+        document.getElementById('btnTeacher').addEventListener('click', () => {
+            const password = prompt("請輸入老師密碼：");
+            if (password === "dein") { // 設定密碼
+                window.location.href = 'teacher.html';
+            } else if (password !== null && password !== "") { // 如果輸入了內容但密碼錯誤
+                alert("密碼錯誤！");
+            }
+            // 如果 password 為 null (取消) 或空字串，則不執行任何操作
+        });
+
+        document.getElementById('btnStudent').addEventListener('click', () => {
+            window.location.href = 'student.html';
+        });
+    </script>
+</body>
+</html> 

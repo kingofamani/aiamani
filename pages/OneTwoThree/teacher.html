@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一二三木頭人 - 老師端</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="teacher-body">
+    <!-- Toast 顯示區域 -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- 左側控制按鈕 -->
+    <div id="gameControlsContainer" class="game-controls-sidebar">
+        <div id="teacherControls" class="teacher-controls">
+            <button id="btnStartGame" class="control-button">開始遊戲</button>
+            <button id="btnCycleCommand" class="control-button">喊口令</button>
+            <button id="btnEndGame" class="control-button">結束遊戲</button>
+        </div>
+    </div>
+
+    <!-- 學生遊戲區域 -->
+    <div id="gamePlayArea" class="game-play-area">
+        <!-- 老師狀態區域 -->
+        <div id="teacherStatusContainer" class="teacher-status-container">
+            <div id="teacherStatusCircle" class="teacher-status-circle">
+                <div id="teacherIconDisplay">🧍‍♂️🔙</div>
+                <div id="teacherStatusText">老師狀態</div>
+                <div id="commandTextDisplay" class="command-toast"></div>
+            </div>
+        </div>
+        
+        <div id="gamePlayersArea" class="game-players-area">
+            <!-- 學生將動態加入此處，顯示為圓形圖示 -->
+        </div>
+    </div>
+
+    <!-- 右側學生狀態列表 -->
+    <div id="studentStatusSidebar" class="student-status-sidebar">
+        <h4>學生狀態</h4>
+        <ul id="studentStatusList">
+            <!-- 學生狀態將動態加入此處 -->
+        </ul>
+    </div>
+
+    <!-- 訊息列表（暫時隱藏） -->
+    <div id="messageLogContainer" class="message-log-container" style="display: none;">
+        <h3>📝 訊息記錄：</h3>
+        <div id="messageLog">
+            <!-- 訊息將顯示於此 -->
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/4.3.7/mqtt.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/teacher.js"></script>
+</body>
+</html> 

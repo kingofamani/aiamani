@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一二三木頭人 - 學生端</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <h1>學生端</h1>
+
+    <div id="joinGameSection" class="game-container">
+        <h2>🎮 加入遊戲</h2>
+        <input type="text" id="inputStudentName" placeholder="輸入你的暱稱" maxlength="20">
+        <button id="btnJoinGame">加入遊戲</button>
+        <p class="hint-text">輸入暱稱後點擊加入，開始一二三木頭人的遊戲！</p>
+    </div>
+
+    <div id="gameplaySection" class="game-container" style="display: none;">
+        <!-- 移動控制 (移到最上方) -->
+        <div id="movementControls" class="movement-controls">
+            <button id="btnMove" class="movement-button" disabled>🏃 向前移動</button>
+            <p class="movement-hint">等老師轉身時才能移動！小心被抓到！</p>
+        </div>
+
+        <div id="studentProfileArea">
+            <div id="studentAvatar" class="student-avatar">
+                <span id="avatarText">👤</span>
+            </div>
+            <div id="studentInfo">
+                <p class="welcome-text">你好，<span id="displayStudentName"></span>！</p>
+                <div id="studentStatus" class="student-status safe">
+                    <span id="statusIcon">✅</span>
+                    <span id="statusText">安全</span>
+                </div>
+            </div>
+        </div>
+        
+        <div id="gameStatusArea" class="game-status-area">
+            <div id="gameStatusIcon" class="status-icon">⏳</div>
+            <p id="gameStatus" class="game-status-text">等待老師開始...</p>
+        </div>
+
+        <div id="teacherStatusArea" class="teacher-status-area">
+            <div id="teacherStatusIcon" class="teacher-icon">🧍‍♂️🔙</div>
+            <p id="teacherStatusText">老師狀態</p>
+            <p id="teacherCommandDisplay" class="teacher-command-display"></p>
+        </div>
+    </div>
+
+    <div id="messageLogContainer" class="game-container">
+        <h2>📝 訊息記錄：</h2>
+        <div id="messageLog">
+            <!-- 訊息將顯示於此 -->
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/4.3.7/mqtt.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/student.js"></script>
+</body>
+</html> 

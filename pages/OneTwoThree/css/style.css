@@ -1,0 +1,1201 @@
+body {
+    font-family: 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #87CEEB;
+    color: #333;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
+
+.game-container {
+    background-color: #90EE90;
+    color: #2c3e50;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    width: 90%;
+    max-width: 700px;
+    text-align: center;
+}
+
+h1, h2 {
+    color: #006400;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h1 {
+    margin-top: 30px;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+button {
+    background-color: #FF6347;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    margin: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+button:hover {
+    background-color: #E5533D;
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+button:disabled {
+    background-color: #A9A9A9;
+    cursor: not-allowed;
+    transform: translateY(0);
+}
+
+input[type="text"] {
+    padding: 12px;
+    margin: 8px 0 18px 0;
+    border: 2px solid #2E8B57;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 1em;
+    width: calc(100% - 24px);
+    max-width: 300px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#roleSelection, 
+#teacherControlsContainer,
+#studentInfoContainer,
+#joinGameSection 
+{
+}
+
+#studentListContainer, 
+#messageLogContainer 
+{
+    background-color: #F0FFF0;
+    color: #2F4F4F;
+    padding: 15px;
+    margin: 20px auto;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    width: 90%;
+    max-width: 700px;
+}
+
+#studentListContainer h2, 
+#messageLogContainer h2 {
+    color: #2E8B57;
+}
+
+#studentList {
+    list-style-type: none;
+    padding: 0;
+}
+
+#studentList li {
+    background-color: #E0EEE0;
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+#studentList li button {
+    background-color: #DC143C;
+    font-size: 0.9em;
+    padding: 8px 12px;
+}
+
+#studentList li button:hover {
+    background-color: #B22222;
+}
+
+#studentList li button:disabled {
+    background-color: #C0C0C0;
+}
+
+#messageLog {
+    background-color: #fff;
+    border: 1px solid #BDB76B;
+    padding: 15px;
+    height: 200px;
+    overflow-y: auto;
+    margin-top: 10px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    line-height: 1.4;
+    text-align: left;
+}
+
+#messageLog p {
+    margin: 0 0 7px 0;
+    padding-bottom: 7px;
+    border-bottom: 1px dashed #ccC;
+}
+
+#messageLog p:last-child {
+    border-bottom: none;
+}
+
+#gameStatus {
+    font-weight: bold;
+    color: #FF4500;
+    display: block;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+}
+
+@media (max-width: 600px) {
+    .game-container, #studentListContainer, #messageLogContainer {
+        padding: 15px;
+        margin: 15px 5%;
+        width: 90%;
+    }
+    h1 {
+        font-size: 1.6em;
+        margin-top: 20px;
+    }
+    h2 {
+        font-size: 1.3em;
+    }
+    button, input[type="text"] {
+        font-size: 0.9em;
+        padding: 10px 15px;
+    }
+    #messageLog {
+        height: 150px;
+    }
+}
+
+/* 新增遊戲玩家區域和玩家卡片樣式 */
+#gamePlayersArea {
+    display: flex;
+    flex-wrap: wrap; /* 自動換行 */
+    justify-content: center; /* 居中顯示卡片 */
+    padding: 10px;
+    gap: 15px; /* 卡片之間的間距 */
+}
+
+.player-card {
+    background-color: #fff8dc; /* 玉米色，溫暖的感覺 */
+    border: 2px solid #f0e68c; /* 卡其色邊框 */
+    border-radius: 10px;
+    padding: 15px;
+    width: 150px; /* 固定寬度 */
+    min-height: 120px; /* 最小高度 */
+    text-align: center;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around; /* 內容垂直均勻分佈 */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.player-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 3px 3px 12px rgba(0,0,0,0.15);
+}
+
+.player-card .player-avatar {
+    width: 60px;
+    height: 60px;
+    background-color: #D2B48C; /* 棕褐色，預設頭像背景 */
+    border-radius: 50%; /* 圓形頭像 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8em;
+    color: white;
+    margin-bottom: 10px;
+    object-fit: cover; /* 如果是圖片，確保比例 */
+}
+
+.player-card .player-name {
+    font-weight: bold;
+    color: #556B2F; /* 暗橄欖綠 */
+    margin-bottom: 10px;
+    word-break: break-all; /* 避免長名稱溢出 */
+}
+
+.player-card .catch-button {
+    background-color: #e74c3c; /* 紅色按鈕 */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease;
+}
+
+.player-card .catch-button:hover {
+    background-color: #c0392b;
+}
+
+.player-card .catch-button:disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
+}
+
+.player-card.caught {
+    background-color: #d3d3d3; /* 淺灰色背景表示被抓 */
+    opacity: 0.7;
+    border-color: #a9a9a9;
+}
+
+.player-card.caught .player-name {
+    text-decoration: line-through;
+    color: #696969;
+}
+
+/* 學生端專用樣式 */
+.hint-text {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 10px;
+    font-style: italic;
+}
+
+#studentProfileArea {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.student-avatar {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5em;
+    margin-right: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease;
+}
+
+.student-avatar:hover {
+    transform: scale(1.05);
+}
+
+#studentInfo {
+    flex: 1;
+    text-align: left;
+}
+
+.welcome-text {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.student-status {
+    display: flex;
+    align-items: center;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+}
+
+.student-status.safe {
+    background-color: #d5f4e6;
+    color: #155724;
+    border: 2px solid #c3e6cb;
+}
+
+.student-status.danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 2px solid #f5c6cb;
+    animation: pulse 1s infinite;
+}
+
+.student-status.caught {
+    background-color: #6c757d;
+    color: white;
+    border: 2px solid #5a6268;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+#statusIcon {
+    margin-right: 8px;
+    font-size: 1.2em;
+}
+
+.game-status-area {
+    text-align: center;
+    margin: 20px 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.status-icon {
+    font-size: 3em;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.game-status-text {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.teacher-status-area {
+    text-align: center;
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #fff3cd;
+    border: 2px solid #ffeaa7;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.teacher-status-area.looking {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    animation: danger-flash 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes danger-flash {
+    from { background-color: #f8d7da; }
+    to { background-color: #f1aeb5; }
+}
+
+.teacher-icon {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.teacher-status-area.looking .teacher-icon {
+    transform: scale(1.1);
+}
+
+#teacherStatusText {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #2c3e50;
+    margin: 0 0 5px 0;
+}
+
+.teacher-command-display {
+    font-size: 1.5em;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: #fff;
+    display: inline-block;
+    margin-top: 5px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.teacher-command-display.safe {
+    background-color: rgba(0, 128, 0, 0.7);
+}
+
+.teacher-command-display.dangerous {
+    background-color: rgba(255, 0, 0, 0.7);
+}
+
+/* 移動控制區域（預留） */
+.movement-controls {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    border: 2px solid #5a67d8;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.movement-button {
+    background: #ffffff;
+    color: #667eea;
+    border: 3px solid #ffffff;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    font-weight: bold;
+}
+
+.movement-button:hover:not(:disabled) {
+    background: #f8f9fa;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.movement-button:disabled {
+    background: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.8);
+    border-color: rgba(255, 255, 255, 0.5);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.movement-hint {
+    font-size: 0.9em;
+    color: #ffffff;
+    margin-top: 10px;
+    font-style: italic;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+/* 響應式設計調整 */
+@media (max-width: 600px) {
+    #studentProfileArea {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .student-avatar {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+    
+    #studentInfo {
+        text-align: center;
+    }
+    
+    .status-icon {
+        font-size: 2.5em;
+    }
+    
+    .teacher-icon {
+        font-size: 2em;
+    }
+}
+
+/* 新的老師端界面樣式 */
+.teacher-status-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    padding: 20px;
+}
+
+.teacher-status-circle {
+    width: 150px;
+    height: 150px;
+    border: 4px solid #3498db;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.teacher-status-circle.looking {
+    border-color: #e74c3c;
+    background-color: #fdebeb;
+    animation: teacher-pulse 1s infinite;
+}
+
+@keyframes teacher-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+#teacherIconDisplay {
+    font-size: 4em;
+    margin-bottom: 10px;
+}
+
+#commandTextDisplay {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin-top: 10px;
+    display: inline-block;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#commandTextDisplay.safe {
+    background-color: rgba(0, 128, 0, 0.7);
+    color: #fff;
+}
+
+#commandTextDisplay.dangerous {
+    background-color: rgba(255, 0, 0, 0.7);
+    color: #fff;
+}
+
+#teacherStatusText {
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 2px;
+}
+
+#teacherStatusSubtext {
+    font-size: 0.8em;
+    color: #7f8c8d;
+}
+
+/* 學生遊戲區域 */
+.game-play-area {
+    flex-grow: 1;
+    width: 100%;
+    background-color: #f8f9fa;
+    border-radius: 0;
+    border: none;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.game-players-area {
+    width: 100%;
+    height: auto;
+    min-height: 150px;
+    position: relative;
+    padding: 20px;
+    background: linear-gradient(to bottom, #87ceeb 0%, #4682b4 100%);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+}
+
+.game-players-area::before {
+    content: '';
+    position: absolute;
+    top: 30px;
+    left: 20px;
+    right: 20px;
+    height: 3px;
+    background: linear-gradient(to right, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+    border-radius: 2px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.game-players-area::after {
+    content: '🏁 終點線';
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-weight: bold;
+    font-size: 0.9em;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+/* 圓形學生圖示 */
+.student-circle {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 0.8em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    border: 3px solid #ffffff;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+}
+
+.student-circle:hover {
+    transform: scale(1.1);
+    z-index: 10;
+}
+
+.student-circle.caught {
+    filter: grayscale(100%);
+    opacity: 0.5;
+    transform: scale(0.8);
+}
+
+.student-circle.finished {
+    border-color: #ffd700; /* 金色邊框表示完成 */
+    box-shadow: 0 0 15px #ffd700, 0 0 25px #ffec8b;
+    animation: finished-pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes finished-pulse {
+    0%, 100% { transform: scale(1) translateY(var(--final-y, -110px)); opacity: 1; }
+    50% { transform: scale(1.1) translateY(calc(var(--final-y, -110px) - 5px)); opacity: 0.8; }
+}
+
+/* .student-circle.moving {
+    animation: student-move 0.5s ease;
+}
+
+@keyframes student-move {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+    100% { transform: translateY(-10px); }
+} */
+
+.student-circle .student-name {
+    font-size: 0.7em;
+    text-align: center;
+    margin-top: 2px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.student-circle .catch-btn {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    font-size: 0.6em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.student-circle:hover .catch-btn {
+    opacity: 1;
+}
+
+.student-circle.caught .catch-btn {
+    display: none;
+}
+
+/* 遊戲控制區域 */
+.game-controls-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 15px;
+    border-radius: 0;
+    box-shadow: none;
+    background-color: #4a4a4a;
+    color: #f0f0f0;
+    border-top: 1px solid #666;
+}
+
+.game-controls-container p {
+    color: #f0f0f0;
+}
+
+.teacher-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.control-button {
+    background-color: #555;
+    color: #f0f0f0;
+    border: 2px solid #e74c3c;
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    min-width: 120px;
+    transition: all 0.3s ease;
+}
+
+.control-button:hover {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.control-button:active {
+    transform: translateY(0);
+}
+
+.control-button:disabled {
+    background-color: #666;
+    color: #999;
+    border-color: #888;
+}
+
+/* 訊息列表區域 */
+.message-log-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 15px;
+    border-radius: 0;
+    box-shadow: none;
+    background-color: #4a4a4a;
+    color: #f0f0f0;
+    border-top: 1px solid #666;
+}
+
+.message-log-container h3 {
+    color: #f0f0f0;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+#messageLog {
+    background-color: #555;
+    border: 1px solid #777;
+    padding: 15px;
+    height: 150px;
+    overflow-y: auto;
+    border-radius: 8px;
+    font-size: 0.9em;
+    line-height: 1.4;
+    text-align: left;
+    color: #ddd;
+}
+
+#messageLog p {
+    margin: 0 0 7px 0;
+    padding-bottom: 7px;
+    border-bottom: 1px dashed #777;
+}
+
+#messageLog p:last-child {
+    border-bottom: none;
+}
+
+/* 學生圓圈的不同顏色 */
+.student-circle.color-1 { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
+.student-circle.color-2 { background: linear-gradient(135deg, #4ecdc4, #44a08d); }
+.student-circle.color-3 { background: linear-gradient(135deg, #45b7d1, #3742fa); }
+.student-circle.color-4 { background: linear-gradient(135deg, #96ceb4, #686de0); }
+.student-circle.color-5 { background: linear-gradient(135deg, #feca57, #ff9ff3); }
+.student-circle.color-6 { background: linear-gradient(135deg, #ff9ff3, #54a0ff); }
+.student-circle.color-7 { background: linear-gradient(135deg, #5f27cd, #a55eea); }
+.student-circle.color-8 { background: linear-gradient(135deg, #00d2d3, #54a0ff); }
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .teacher-status-circle {
+        width: 120px;
+        height: 120px;
+    }
+    
+    #teacherIconDisplay {
+        font-size: 2em;
+    }
+    
+    .game-players-area {
+        height: 180px;
+        flex-wrap: wrap;
+    }
+    
+    .student-circle {
+        width: 50px;
+        height: 50px;
+        font-size: 0.7em;
+    }
+    
+    .teacher-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .control-button {
+        width: 90%;
+        max-width: 300px;
+    }
+}
+
+/* 全局調整 */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+body {
+    background-color: #333;
+    font-family: 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #333;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 老師端特定樣式 */
+body.teacher-body {
+    overflow: hidden;
+    flex-direction: row;
+    align-items: stretch;
+}
+
+/* Toast 樣式 */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.toast {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s ease-out, fadeOut 0.3s ease-out 2.7s;
+    animation-fill-mode: forwards;
+    pointer-events: auto;
+}
+
+.toast.success {
+    background-color: rgba(40, 167, 69, 0.9);
+}
+
+.toast.warning {
+    background-color: rgba(255, 193, 7, 0.9);
+}
+
+.toast.error {
+    background-color: rgba(220, 53, 69, 0.9);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* 左側控制欄 */
+.game-controls-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 150px;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    z-index: 200;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.game-controls-sidebar .teacher-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.game-controls-sidebar .control-button {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 2px solid #e74c3c;
+    padding: 15px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    text-align: center;
+    min-height: 60px;
+}
+
+.game-controls-sidebar .control-button:hover {
+    background-color: #e74c3c;
+    color: white;
+    transform: translateX(5px);
+}
+
+.game-controls-sidebar .control-button:active {
+    transform: translateX(2px);
+}
+
+.game-controls-sidebar .control-button:disabled {
+    background-color: rgba(102, 102, 102, 0.5);
+    color: #999;
+    border-color: #666;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* 右側學生狀態側邊欄 */
+.student-status-sidebar {
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 200px; /* 側邊欄寬度 */
+    background-color: rgba(0, 0, 0, 0.85);
+    color: #f0f0f0;
+    padding: 20px;
+    box-sizing: border-box;
+    z-index: 150; /* 比左側邊欄低，但高於遊戲區域 */
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
+    overflow-y: auto;
+}
+
+.student-status-sidebar h4 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 10px;
+}
+
+#studentStatusList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#studentStatusList li {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+#studentStatusList li:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+#studentStatusList .student-name-status {
+    font-weight: bold;
+}
+
+#studentStatusList .student-progress-status {
+    font-style: italic;
+    color: #b0b0b0;
+}
+
+#studentStatusList li.caught .student-name-status {
+    text-decoration: line-through;
+    color: #ff7675;
+}
+
+#studentStatusList li.finished .student-name-status {
+    color: #ffd700; /* 金色 */
+}
+
+#studentStatusList li.finished .student-progress-status {
+    color: #ffd700;
+    font-weight: bold;
+}
+
+/* 讓 game-play-area 填滿大部分空間 */
+.teacher-body .game-play-area {
+    margin-left: 190px; /* 給左側控制欄留空間 */
+    margin-right: 220px; /* 給右側學生狀態列表留空間 */
+    width: calc(100% - 190px - 220px); /* 調整寬度以適應兩個側邊欄 */
+    height: 100%;
+    background-color: #f8f9fa;
+    border-radius: 0;
+    border: none;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.game-players-area {
+    width: 100%;
+    height: 100%; /* 改為100%高度 */
+    position: relative;
+    padding: 20px;
+    background: linear-gradient(to bottom, #4682b4 0%, #87ceeb 100%); /* 翻轉漸層 */
+    display: flex;
+    align-items: flex-end; /* 學生從底部開始 */
+    justify-content: space-around;
+    flex-wrap: wrap;
+    align-content: flex-end; /* 確保內容從底部開始 */
+}
+
+.game-players-area::before {
+    content: '';
+    position: absolute;
+    top: 30px; /* 終點線在頂部 */
+    left: 20px;
+    right: 20px;
+    height: 3px;
+    background: linear-gradient(to right, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+    border-radius: 2px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.game-players-area::after {
+    content: '🏁 終點線';
+    position: absolute;
+    top: 10px; /* 終點線文字在頂部 */
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-weight: bold;
+    font-size: 1.2em;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+/* 老師狀態疊加 */
+.teacher-status-container {
+    position: absolute;
+    top: 80px; /* 調整位置，避免與終點線重疊 */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100; /* 確保在最上層 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}
+
+/* 移除不需要的樣式 */
+.game-controls-container {
+    display: none;
+}
+
+/* 學生端恢復捲軸 */
+body:not(.teacher-body) {
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 100vh;
+    height: auto;
+}
+
+/* 響應式設計更新 */
+@media (max-width: 1024px) { /* 調整斷點以更好地處理側邊欄 */
+    .student-status-sidebar {
+        width: 150px;
+    }
+    .teacher-body .game-play-area {
+        margin-left: 120px;
+        margin-right: 170px;
+        width: calc(100% - 120px - 170px);
+    }
+}
+
+@media (max-width: 768px) {
+    .game-controls-sidebar {
+        width: 100px;
+        padding: 10px;
+        z-index: 200; /* 確保在最前面 */
+    }
+
+    .student-status-sidebar {
+        display: none; /* 在較小螢幕上隱藏右側狀態列表以節省空間 */
+    }
+    
+    .teacher-body .game-play-area {
+        margin-left: 120px;
+        margin-right: 0; /* 移除右邊距，因為側邊欄隱藏了 */
+        width: calc(100% - 120px);
+    }
+    
+    .game-controls-sidebar .control-button {
+        font-size: 0.8em;
+        padding: 10px 5px;
+        min-height: 50px;
+    }
+    
+    .game-players-area {
+        min-height: 120px;
+    }
+    
+    .student-circle {
+        width: 45px;
+        height: 45px;
+        font-size: 0.6em;
+    }
+    
+    .teacher-status-circle {
+        width: 100px;
+        height: 100px;
+    }
+    
+    #teacherIconDisplay {
+        font-size: 1.8em;
+    }
+} 
