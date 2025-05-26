@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>裝置感應器與螢幕旋轉測試</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            line-height: 1.6;
+            margin: 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            color: #212529;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: .3rem;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+            width: 100%;
+            max-width: 600px;
+        }
+        h1, h2 {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 8px;
+            margin-top: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        h2 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+        p {
+            margin: 8px 0;
+            word-wrap: break-word;
+        }
+        strong {
+            color: #343a40;
+        }
+        span.value {
+            font-weight: bold;
+            color: #28a745; /* Green for values */
+            margin-left: 5px;
+        }
+        span.na {
+            color: #dc3545; /* Red for N/A or Not Supported */
+        }
+        #requestPermissionButton {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: .25rem;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+            transition: background-color 0.2s ease-in-out;
+        }
+        #requestPermissionButton:hover {
+            background-color: #0056b3;
+        }
+        #requestPermissionButton:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .status-messages {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-left: 5px solid #17a2b8; /* Info color */
+            margin-bottom: 20px;
+            border-radius: .25rem;
+        }
+        .status-messages p {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+        .status-messages p.error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .info-notice {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            border: 1px solid #ffeeba;
+            border-radius: .25rem;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <h1>裝置感應器 & 螢幕旋轉</h1>
+
+    <div class="info-notice">
+        <p><strong>重要提示：</strong></p>
+        <p>此頁面應在 <strong>HTTPS</strong> 環境下的<strong>真實行動裝置</strong>上測試。</p>
+        <p>部分瀏覽器 (如 iOS Safari) 需要點擊下方按鈕以啟用感應器。</p>
+    </div>
+
+    <button id="requestPermissionButton">請求感應器權限</button>
+    <div id="statusMessages" class="status-messages"></div>
+
+    <div class="container">
+        <h2>加速度計 (DeviceMotionEvent)</h2>
+        <div id="accelerometerData">
+            <p><strong>加速度 (排除重力):</strong></p>
+            <p>X: <span class="value" id="accelX">N/A</span> m/s²</p>
+            <p>Y: <span class="value" id="accelY">N/A</span> m/s²</p>
+            <p>Z: <span class="value" id="accelZ">N/A</span> m/s²</p>
+            <p><strong>加速度 (包含重力):</strong></p>
+            <p>X: <span class="value" id="accelGX">N/A</span> m/s²</p>
+            <p>Y: <span class="value" id="accelGY">N/A</span> m/s²</p>
+            <p>Z: <span class="value" id="accelGZ">N/A</span> m/s²</p>
+            <p>更新間隔: <span class="value" id="accelInterval">N/A</span> ms</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>陀螺儀 (DeviceMotionEvent - rotationRate)</h2>
+        <div id="gyroscopeData">
+            <p>Alpha (Z軸旋轉速率): <span class="value" id="gyroAlpha">N/A</span> °/s</p>
+            <p>Beta (X軸旋轉速率): <span class="value" id="gyroBeta">N/A</span> °/s</p>
+            <p>Gamma (Y軸旋轉速率): <span class="value" id="gyroGamma">N/A</span> °/s</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>裝置方向 (DeviceOrientationEvent)</h2>
+        <div id="orientationData">
+            <p>Alpha (Z軸 / 羅盤): <span class="value" id="orientAlpha">N/A</span> °</p>
+            <p>Beta (X軸 / 前後傾斜): <span class="value" id="orientBeta">N/A</span> °</p>
+            <p>Gamma (Y軸 / 左右傾斜): <span class="value" id="orientGamma">N/A</span> °</p>
+            <p>絕對定位: <span class="value" id="orientAbsolute">N/A</span></p>
+            <p>iOS Webkit 指南針 (若有): <span class="value" id="orientWebkitCompass">N/A</span> °</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>螢幕旋轉</h2>
+        <div id="screenRotationData">
+            <p><strong>ScreenOrientation API:</strong></p>
+            <p>類型 (Type): <span class="value" id="screenType">N/A</span></p>
+            <p>角度 (Angle): <span class="value" id="screenAngle">N/A</span> °</p>
+            <p><strong>window.orientation (已棄用):</strong></p>
+            <p>角度: <span class="value" id="windowOrientationAngle">N/A</span> °</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const requestPermissionButton = document.getElementById('requestPermissionButton');
+            const statusMessagesEl = document.getElementById('statusMessages');
+
+            // DOM 元素
+            const el = {
+                accelX: document.getElementById('accelX'),
+                accelY: document.getElementById('accelY'),
+                accelZ: document.getElementById('accelZ'),
+                accelGX: document.getElementById('accelGX'),
+                accelGY: document.getElementById('accelGY'),
+                accelGZ: document.getElementById('accelGZ'),
+                accelInterval: document.getElementById('accelInterval'),
+                gyroAlpha: document.getElementById('gyroAlpha'),
+                gyroBeta: document.getElementById('gyroBeta'),
+                gyroGamma: document.getElementById('gyroGamma'),
+                orientAlpha: document.getElementById('orientAlpha'),
+                orientBeta: document.getElementById('orientBeta'),
+                orientGamma: document.getElementById('orientGamma'),
+                orientAbsolute: document.getElementById('orientAbsolute'),
+                orientWebkitCompass: document.getElementById('orientWebkitCompass'),
+                screenType: document.getElementById('screenType'),
+                screenAngle: document.getElementById('screenAngle'),
+                windowOrientationAngle: document.getElementById('windowOrientationAngle')
+            };
+
+            function addStatusMessage(message, isError = false) {
+                const p = document.createElement('p');
+                p.textContent = message;
+                if (isError) p.classList.add('error');
+                statusMessagesEl.appendChild(p);
+                console.log(message);
+            }
+
+            function updateElementText(element, value, precision = 2, unit = '') {
+                if (element) {
+                    if (value !== null && value !== undefined && typeof value === 'number') {
+                        element.textContent = value.toFixed(precision) + unit;
+                        element.classList.remove('na');
+                    } else if (typeof value === 'string' || typeof value === 'boolean') {
+                        element.textContent = value + unit;
+                        element.classList.remove('na');
+                    } else {
+                        element.textContent = 'N/A';
+                        element.classList.add('na');
+                    }
+                }
+            }
+
+            let motionSensorsInitialized = false;
+            let orientationSensorsInitialized = false;
+
+            function initDeviceMotion() {
+                if (motionSensorsInitialized) return;
+                if (window.DeviceMotionEvent) {
+                    addStatusMessage('正在嘗試註冊 DeviceMotionEvent...');
+                    window.addEventListener('devicemotion', (event) => {
+                        if (!motionSensorsInitialized) {
+                             addStatusMessage('DeviceMotionEvent 數據接收成功！');
+                             motionSensorsInitialized = true; // 標記已成功接收，避免重複訊息
+                        }
+
+                        if (event.acceleration) {
+                            updateElementText(el.accelX, event.acceleration.x);
+                            updateElementText(el.accelY, event.acceleration.y);
+                            updateElementText(el.accelZ, event.acceleration.z);
+                        }
+                        if (event.accelerationIncludingGravity) {
+                            updateElementText(el.accelGX, event.accelerationIncludingGravity.x);
+                            updateElementText(el.accelGY, event.accelerationIncludingGravity.y);
+                            updateElementText(el.accelGZ, event.accelerationIncludingGravity.z);
+                        }
+                        if (event.rotationRate) {
+                            updateElementText(el.gyroAlpha, event.rotationRate.alpha);
+                            updateElementText(el.gyroBeta, event.rotationRate.beta);
+                            updateElementText(el.gyroGamma, event.rotationRate.gamma);
+                        }
+                        updateElementText(el.accelInterval, event.interval);
+                    });
+                } else {
+                    addStatusMessage('DeviceMotionEvent API 不支援。', true);
+                    ['accelX', 'accelY', 'accelZ', 'accelGX', 'accelGY', 'accelGZ', 'gyroAlpha', 'gyroBeta', 'gyroGamma', 'accelInterval'].forEach(key => updateElementText(el[key], null));
+                }
+            }
+
+            function initDeviceOrientation() {
+                if (orientationSensorsInitialized) return;
+                if (window.DeviceOrientationEvent) {
+                     addStatusMessage('正在嘗試註冊 DeviceOrientationEvent...');
+                    window.addEventListener('deviceorientation', (event) => {
+                        if(!orientationSensorsInitialized){
+                            addStatusMessage('DeviceOrientationEvent 數據接收成功！');
+                            orientationSensorsInitialized = true;
+                        }
+                        updateElementText(el.orientAlpha, event.alpha);
+                        updateElementText(el.orientBeta, event.beta);
+                        updateElementText(el.orientGamma, event.gamma);
+                        updateElementText(el.orientAbsolute, event.absolute);
+                        if (event.webkitCompassHeading !== undefined) {
+                            updateElementText(el.orientWebkitCompass, event.webkitCompassHeading);
+                        } else {
+                            updateElementText(el.orientWebkitCompass, null); // Explicitly set to N/A if not present
+                        }
+                    });
+                } else {
+                    addStatusMessage('DeviceOrientationEvent API 不支援。', true);
+                    ['orientAlpha', 'orientBeta', 'orientGamma', 'orientAbsolute', 'orientWebkitCompass'].forEach(key => updateElementText(el[key], null));
+                }
+            }
+
+
+            // --- 權限請求 ---
+            if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function' ||
+                typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                addStatusMessage('此瀏覽器可能需要明確的感應器權限請求。');
+                requestPermissionButton.disabled = false;
+            } else {
+                addStatusMessage('此瀏覽器不需要或不支援 requestPermission API。將嘗試自動啟用感應器。');
+                requestPermissionButton.style.display = 'none'; // 或 disabled = true;
+                // 自動嘗試初始化
+                initDeviceMotion();
+                initDeviceOrientation();
+            }
+
+            requestPermissionButton.addEventListener('click', async () => {
+                requestPermissionButton.disabled = true;
+                addStatusMessage('正在請求感應器權限...');
+
+                let motionGranted = false;
+                if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+                    try {
+                        const permissionState = await DeviceMotionEvent.requestPermission();
+                        if (permissionState === 'granted') {
+                            addStatusMessage('DeviceMotionEvent 權限已授予。');
+                            motionGranted = true;
+                        } else {
+                            addStatusMessage(`DeviceMotionEvent 權限: ${permissionState}`, permissionState !== 'granted');
+                        }
+                    } catch (error) {
+                        addStatusMessage(`請求 DeviceMotionEvent 權限時發生錯誤: ${error}`, true);
+                        console.error('DeviceMotionEvent permission error:', error);
+                    }
+                } else {
+                     addStatusMessage('DeviceMotionEvent.requestPermission API 不存在，假設已處理或不適用。');
+                     motionGranted = true; // 假設可以直接初始化
+                }
+
+                if (motionGranted) {
+                    initDeviceMotion();
+                }
+
+                let orientationGranted = false;
+                if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                     try {
+                        const permissionState = await DeviceOrientationEvent.requestPermission();
+                        if (permissionState === 'granted') {
+                            addStatusMessage('DeviceOrientationEvent 權限已授予。');
+                            orientationGranted = true;
+                        } else {
+                            addStatusMessage(`DeviceOrientationEvent 權限: ${permissionState}`, permissionState !== 'granted');
+                        }
+                    } catch (error) {
+                        addStatusMessage(`請求 DeviceOrientationEvent 權限時發生錯誤: ${error}`, true);
+                        console.error('DeviceOrientationEvent permission error:', error);
+                    }
+                } else {
+                    addStatusMessage('DeviceOrientationEvent.requestPermission API 不存在，假設已處理或不適用。');
+                    orientationGranted = true; // 假設可以直接初始化
+                }
+
+                if (orientationGranted) {
+                    initDeviceOrientation();
+                }
+
+                if (motionGranted || orientationGranted) {
+                    requestPermissionButton.style.display = 'none'; // 成功或處理後隱藏
+                } else {
+                    requestPermissionButton.disabled = false; // 如果都失敗，允許重試
+                }
+            });
+
+
+            // --- 螢幕旋轉 ---
+            function updateScreenOrientationDisplay() {
+                if (screen.orientation) {
+                    updateElementText(el.screenType, screen.orientation.type);
+                    updateElementText(el.screenAngle, screen.orientation.angle, 0);
+                } else {
+                    updateElementText(el.screenType, null);
+                    updateElementText(el.screenAngle, null);
+                }
+
+                if (window.orientation !== undefined) {
+                    updateElementText(el.windowOrientationAngle, window.orientation, 0);
+                } else {
+                    updateElementText(el.windowOrientationAngle, null);
+                }
+            }
+
+            if (screen.orientation) {
+                addStatusMessage('ScreenOrientation API 支援。');
+                screen.orientation.addEventListener('change', () => {
+                    addStatusMessage('螢幕方向已變更 (ScreenOrientation API)。');
+                    updateScreenOrientationDisplay();
+                });
+            } else if (window.orientation !== undefined) { // 已棄用
+                addStatusMessage('ScreenOrientation API 不支援，使用已棄用的 window.orientation。', true);
+                window.addEventListener('orientationchange', () => {
+                    addStatusMessage('螢幕方向已變更 (window.orientationchange)。');
+                    updateScreenOrientationDisplay();
+                });
+            } else {
+                addStatusMessage('您的瀏覽器不支援螢幕方向 API。', true);
+            }
+            // 初始載入時更新螢幕方向
+            updateScreenOrientationDisplay();
+
+            if (!window.DeviceMotionEvent && !window.DeviceOrientationEvent && !screen.orientation && window.orientation === undefined) {
+                addStatusMessage('此瀏覽器不支援任何請求的感應器或螢幕方向 API。', true);
+            } else {
+                 addStatusMessage('頁面已載入，等待感應器數據...');
+            }
+        });
+    </script>
+</body>
+</html>
