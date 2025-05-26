@@ -75,8 +75,18 @@ class MazeGame {
         this.startBtn.addEventListener('click', () => this.startGame());
         this.restartBtn.addEventListener('click', () => this.restartGame());
         
+        // 手動方向校正按鈕
+        document.getElementById('orientationPortrait').addEventListener('click', () => this.setManualOrientation(0));
+        document.getElementById('orientationLandscapeLeft').addEventListener('click', () => this.setManualOrientation(90));
+        document.getElementById('orientationLandscapeRight').addEventListener('click', () => this.setManualOrientation(-90));
+        document.getElementById('orientationPortraitUpsideDown').addEventListener('click', () => this.setManualOrientation(180));
+        
         // 視窗大小改變時重新調整畫布
-        window.addEventListener('resize', () => this.resizeCanvas());
+        window.addEventListener('resize', () => {
+            this.resizeCanvas();
+            // 視窗大小改變時也檢查方向
+            this.updateScreenOrientation();
+        });
         
         // 監聽螢幕方向變化
         window.addEventListener('orientationchange', () => {
@@ -85,6 +95,13 @@ class MazeGame {
                 this.resizeCanvas();
             }, 100);
         });
+        
+        // 監聽 screen.orientation 變化 (現代瀏覽器)
+        if (screen.orientation && screen.orientation.addEventListener) {
+            screen.orientation.addEventListener('change', () => {
+                this.updateScreenOrientation();
+            });
+        }
         
         // 初始化螢幕方向
         this.updateScreenOrientation();
@@ -105,19 +122,109 @@ class MazeGame {
     }
     
     updateScreenOrientation() {
-        // 獲取螢幕方向
-        if (screen.orientation) {
-            this.screenOrientation = screen.orientation.angle;
-        } else if (window.orientation !== undefined) {
-            this.screenOrientation = window.orientation;
+        let orientation = 0;
+        let orientationText = '豎屏';
+        
+        // 方法1: 使用 screen.orientation (現代瀏覽器)
+        if (screen.orientation && screen.orientation.angle !== undefined) {
+            orientation = screen.orientation.angle;
+        }
+        // 方法2: 使用 window.orientation (較舊的API)
+        else if (window.orientation !== undefined) {
+            orientation = window.orientation;
+        }
+        // 方法3: 使用視窗尺寸判斷 (備用方案)
+        else {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            if (width > height) {
+                // 橫屏，但無法確定是左轉還是右轉，預設為右轉
+                orientation = -90;
+            } else {
+                orientation = 0;
+            }
+        }
+        
+        // 標準化角度值
+        switch (orientation) {
+            case 0:
+                orientationText = '豎屏';
+                break;
+            case 90:
+                orientationText = '左轉橫屏';
+                break;
+            case -90:
+            case 270:
+                orientation = -90; // 統一為 -90
+                orientationText = '右轉橫屏';
+                break;
+            case 180:
+                orientationText = '倒轉豎屏';
+                break;
+            default:
+                orientationText = `未知(${orientation}°)`;
+        }
+        
+        this.screenOrientation = orientation;
+        
+        // 更新顯示
+        if (this.screenOrientationDisplay) {
+            this.screenOrientationDisplay.textContent = `${orientation}° (${orientationText})`;
+        }
+        
+        console.log('螢幕方向偵測:', {
+            angle: orientation,
+            text: orientationText,
+            screenOrientation: screen.orientation,
+            windowOrientation: window.orientation,
+            windowSize: `${window.innerWidth}x${window.innerHeight}`
+        });
+        
+        // 更新按鈕狀態
+        this.updateOrientationButtons();
+    }
+    
+    setManualOrientation(angle) {
+        this.screenOrientation = angle;
+        
+        let orientationText;
+        switch (angle) {
+            case 0: orientationText = '豎屏'; break;
+            case 90: orientationText = '左轉橫屏'; break;
+            case -90: orientationText = '右轉橫屏'; break;
+            case 180: orientationText = '倒轉豎屏'; break;
         }
         
         // 更新顯示
         if (this.screenOrientationDisplay) {
-            this.screenOrientationDisplay.textContent = this.screenOrientation;
+            this.screenOrientationDisplay.textContent = `${angle}° (${orientationText}) [手動]`;
         }
         
-        console.log('螢幕方向:', this.screenOrientation);
+        // 更新按鈕狀態
+        this.updateOrientationButtons();
+        
+        console.log('手動設定螢幕方向:', angle, orientationText);
+    }
+    
+    updateOrientationButtons() {
+        // 移除所有按鈕的 active 狀態
+        document.querySelectorAll('.btn-small').forEach(btn => btn.classList.remove('active'));
+        
+        // 根據當前方向設定對應按鈕為 active
+        let activeButtonId;
+        switch (this.screenOrientation) {
+            case 0: activeButtonId = 'orientationPortrait'; break;
+            case 90: activeButtonId = 'orientationLandscapeLeft'; break;
+            case -90: activeButtonId = 'orientationLandscapeRight'; break;
+            case 180: activeButtonId = 'orientationPortraitUpsideDown'; break;
+        }
+        
+        if (activeButtonId) {
+            const activeButton = document.getElementById(activeButtonId);
+            if (activeButton) {
+                activeButton.classList.add('active');
+            }
+        }
     }
     
     checkDeviceSupport() {
