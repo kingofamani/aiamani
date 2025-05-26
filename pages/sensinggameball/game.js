@@ -178,7 +178,7 @@ class MazeGame {
     gameLoop() {
         if (this.gameState === 'playing') {
             this.updateBall();
-            this.checkCollisions();
+            this.checkBoundaryCollisions();
             this.checkVictory();
         }
         
@@ -204,47 +204,39 @@ class MazeGame {
         this.ball.vx += forceX;
         this.ball.vy += forceY;
         
-        // 限制最大速度
-        this.ball.vx = Math.max(-this.ball.maxSpeed, Math.min(this.ball.maxSpeed, this.ball.vx));
-        this.ball.vy = Math.max(-this.ball.maxSpeed, Math.min(this.ball.maxSpeed, this.ball.vy));
-        
         // 應用摩擦力
         this.ball.vx *= this.ball.friction;
         this.ball.vy *= this.ball.friction;
         
-        // 更新位置
-        this.ball.x += this.ball.vx;
-        this.ball.y += this.ball.vy;
-    }
-    
-    checkCollisions() {
-        // 計算小球的下一個位置
-        const nextX = this.ball.x + this.ball.vx;
-        const nextY = this.ball.y + this.ball.vy;
+        // 限制最大速度
+        this.ball.vx = Math.max(-this.ball.maxSpeed, Math.min(this.ball.maxSpeed, this.ball.vx));
+        this.ball.vy = Math.max(-this.ball.maxSpeed, Math.min(this.ball.maxSpeed, this.ball.vy));
         
-        // 分別檢查 X 和 Y 方向的碰撞
-        const canMoveX = this.canMoveTo(nextX, this.ball.y);
-        const canMoveY = this.canMoveTo(this.ball.x, nextY);
+        // 潛在的下一步位置
+        let potentialX = this.ball.x + this.ball.vx;
+        let potentialY = this.ball.y + this.ball.vy;
         
-        // 如果 X 方向碰撞，停止 X 方向移動
-        if (!canMoveX) {
-            this.ball.vx = 0;
+        // 檢查 X 軸移動和碰撞
+        if (this.canMoveTo(potentialX, this.ball.y)) {
+            this.ball.x = potentialX;
+        } else {
+            this.ball.vx = 0; // 撞牆則停止 X 軸速度
         }
         
-        // 如果 Y 方向碰撞，停止 Y 方向移動
-        if (!canMoveY) {
-            this.ball.vy = 0;
+        // 檢查 Y 軸移動和碰撞 (使用更新後的 X 軸位置 this.ball.x)
+        if (this.canMoveTo(this.ball.x, potentialY)) {
+            this.ball.y = potentialY;
+        } else {
+            this.ball.vy = 0; // 撞牆則停止 Y 軸速度
         }
-        
-        // 檢查邊界碰撞
-        this.checkBoundaryCollisions();
     }
     
     canMoveTo(x, y) {
+        const epsilon = 0.001; // 用於處理浮點數邊界問題
         const ballLeft = x - this.ball.radius;
-        const ballRight = x + this.ball.radius;
+        const ballRight = x + this.ball.radius - epsilon; // 減去 epsilon
         const ballTop = y - this.ball.radius;
-        const ballBottom = y + this.ball.radius;
+        const ballBottom = y + this.ball.radius - epsilon; // 減去 epsilon
         
         // 轉換為迷宮座標
         const leftCol = Math.floor(ballLeft / this.cellSize);
@@ -252,24 +244,27 @@ class MazeGame {
         const topRow = Math.floor(ballTop / this.cellSize);
         const bottomRow = Math.floor(ballBottom / this.cellSize);
         
-        // 檢查邊界
+        // 檢查是否超出迷宮陣列邊界
         if (leftCol < 0 || rightCol >= this.maze[0].length || 
             topRow < 0 || bottomRow >= this.maze.length) {
-            return false;
+            // 如果預期移動位置會使球的任何部分超出迷宮格子定義範圍，則視為不可移動
+            // 這可以防止球進入未定義的迷宮區域，效果類似於邊界牆
+            return false; 
         }
         
         // 檢查牆壁碰撞
         for (let row = topRow; row <= bottomRow; row++) {
             for (let col = leftCol; col <= rightCol; col++) {
+                // 再次確認 row 和 col 在迷宮範圍內 (雖然上面的檢查應該已經涵蓋)
                 if (row >= 0 && row < this.maze.length && 
                     col >= 0 && col < this.maze[0].length &&
-                    this.maze[row][col] === 1) {
-                    return false;
+                    this.maze[row][col] === 1) { // 1 代表牆壁
+                    return false; // 撞到牆壁
                 }
             }
         }
         
-        return true;
+        return true; // 此路徑沒有牆壁
     }
     
     checkBoundaryCollisions() {
