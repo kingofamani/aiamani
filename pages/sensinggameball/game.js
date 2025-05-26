@@ -9,13 +9,11 @@ class MazeGame {
         this.sensorStatus = document.getElementById('sensorStatus');
         this.tiltX = document.getElementById('tiltX');
         this.tiltY = document.getElementById('tiltY');
-        this.screenOrientationDisplay = document.getElementById('screenOrientation');
         this.messageArea = document.getElementById('messageArea');
         
         // 遊戲狀態
         this.gameState = 'waiting'; // waiting, playing, victory
         this.animationId = null;
-        this.isManualOrientation = false; // 新增手動方向標誌
         
         // 感測器數據
         this.sensorData = {
@@ -23,9 +21,6 @@ class MazeGame {
             beta: 0,  // 前後傾斜 (-180 到 180)
             isActive: false
         };
-        
-        // 螢幕方向
-        this.screenOrientation = 0; // 0=豎屏, 90=左轉, -90=右轉, 180=倒轉
         
         // 小球屬性
         this.ball = {
@@ -67,6 +62,7 @@ class MazeGame {
         this.setupEventListeners();
         this.resizeCanvas();
         this.drawGame();
+        this.updateMessage('請將設備橫放並鎖定螢幕方向，然後點擊「開始遊戲」。');
         
         // 檢查設備支援
         this.checkDeviceSupport();
@@ -76,36 +72,10 @@ class MazeGame {
         this.startBtn.addEventListener('click', () => this.startGame());
         this.restartBtn.addEventListener('click', () => this.restartGame());
         
-        // 手動方向校正按鈕
-        document.getElementById('orientationPortrait').addEventListener('click', () => this.setManualOrientation(0));
-        document.getElementById('orientationLandscapeLeft').addEventListener('click', () => this.setManualOrientation(90));
-        document.getElementById('orientationLandscapeRight').addEventListener('click', () => this.setManualOrientation(-90));
-        document.getElementById('orientationPortraitUpsideDown').addEventListener('click', () => this.setManualOrientation(180));
-        
         // 視窗大小改變時重新調整畫布
         window.addEventListener('resize', () => {
             this.resizeCanvas();
-            // 視窗大小改變時也檢查方向
-            this.updateScreenOrientation();
         });
-        
-        // 監聽螢幕方向變化
-        window.addEventListener('orientationchange', () => {
-            setTimeout(() => {
-                this.updateScreenOrientation();
-                this.resizeCanvas();
-            }, 100);
-        });
-        
-        // 監聽 screen.orientation 變化 (現代瀏覽器)
-        if (screen.orientation && screen.orientation.addEventListener) {
-            screen.orientation.addEventListener('change', () => {
-                this.updateScreenOrientation();
-            });
-        }
-        
-        // 初始化螢幕方向
-        this.updateScreenOrientation();
     }
     
     resizeCanvas() {
@@ -120,119 +90,6 @@ class MazeGame {
         this.cellSize = Math.min(maxWidth / this.maze[0].length, maxHeight / this.maze.length);
         
         this.drawGame();
-    }
-    
-    updateScreenOrientation() {
-        if (this.isManualOrientation) {
-            // 如果是手動模式，則不進行自動偵測
-            this.updateOrientationButtons(); // 確保按鈕狀態正確
-            return;
-        }
-
-        let orientation = 0;
-        let orientationText = '豎屏';
-        
-        // 方法1: 使用 screen.orientation (現代瀏覽器)
-        if (screen.orientation && screen.orientation.angle !== undefined) {
-            orientation = screen.orientation.angle;
-        }
-        // 方法2: 使用 window.orientation (較舊的API)
-        else if (window.orientation !== undefined) {
-            orientation = window.orientation;
-        }
-        // 方法3: 使用視窗尺寸判斷 (備用方案)
-        else {
-            const width = window.innerWidth;
-            const height = window.innerHeight;
-            if (width > height) {
-                // 橫屏，但無法確定是左轉還是右轉，預設為右轉
-                orientation = -90;
-            } else {
-                orientation = 0;
-            }
-        }
-        
-        // 標準化角度值
-        switch (orientation) {
-            case 0:
-                orientationText = '豎屏';
-                break;
-            case 90:
-                orientationText = '左轉橫屏';
-                break;
-            case -90:
-            case 270:
-                orientation = -90; // 統一為 -90
-                orientationText = '右轉橫屏';
-                break;
-            case 180:
-                orientationText = '倒轉豎屏';
-                break;
-            default:
-                orientationText = `未知(${orientation}°)`;
-        }
-        
-        this.screenOrientation = orientation;
-        
-        // 更新顯示
-        if (this.screenOrientationDisplay) {
-            this.screenOrientationDisplay.textContent = `${orientation}° (${orientationText})`;
-        }
-        
-        console.log('螢幕方向偵測:', {
-            angle: orientation,
-            text: orientationText,
-            screenOrientation: screen.orientation,
-            windowOrientation: window.orientation,
-            windowSize: `${window.innerWidth}x${window.innerHeight}`
-        });
-        
-        // 更新按鈕狀態
-        this.updateOrientationButtons();
-    }
-    
-    setManualOrientation(angle) {
-        this.isManualOrientation = true; // 設定為手動模式
-        this.screenOrientation = angle;
-        
-        let orientationText;
-        switch (angle) {
-            case 0: orientationText = '豎屏'; break;
-            case 90: orientationText = '左轉橫屏'; break;
-            case -90: orientationText = '右轉橫屏'; break;
-            case 180: orientationText = '倒轉豎屏'; break;
-        }
-        
-        // 更新顯示
-        if (this.screenOrientationDisplay) {
-            this.screenOrientationDisplay.textContent = `${angle}° (${orientationText}) [手動]`;
-        }
-        
-        // 更新按鈕狀態
-        this.updateOrientationButtons();
-        
-        console.log('手動設定螢幕方向:', angle, orientationText);
-    }
-    
-    updateOrientationButtons() {
-        // 移除所有按鈕的 active 狀態
-        document.querySelectorAll('.btn-small').forEach(btn => btn.classList.remove('active'));
-        
-        // 根據當前方向設定對應按鈕為 active
-        let activeButtonId;
-        switch (this.screenOrientation) {
-            case 0: activeButtonId = 'orientationPortrait'; break;
-            case 90: activeButtonId = 'orientationLandscapeLeft'; break;
-            case -90: activeButtonId = 'orientationLandscapeRight'; break;
-            case 180: activeButtonId = 'orientationPortraitUpsideDown'; break;
-        }
-        
-        if (activeButtonId) {
-            const activeButton = document.getElementById(activeButtonId);
-            if (activeButton) {
-                activeButton.classList.add('active');
-            }
-        }
     }
     
     checkDeviceSupport() {
@@ -337,32 +194,11 @@ class MazeGame {
     updateBall() {
         if (!this.sensorData.isActive) return;
         
-        // 將感測器數據轉換為移動力量，並根據螢幕方向調整
+        // 固定為橫屏操作 (左轉橫屏模式)
+        // gamma 控制上下 (Y軸)，-beta 控制左右 (X軸)
         const sensitivity = 0.15;
-        let forceX, forceY;
-        
-        // 根據螢幕方向調整控制方向
-        switch (this.screenOrientation) {
-            case 0: // 豎屏
-                forceX = this.sensorData.gamma * sensitivity;
-                forceY = this.sensorData.beta * sensitivity;
-                break;
-            case 90: // 左轉橫屏
-                forceX = -this.sensorData.beta * sensitivity;
-                forceY = this.sensorData.gamma * sensitivity;
-                break;
-            case -90: // 右轉橫屏
-                forceX = this.sensorData.beta * sensitivity;
-                forceY = -this.sensorData.gamma * sensitivity;
-                break;
-            case 180: // 倒轉豎屏
-                forceX = -this.sensorData.gamma * sensitivity;
-                forceY = -this.sensorData.beta * sensitivity;
-                break;
-            default: // 預設豎屏
-                forceX = this.sensorData.gamma * sensitivity;
-                forceY = this.sensorData.beta * sensitivity;
-        }
+        let forceX = -this.sensorData.beta * sensitivity;  // beta 的負值對應 X 軸
+        let forceY = this.sensorData.gamma * sensitivity; // gamma 對應 Y 軸
         
         // 更新速度
         this.ball.vx += forceX;
