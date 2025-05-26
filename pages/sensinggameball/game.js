@@ -195,10 +195,10 @@ class MazeGame {
         if (!this.sensorData.isActive) return;
         
         // 固定為橫屏操作 (左轉橫屏模式)
-        // gamma 控制上下 (Y軸)，-beta 控制左右 (X軸)
+        // beta 控制左右 (X軸)，-gamma 控制上下 (Y軸)
         const sensitivity = 0.15;
-        let forceX = -this.sensorData.beta * sensitivity;  // beta 的負值對應 X 軸
-        let forceY = this.sensorData.gamma * sensitivity; // gamma 對應 Y 軸
+        let forceX = this.sensorData.beta * sensitivity;  // beta 的值對應 X 軸
+        let forceY = -this.sensorData.gamma * sensitivity; // gamma 的負值對應 Y 軸
         
         // 更新速度
         this.ball.vx += forceX;
