@@ -15,6 +15,7 @@ class MazeGame {
         // 遊戲狀態
         this.gameState = 'waiting'; // waiting, playing, victory
         this.animationId = null;
+        this.isManualOrientation = false; // 新增手動方向標誌
         
         // 感測器數據
         this.sensorData = {
@@ -122,6 +123,12 @@ class MazeGame {
     }
     
     updateScreenOrientation() {
+        if (this.isManualOrientation) {
+            // 如果是手動模式，則不進行自動偵測
+            this.updateOrientationButtons(); // 確保按鈕狀態正確
+            return;
+        }
+
         let orientation = 0;
         let orientationText = '豎屏';
         
@@ -185,6 +192,7 @@ class MazeGame {
     }
     
     setManualOrientation(angle) {
+        this.isManualOrientation = true; // 設定為手動模式
         this.screenOrientation = angle;
         
         let orientationText;
@@ -452,8 +460,6 @@ class MazeGame {
             this.ball.vy = -Math.abs(this.ball.vy) * 0.3; // 輕微反彈
         }
     }
-    
-
     
     checkVictory() {
         const ballCenterCol = Math.floor(this.ball.x / this.cellSize);
