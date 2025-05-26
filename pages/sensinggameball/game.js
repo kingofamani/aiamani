@@ -9,6 +9,7 @@ class MazeGame {
         this.sensorStatus = document.getElementById('sensorStatus');
         this.tiltX = document.getElementById('tiltX');
         this.tiltY = document.getElementById('tiltY');
+        this.screenOrientationDisplay = document.getElementById('screenOrientation');
         this.messageArea = document.getElementById('messageArea');
         
         // 遊戲狀態
@@ -21,6 +22,9 @@ class MazeGame {
             beta: 0,  // 前後傾斜 (-180 到 180)
             isActive: false
         };
+        
+        // 螢幕方向
+        this.screenOrientation = 0; // 0=豎屏, 90=左轉, -90=右轉, 180=倒轉
         
         // 小球屬性
         this.ball = {
@@ -73,6 +77,17 @@ class MazeGame {
         
         // 視窗大小改變時重新調整畫布
         window.addEventListener('resize', () => this.resizeCanvas());
+        
+        // 監聽螢幕方向變化
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                this.updateScreenOrientation();
+                this.resizeCanvas();
+            }, 100);
+        });
+        
+        // 初始化螢幕方向
+        this.updateScreenOrientation();
     }
     
     resizeCanvas() {
@@ -87,6 +102,22 @@ class MazeGame {
         this.cellSize = Math.min(maxWidth / this.maze[0].length, maxHeight / this.maze.length);
         
         this.drawGame();
+    }
+    
+    updateScreenOrientation() {
+        // 獲取螢幕方向
+        if (screen.orientation) {
+            this.screenOrientation = screen.orientation.angle;
+        } else if (window.orientation !== undefined) {
+            this.screenOrientation = window.orientation;
+        }
+        
+        // 更新顯示
+        if (this.screenOrientationDisplay) {
+            this.screenOrientationDisplay.textContent = this.screenOrientation;
+        }
+        
+        console.log('螢幕方向:', this.screenOrientation);
     }
     
     checkDeviceSupport() {
@@ -191,10 +222,32 @@ class MazeGame {
     updateBall() {
         if (!this.sensorData.isActive) return;
         
-        // 將感測器數據轉換為移動力量
+        // 將感測器數據轉換為移動力量，並根據螢幕方向調整
         const sensitivity = 0.15;
-        const forceX = this.sensorData.gamma * sensitivity;
-        const forceY = this.sensorData.beta * sensitivity;
+        let forceX, forceY;
+        
+        // 根據螢幕方向調整控制方向
+        switch (this.screenOrientation) {
+            case 0: // 豎屏
+                forceX = this.sensorData.gamma * sensitivity;
+                forceY = this.sensorData.beta * sensitivity;
+                break;
+            case 90: // 左轉橫屏
+                forceX = -this.sensorData.beta * sensitivity;
+                forceY = this.sensorData.gamma * sensitivity;
+                break;
+            case -90: // 右轉橫屏
+                forceX = this.sensorData.beta * sensitivity;
+                forceY = -this.sensorData.gamma * sensitivity;
+                break;
+            case 180: // 倒轉豎屏
+                forceX = -this.sensorData.gamma * sensitivity;
+                forceY = -this.sensorData.beta * sensitivity;
+                break;
+            default: // 預設豎屏
+                forceX = this.sensorData.gamma * sensitivity;
+                forceY = this.sensorData.beta * sensitivity;
+        }
         
         // 更新速度
         this.ball.vx += forceX;
@@ -214,10 +267,33 @@ class MazeGame {
     }
     
     checkCollisions() {
-        const ballLeft = this.ball.x - this.ball.radius;
-        const ballRight = this.ball.x + this.ball.radius;
-        const ballTop = this.ball.y - this.ball.radius;
-        const ballBottom = this.ball.y + this.ball.radius;
+        // 計算小球的下一個位置
+        const nextX = this.ball.x + this.ball.vx;
+        const nextY = this.ball.y + this.ball.vy;
+        
+        // 分別檢查 X 和 Y 方向的碰撞
+        const canMoveX = this.canMoveTo(nextX, this.ball.y);
+        const canMoveY = this.canMoveTo(this.ball.x, nextY);
+        
+        // 如果 X 方向碰撞，停止 X 方向移動
+        if (!canMoveX) {
+            this.ball.vx = 0;
+        }
+        
+        // 如果 Y 方向碰撞，停止 Y 方向移動
+        if (!canMoveY) {
+            this.ball.vy = 0;
+        }
+        
+        // 檢查邊界碰撞
+        this.checkBoundaryCollisions();
+    }
+    
+    canMoveTo(x, y) {
+        const ballLeft = x - this.ball.radius;
+        const ballRight = x + this.ball.radius;
+        const ballTop = y - this.ball.radius;
+        const ballBottom = y + this.ball.radius;
         
         // 轉換為迷宮座標
         const leftCol = Math.floor(ballLeft / this.cellSize);
@@ -228,35 +304,49 @@ class MazeGame {
         // 檢查邊界
         if (leftCol < 0 || rightCol >= this.maze[0].length || 
             topRow < 0 || bottomRow >= this.maze.length) {
-            this.handleWallCollision();
-            return;
+            return false;
         }
         
         // 檢查牆壁碰撞
         for (let row = topRow; row <= bottomRow; row++) {
             for (let col = leftCol; col <= rightCol; col++) {
-                if (this.maze[row] && this.maze[row][col] === 1) {
-                    this.handleWallCollision();
-                    return;
+                if (row >= 0 && row < this.maze.length && 
+                    col >= 0 && col < this.maze[0].length &&
+                    this.maze[row][col] === 1) {
+                    return false;
                 }
             }
         }
+        
+        return true;
     }
     
-    handleWallCollision() {
-        // 簡單的碰撞處理：停止移動並稍微回彈
-        this.ball.vx *= -0.3;
-        this.ball.vy *= -0.3;
-        
-        // 確保小球在有效範圍內
+    checkBoundaryCollisions() {
         const minX = this.ball.radius;
         const maxX = this.canvas.width - this.ball.radius;
         const minY = this.ball.radius;
         const maxY = this.canvas.height - this.ball.radius;
         
-        this.ball.x = Math.max(minX, Math.min(maxX, this.ball.x));
-        this.ball.y = Math.max(minY, Math.min(maxY, this.ball.y));
+        // 邊界碰撞處理
+        if (this.ball.x <= minX) {
+            this.ball.x = minX;
+            this.ball.vx = Math.abs(this.ball.vx) * 0.3; // 輕微反彈
+        }
+        if (this.ball.x >= maxX) {
+            this.ball.x = maxX;
+            this.ball.vx = -Math.abs(this.ball.vx) * 0.3; // 輕微反彈
+        }
+        if (this.ball.y <= minY) {
+            this.ball.y = minY;
+            this.ball.vy = Math.abs(this.ball.vy) * 0.3; // 輕微反彈
+        }
+        if (this.ball.y >= maxY) {
+            this.ball.y = maxY;
+            this.ball.vy = -Math.abs(this.ball.vy) * 0.3; // 輕微反彈
+        }
     }
+    
+
     
     checkVictory() {
         const ballCenterCol = Math.floor(this.ball.x / this.cellSize);
