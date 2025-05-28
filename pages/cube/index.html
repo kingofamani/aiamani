@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D 魔術方塊</title>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            overflow: hidden;
+            font-family: "微軟正黑體", sans-serif;
+            /* background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d); */ /* 保留 style.html 的背景 */
+            color: white;
+            height: 100vh;
+            width: 100vw;
+            position: relative; /* 新增，為了 animated-bg */
+        }
+
+        /* 動態背景 from style.html */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #FF6B9D, #4ECDC4, #45B7D1, #96CEB4, #FFEAA7, #DDA0DD, #98D8C8);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            z-index: -3; /* 確保在最底層 */
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* 浮動幾何形狀 from style.html */
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -2;
+        }
+        
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            animation: float 20s linear infinite;
+        }
+        
+        .shape:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            left: 10%;
+            animation-delay: 0s;
+            background: rgba(255, 107, 157, 0.2);
+        }
+        
+        .shape:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            left: 20%;
+            animation-delay: -2s;
+            background: rgba(78, 205, 196, 0.2);
+            border-radius: 20%;
+        }
+        
+        .shape:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            left: 35%;
+            animation-delay: -4s;
+            background: rgba(69, 183, 209, 0.2);
+        }
+        
+        .shape:nth-child(4) {
+            width: 100px;
+            height: 100px;
+            left: 50%;
+            animation-delay: -6s;
+            background: rgba(150, 206, 180, 0.2);
+            border-radius: 30%;
+        }
+        
+        .shape:nth-child(5) {
+            width: 90px;
+            height: 90px;
+            left: 65%;
+            animation-delay: -8s;
+            background: rgba(255, 234, 167, 0.2);
+        }
+        
+        .shape:nth-child(6) {
+            width: 70px;
+            height: 70px;
+            left: 80%;
+            animation-delay: -10s;
+            background: rgba(221, 160, 221, 0.2);
+            border-radius: 40%;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* 粒子效果背景 from style.html */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: twinkle 3s linear infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        #container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 0 20px;
+            z-index: 10;
+        }
+        
+        /* 更新 .btn 樣式 from style.html */
+        .btn {
+            background: rgba(255, 255, 255, 0.15); /* from style.html */
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3); /* from style.html */
+            border-radius: 12px; /* from style.html */
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(15px); /* from style.html */
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); /* from style.html */
+            position: relative; /* from style.html */
+            overflow: hidden; /* from style.html */
+        }
+        
+        /* .btn 懸停效果 from style.html */
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        /* 原 index.html 的 .btn:hover 和 .btn:active，可以考慮是否保留或調整 */
+        .btn:hover {
+             /* background-color: rgba(255, 255, 255, 0.4); */ /* 被 style.html 的效果取代 */
+            /* transform: translateY(-2px); */ /* 可以保留或根據新風格調整 */
+        }
+        
+        .btn:active {
+            transform: translateY(1px); /* 可以保留或根據新風格調整 */
+        }
+        
+        .rotation-controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        
+        /* 更新 .title 樣式 from style.html */
+        .title {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 28px; /* from style.html */
+            font-weight: bold;
+            /* text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); */ /* Replaced by style.html */
+            z-index: 10;
+            background: linear-gradient(45deg, #FF6B9D, #4ECDC4, #45B7D1); /* from style.html */
+            -webkit-background-clip: text; /* from style.html */
+            -webkit-text-fill-color: transparent; /* from style.html */
+            background-clip: text; /* from style.html */
+            animation: titleGlow 3s ease-in-out infinite alternate; /* from style.html */
+        }
+        
+        /* from style.html */
+        @keyframes titleGlow {
+            from { filter: drop-shadow(0 0 10px rgba(255, 107, 157, 0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(78, 205, 196, 0.8)); }
+        }
+        
+        /* 更新 .help-btn 樣式 from style.html */
+        .help-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 50px; /* from style.html */
+            height: 50px; /* from style.html */
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 20;
+            backdrop-filter: blur(15px);
+            transition: all 0.3s ease; /* from style.html */
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            /* position: relative; */ /* style.html .btn has it, but help-btn might not need if no ::before */
+            /* overflow: hidden; */ /* style.html .btn has it, but help-btn might not need if no ::before */
+        }
+
+        /* .help-btn 懸停效果 from style.html */
+        .help-btn:hover {
+            transform: scale(1.1); /* from style.html */
+            background: rgba(255, 255, 255, 0.25); /* from style.html */
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2); /* from style.html */
+        }
+        /* Removed ::before for help-btn as style.html specific hover is better */
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* 更新 .modal-content 樣式 from style.html */
+        .modal-content {
+            background: rgba(255, 255, 255, 0.1); /* from style.html */
+            border-radius: 20px; /* from style.html */
+            padding: 30px; /* from style.html */
+            max-width: 500px;
+            width: 90%;
+            color: white;
+            position: relative;
+            border: 2px solid rgba(255, 255, 255, 0.2); /* from style.html */
+            backdrop-filter: blur(20px); /* from style.html */
+            box-shadow: 0 16px 64px rgba(0, 0, 0, 0.3); /* from style.html */
+        }
+        
+        /* 更新 .close-btn 樣式 from style.html */
+        .close-btn {
+            position: absolute;
+            top: 15px; /* from style.html */
+            right: 20px; /* from style.html */
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease; /* from style.html */
+        }
+
+        .close-btn:hover {
+            transform: scale(1.2); /* from style.html */
+            color: #FF6B9D; /* from style.html */
+        }
+        
+        @media (max-width: 768px) {
+            .btn {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+            
+            .title {
+                font-size: 20px;
+            }
+            
+            .controls {
+                bottom: 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .btn {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+            
+            .title {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景動畫元素 from style.html -->
+    <div class="animated-bg"></div>
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    <div class="particles" id="particles"></div>
+
+    <div id="container"></div>
+    
+    <div class="title">3D 魔術方塊</div>
+    
+    <div class="controls">
+        <div class="rotation-controls">
+            <button class="btn" onclick="rotateFace('up', false)">上層 ↑</button>
+            <button class="btn" onclick="rotateFace('up', true)">上層 ↓</button>
+            <button class="btn" onclick="rotateFace('down', false)">下層 ↑</button>
+            <button class="btn" onclick="rotateFace('down', true)">下層 ↓</button>
+            <button class="btn" onclick="rotateFace('left', false)">左層 ←</button>
+            <button class="btn" onclick="rotateFace('left', true)">左層 →</button>
+            <button class="btn" onclick="rotateFace('right', false)">右層 ←</button>
+            <button class="btn" onclick="rotateFace('right', true)">右層 →</button>
+            <button class="btn" onclick="rotateFace('front', false)">前層 ↺</button>
+            <button class="btn" onclick="rotateFace('front', true)">前層 ↻</button>
+            <button class="btn" onclick="rotateFace('back', false)">後層 ↺</button>
+            <button class="btn" onclick="rotateFace('back', true)">後層 ↻</button>
+        </div>
+        <button class="btn" onclick="resetCube()">重置方塊</button>
+        <button class="btn" onclick="scrambleCube()">隨機打亂</button>
+    </div>
+    
+    <div class="help-btn" onclick="showHelp()">?</div>
+    
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeHelp()">&times;</span>
+            <h2>操作說明</h2>
+            <p style="margin-top: 15px;">1. 使用滑鼠拖曳可旋轉整個視角</p>
+            <p>2. 滑鼠滾輪可放大縮小</p>
+            <p>3. 點擊按鈕可旋轉對應的魔術方塊層面</p>
+            <p>4. 「重置方塊」可將魔術方塊恢復原始狀態</p>
+            <p>5. 「隨機打亂」可隨機旋轉魔術方塊</p>
+            <p style="margin-top: 15px; font-style: italic;">提示：在手機上可使用手指滑動來旋轉視角</p>
+        </div>
+    </div>
+
+    <script>
+        let scene, camera, renderer, controls;
+        let cubeGroup = new THREE.Group();
+        let animating = false;
+        const cubeSize = 1;
+        const gap = 0.1;
+        const totalSize = 3 * cubeSize + 2 * gap;
+        
+        // 顏色定義
+        const colors = {
+            up: 0xffffff,    // 白色
+            down: 0xffff00,  // 黃色
+            left: 0xff8000,  // 橙色
+            right: 0xff0000, // 紅色
+            front: 0x00ff00, // 綠色
+            back: 0x0000ff   // 藍色
+        };
+        
+        // 儲存每個小方塊的資訊
+        let cubes = [];
+        
+        // 創建粒子效果 (from style.html)
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            if (!particlesContainer) return; // 防止容器不存在時出錯
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 3 + 's';
+                particle.style.animationDuration = (2 + Math.random() * 4) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // 初始化場景
+        function init() {
+            createParticles(); // 調用粒子創建函數
+
+            // 建立場景
+            scene = new THREE.Scene();
+            
+            // 建立相機
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(5, 5, 5);
+            camera.lookAt(0, 0, 0);
+            
+            // 建立渲染器
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x000000, 0);
+            document.getElementById('container').appendChild(renderer.domElement);
+            
+            // 建立控制器
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            
+            // 建立光源
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(10, 20, 15);
+            scene.add(directionalLight);
+            
+            // 建立魔術方塊
+            createRubiksCube();
+            
+            // 將魔術方塊加入場景
+            scene.add(cubeGroup);
+            
+            // 視窗大小變化時調整
+            window.addEventListener('resize', onWindowResize);
+            
+            // 開始動畫循環
+            animate();
+        }
+        
+        // 建立魔術方塊
+        function createRubiksCube() {
+            cubes = [];
+            cubeGroup = new THREE.Group();
+            
+            // 計算起始位置，使魔術方塊居中
+            const start = -totalSize / 2 + cubeSize / 2;
+            
+            // 建立 3x3x3 的小方塊
+            for (let x = 0; x < 3; x++) {
+                for (let y = 0; y < 3; y++) {
+                    for (let z = 0; z < 3; z++) {
+                        // 跳過中心的小方塊
+                        if (x === 1 && y === 1 && z === 1) continue;
+                        
+                        const posX = start + x * (cubeSize + gap);
+                        const posY = start + y * (cubeSize + gap);
+                        const posZ = start + z * (cubeSize + gap);
+                        
+                        const cubeGeometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
+                        const cubeMaterials = Array(6).fill().map(() => new THREE.MeshPhongMaterial({ color: 0x333333 }));
+                        
+                        // 設定各面顏色
+                        if (x === 2) cubeMaterials[0].color.setHex(colors.right); // 右面
+                        if (x === 0) cubeMaterials[1].color.setHex(colors.left);  // 左面
+                        if (y === 2) cubeMaterials[2].color.setHex(colors.up);    // 上面
+                        if (y === 0) cubeMaterials[3].color.setHex(colors.down);  // 下面
+                        if (z === 2) cubeMaterials[4].color.setHex(colors.front); // 前面
+                        if (z === 0) cubeMaterials[5].color.setHex(colors.back);  // 後面
+                        
+                        const cube = new THREE.Mesh(cubeGeometry, cubeMaterials);
+                        cube.position.set(posX, posY, posZ);
+                        
+                        // 添加邊框
+                        const edgesGeometry = new THREE.EdgesGeometry(cubeGeometry);
+                        const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 1 });
+                        const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
+                        cube.add(edges);
+                        
+                        // 儲存小方塊的初始位置和索引
+                        cube.userData = {
+                            originalPosition: new THREE.Vector3(posX, posY, posZ),
+                            indices: { x, y, z }
+                        };
+                        
+                        cubeGroup.add(cube);
+                        cubes.push(cube);
+                    }
+                }
+            }
+        }
+        
+        // 旋轉指定面
+        function rotateFace(face, clockwise) {
+            if (animating) return;
+            
+            animating = true;
+            
+            // 選擇要旋轉的小方塊
+            const faceCubes = []; // 用於存放實際要旋轉的小方塊
+            const axis = new THREE.Vector3();
+            const angle = clockwise ? Math.PI / 2 : -Math.PI / 2;
+            
+            // 篩選出屬於特定面的小方塊
+            // 這裡的邏輯保持不變，只是將方塊存入 faceCubes
+            switch (face) {
+                case 'up':
+                    cubes.forEach(cube => {
+                        if (Math.abs(cube.position.y - (totalSize / 2 - cubeSize / 2)) < 0.1) {
+                            faceCubes.push(cube);
+                        }
+                    });
+                    axis.set(0, 1, 0);
+                    break;
+                case 'down':
+                    cubes.forEach(cube => {
+                        if (Math.abs(cube.position.y - (-totalSize / 2 + cubeSize / 2)) < 0.1) {
+                            faceCubes.push(cube);
+                        }
+                    });
+                    axis.set(0, 1, 0);
+                    break;
+                case 'left':
+                    cubes.forEach(cube => {
+                        if (Math.abs(cube.position.x - (-totalSize / 2 + cubeSize / 2)) < 0.1) {
+                            faceCubes.push(cube);
+                        }
+                    });
+                    axis.set(1, 0, 0);
+                    break;
+                case 'right':
+                    cubes.forEach(cube => {
+                        if (Math.abs(cube.position.x - (totalSize / 2 - cubeSize / 2)) < 0.1) {
+                            faceCubes.push(cube);
+                        }
+                    });
+                    axis.set(1, 0, 0);
+                    break;
+                case 'front':
+                    cubes.forEach(cube => {
+                        if (Math.abs(cube.position.z - (totalSize / 2 - cubeSize / 2)) < 0.1) {
+                            faceCubes.push(cube);
+                        }
+                    });
+                    axis.set(0, 0, 1);
+                    break;
+                case 'back':
+                    cubes.forEach(cube => {
+                        if (Math.abs(cube.position.z - (-totalSize / 2 + cubeSize / 2)) < 0.1) {
+                            faceCubes.push(cube);
+                        }
+                    });
+                    axis.set(0, 0, 1);
+                    break;
+            }
+            
+            // 建立一個臨時群組用於旋轉
+            const rotationGroup = new THREE.Group();
+            scene.add(rotationGroup);
+            // 確保 rotationGroup 的世界變換與 cubeGroup 一致，如果 cubeGroup 有變換的話
+            // 假設 cubeGroup 在原點且無旋轉，所以 rotationGroup 也在原點
+            // rotationGroup.position.copy(cubeGroup.position);
+            // rotationGroup.quaternion.copy(cubeGroup.quaternion);
+
+            // 將選中的小方塊從 cubeGroup 移到 rotationGroup
+            faceCubes.forEach(cube => {
+                // 獲取 cube 相對於其父物件 (cubeGroup) 的世界矩陣
+                cube.updateMatrixWorld(true);
+                const worldMatrix = cube.matrixWorld.clone();
+
+                cubeGroup.remove(cube); // 從 cubeGroup 移除
+                rotationGroup.add(cube);  // 添加到 rotationGroup
+
+                // 將 cube 的世界變換應用回其局部變換 (相對於 rotationGroup)
+                // 首先獲取 rotationGroup 的世界矩陣的逆
+                const rotationGroupInverseMatrixWorld = new THREE.Matrix4();
+                rotationGroup.updateMatrixWorld(true);
+                rotationGroupInverseMatrixWorld.copy(rotationGroup.matrixWorld).invert();
+                
+                // 將 cube 的世界矩陣乘以 rotationGroup 的逆世界矩陣，得到相對於 rotationGroup 的局部矩陣
+                const localMatrix = new THREE.Matrix4().multiplyMatrices(rotationGroupInverseMatrixWorld, worldMatrix);
+                
+                // 從局部矩陣分解出位置、旋轉和縮放
+                localMatrix.decompose(cube.position, cube.quaternion, cube.scale);
+            });
+            
+            // 執行旋轉動畫
+            let currentAnimatedAngle = 0;
+            const rotationSpeedFactor = 0.1; // 控制動畫速度，值越小越慢
+            
+            function animateRotation() {
+                const angleIncrement = angle * rotationSpeedFactor;
+                
+                if ( (angle > 0 && currentAnimatedAngle < angle) || (angle < 0 && currentAnimatedAngle > angle) ) {
+                    let remainingAngle = angle - currentAnimatedAngle;
+                    let stepAngle = angleIncrement;
+
+                    if (Math.abs(stepAngle) > Math.abs(remainingAngle)) {
+                        stepAngle = remainingAngle; // 最後一步，確保旋轉到目標角度
+                    }
+                    
+                    rotationGroup.rotateOnWorldAxis(axis, stepAngle);
+                    currentAnimatedAngle += stepAngle;
+                    
+                    requestAnimationFrame(animateRotation);
+                } else {
+                    // 確保精確到達目標角度
+                    const finalRotationCorrection = angle - currentAnimatedAngle;
+                    if(Math.abs(finalRotationCorrection) > 0.001) { // 避免無限小的校正
+                         rotationGroup.rotateOnWorldAxis(axis, finalRotationCorrection);
+                    }
+                    rotationGroup.updateMatrixWorld(true); // 更新 rotationGroup 的世界變換
+
+                    // 動畫完成後，將小方塊重新加入主群組
+                    while (rotationGroup.children.length > 0) {
+                        const cube = rotationGroup.children[0];
+                        
+                        // 獲取 cube 相對於 rotationGroup 的世界矩陣
+                        cube.updateMatrixWorld(true);
+                        const worldMatrix = cube.matrixWorld.clone();
+
+                        rotationGroup.remove(cube); // 從 rotationGroup 移除
+                        cubeGroup.add(cube);    // 添加回 cubeGroup
+
+                        // 將 cube 的世界變換應用回其局部變換 (相對於 cubeGroup)
+                        const cubeGroupInverseMatrixWorld = new THREE.Matrix4();
+                        cubeGroup.updateMatrixWorld(true);
+                        cubeGroupInverseMatrixWorld.copy(cubeGroup.matrixWorld).invert();
+
+                        const localMatrix = new THREE.Matrix4().multiplyMatrices(cubeGroupInverseMatrixWorld, worldMatrix);
+                        localMatrix.decompose(cube.position, cube.quaternion, cube.scale);
+                    }
+                    
+                    scene.remove(rotationGroup);
+                    animating = false;
+                }
+            }
+            animateRotation();
+        }
+        
+        // 重置魔術方塊
+        function resetCube() {
+            if (animating) return;
+            
+            scene.remove(cubeGroup);
+            createRubiksCube();
+            scene.add(cubeGroup);
+        }
+        
+        // 隨機打亂魔術方塊
+        function scrambleCube() {
+            if (animating) return;
+            
+            const faces = ['up', 'down', 'left', 'right', 'front', 'back'];
+            const moves = 20; // 打亂的步數
+            let moveCount = 0;
+            
+            function makeRandomMove() {
+                if (moveCount >= moves) {
+                    return;
+                }
+                
+                const face = faces[Math.floor(Math.random() * faces.length)];
+                const clockwise = Math.random() > 0.5;
+                
+                rotateFace(face, clockwise);
+                moveCount++;
+                
+                // 等待當前旋轉完成後再進行下一步
+                setTimeout(() => {
+                    makeRandomMove();
+                }, 300);
+            }
+            
+            makeRandomMove();
+        }
+        
+        // 顯示幫助視窗
+        function showHelp() {
+            document.getElementById('helpModal').style.display = 'flex';
+        }
+        
+        // 關閉幫助視窗
+        function closeHelp() {
+            document.getElementById('helpModal').style.display = 'none';
+        }
+        
+        // 視窗大小變化時調整
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        // 動畫循環
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        
+        // 初始化
+        init();
+    </script>
+</body>
+</html>
+
+
