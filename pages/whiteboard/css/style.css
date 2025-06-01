@@ -1,0 +1,295 @@
+/* 基本樣式，確保 canvas 初始時可見 */
+#whiteboard {
+    display: block; /* 移除 canvas 底部多餘的空間 */
+    background-color: #f0f0f0; /* 暫時的背景色，方便觀察 */
+} 
+
+/* 計時器樣式 */
+.timer-display {
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* 音量偵測樣式 */
+.volume-detection {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 音量條樣式 */
+.volume-bar-container {
+    width: 80px;
+    height: 12px;
+    background-color: #e5e7eb;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+}
+
+.volume-bar {
+    height: 100%;
+    transition: width 0.1s ease-out;
+    border-radius: 6px;
+}
+
+.volume-bar.low {
+    background-color: #10b981; /* 綠色 */
+}
+
+.volume-bar.medium {
+    background-color: #f59e0b; /* 黃色 */
+}
+
+.volume-bar.high {
+    background-color: #ef4444; /* 紅色 */
+}
+
+/* 閾值滑桿樣式 */
+#volumeThreshold {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+#volumeThreshold::-webkit-slider-track {
+    background: #e5e7eb;
+    height: 8px;
+    border-radius: 4px;
+}
+
+#volumeThreshold::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    background: #3b82f6;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#volumeThreshold::-moz-range-track {
+    background: #e5e7eb;
+    height: 8px;
+    border-radius: 4px;
+    border: none;
+}
+
+#volumeThreshold::-moz-range-thumb {
+    background: #3b82f6;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+/* 麥克風按鈕狀態 */
+.mic-active {
+    background-color: #ef4444 !important;
+    color: white;
+}
+
+.mic-inactive {
+    background-color: #6b7280;
+    color: white;
+}
+
+/* 警告鈴鐺動畫 */
+.warning-bell-shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    75% { transform: translateX(2px); }
+}
+
+/* Toast 通知樣式 */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #ef4444;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    font-weight: 500;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.toast.show {
+    transform: translateX(0);
+}
+
+.toast.hide {
+    transform: translateX(100%);
+}
+
+/* 音量條閾值指示線 */
+.threshold-indicator {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: #ef4444;
+    z-index: 1;
+    transition: left 0.2s ease;
+}
+
+/* YouTube 影片容器樣式 */
+.youtube-video-container {
+    user-select: none;
+    transition: box-shadow 0.2s ease;
+}
+
+.youtube-video-container:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.youtube-video-container.selected {
+    border-color: #ef4444 !important;
+}
+
+/* YouTube 影片控制項樣式 */
+.video-controls {
+    pointer-events: auto;
+}
+
+.video-controls button:hover {
+    background-color: #dc2626 !important;
+    transform: scale(1.1);
+}
+
+/* 圓形控制按鈕樣式 */
+.move-handle:hover {
+    background-color: #2563eb !important;
+    transform: scale(1.1) !important;
+}
+
+.youtube-video-container button[title="刪除影片"]:hover {
+    background-color: #dc2626 !important;
+    transform: scale(1.1) !important;
+}
+
+/* 縮放控制點樣式 */
+.resize-handle {
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.resize-handle:hover {
+    transform: scale(1.2);
+    background-color: #059669 !important;
+}
+
+/* YouTube 工具按鈕啟動狀態 */
+#youtubeTool.active {
+    background-color: #dc2626 !important;
+    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.3);
+}
+
+/* 圖片容器樣式 */
+.image-container {
+    user-select: none;
+    transition: box-shadow 0.2s ease;
+}
+
+.image-container:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.image-container.selected {
+    border-color: #ef4444 !important;
+}
+
+/* 圖片控制按鈕樣式 */
+.image-control-btn:hover {
+    transform: scale(1.1) !important;
+}
+
+.image-container button[title="移動圖片"]:hover {
+    background-color: #4f46e5 !important;
+}
+
+.image-container button[title="刪除圖片"]:hover {
+    background-color: #dc2626 !important;
+}
+
+.image-container .resize-handle:hover {
+    background-color: #059669 !important;
+}
+
+/* 圖片工具按鈕啟動狀態 */
+#imageTool.active {
+    background-color: #5b21b6 !important;
+    box-shadow: 0 0 0 2px rgba(91, 33, 182, 0.3);
+}
+
+/* 選擇工具按鈕啟動狀態 - 已整合到上面的統一樣式中 */
+
+/* 滑鼠工具按鈕選取狀態 - 已整合到上面的統一樣式中 */
+
+/* 工具按鈕基本樣式增強 */
+.tool-btn {
+    transition: all 0.2s ease-in-out;
+}
+
+/* 所有工具按鈕的選取狀態 */
+#cursorTool.active, #cursorTool.ring-2 {
+    background-color: #0891b2 !important;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.5) !important;
+    transform: scale(1.05);
+}
+
+#penTool.active, #penTool.ring-2 {
+    background-color: #2563eb !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5) !important;
+    transform: scale(1.05);
+}
+
+#eraserTool.active, #eraserTool.ring-2 {
+    background-color: #4b5563 !important;
+    box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.5) !important;
+    transform: scale(1.05);
+}
+
+#textTool.active, #textTool.ring-2 {
+    background-color: #d97706 !important;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.5) !important;
+    transform: scale(1.05);
+}
+
+#notesTool.active, #notesTool.ring-2 {
+    background-color: #ea580c !important;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.5) !important;
+    transform: scale(1.05);
+}
+
+#qrTool.active, #qrTool.ring-2 {
+    background-color: #059669 !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.5) !important;
+    transform: scale(1.05);
+}
+
+#youtubeTool.active, #youtubeTool.ring-2 {
+    background-color: #dc2626 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.5) !important;
+    transform: scale(1.05);
+}
+
+#imageTool.active, #imageTool.ring-2 {
+    background-color: #7c3aed !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.5) !important;
+    transform: scale(1.05);
+} 

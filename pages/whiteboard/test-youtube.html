@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube 功能測試</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="h-full m-0 overflow-hidden bg-gray-100">
+    <div class="p-4">
+        <h1 class="text-2xl font-bold mb-4">YouTube 嵌入功能測試</h1>
+        
+        <div class="mb-4">
+            <button id="testYouTube" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
+                測試 YouTube 功能
+            </button>
+            <button id="clearAll" class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 ml-2">
+                清除所有影片
+            </button>
+        </div>
+        
+        <div class="mb-4">
+            <p class="text-sm text-gray-600">
+                點擊「測試 YouTube 功能」按鈕會自動建立一個測試影片。<br>
+                您也可以手動輸入 YouTube URL 進行測試。
+            </p>
+        </div>
+        
+        <div id="testArea" class="relative w-full h-96 bg-white border-2 border-gray-300 rounded">
+            <p class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-500">
+                測試區域 - YouTube 影片將顯示在這裡
+            </p>
+        </div>
+    </div>
+
+    <script src="js/YouTubeModule.js"></script>
+    <script>
+        // 初始化 YouTube 模組
+        const youtubeModule = new YouTubeModule();
+        youtubeModule.activate();
+
+        // 測試按鈕事件
+        document.getElementById('testYouTube').addEventListener('click', () => {
+            // 模擬在測試區域中心點擊
+            const testArea = document.getElementById('testArea');
+            const rect = testArea.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            // 建立模擬事件
+            const mockEvent = {
+                target: { id: 'testArea' },
+                clientX: centerX,
+                clientY: centerY
+            };
+
+            // 直接調用 YouTube 模組的方法
+            youtubeModule.createYouTubeVideo(200, 100);
+        });
+
+        // 清除按鈕事件
+        document.getElementById('clearAll').addEventListener('click', () => {
+            youtubeModule.clearAllVideos();
+        });
+
+        // 讓測試區域可以接收點擊事件
+        document.getElementById('testArea').addEventListener('click', (e) => {
+            const rect = e.target.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // 模擬畫布點擊事件
+            const mockEvent = {
+                target: { id: 'testArea' },
+                clientX: e.clientX,
+                clientY: e.clientY
+            };
+            
+            youtubeModule.handleCanvasClick(mockEvent);
+        });
+
+        console.log('YouTube 測試頁面已載入');
+    </script>
+</body>
+</html> 
