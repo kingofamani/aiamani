@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>Firebas Studio專案轉移本地開發與靜態部署指南</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: sans-serif; line-height: 1.6; padding: 2rem; max-width: 960px; margin: auto; background: #fff; color: #333; }
+    h1, h2, h3 { margin-top: 2em; }
+    code { background: #f4f4f4; padding: 0.2em 0.4em; border-radius: 4px; }
+    pre { background: #f4f4f4; padding: 1em; overflow-x: auto; border-radius: 4px; }
+    a { color: #0070f3; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    ul, ol { margin-left: 2em; }
+  </style>
+</head>
+<body>
+  <h1>Firebas Studio專案轉移本地開發與靜態部署指南</h1>
+
+  <h2>引言</h2>
+  <p>本指南記錄了將從 Firebase (或其他來源) 取得的 3D2048 (方塊疊疊樂) Next.js 專案，在本地環境進行開發、疑難排解，並最終建置與部署為純靜態網站的完整步驟。這些步驟基於一次實際的開發與除錯過程。</p>
+
+  <h2>1. 專案初始化與理解 (Cascade <code>/initmd</code> 流程)</h2>
+  <ul>
+    <li><strong>閱讀 <code>README.md</code></strong>：獲取專案的基本介紹、安裝指南與開發腳本。</li>
+    <li><strong>檢視專案檔案結構</strong>：全面掃描專案中的所有目錄和檔案。</li>
+    <li><strong>生成輔助理解文件</strong>：
+      <ul>
+        <li><code>TODO.md</code>：待辦事項與功能規劃。</li>
+        <li><code>FRAMEWORK.md</code>：技術棧說明。</li>
+        <li><code>FLOW.md</code>：主要功能流程圖 (Mermaid 語法)。</li>
+        <li><code>INIT.md</code>：初始化摘要文件。</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h2>2. 環境設定與首次建置準備</h2>
+  <ol>
+    <li>
+      <strong>確保開發環境</strong>：
+      <ul>
+        <li>安裝 <a href="https://nodejs.org/">Node.js</a> (建議 LTS)。</li>
+        <li>可選用 <code>yarn</code>：<code>npm install -g yarn</code></li>
+      </ul>
+    </li>
+    <li>
+      <strong>安裝依賴</strong>：
+      <pre><code>npm install
+# 或者使用 yarn
+# yarn install</code></pre>
+    </li>
+  </ol>
+
+  <h2>3. 配置 Next.js 靜態網站匯出</h2>
+  <p><strong>修改 <code>next.config.ts</code></strong>：</p>
+  <pre><code>import type { NextConfig } from 'next';
+
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
+const nextConfig: NextConfig = {
+  output: 'export',
+  basePath: basePath,
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
+        pathname: '/**',
+      },
+    ],
+  },
+};
+
+export default nextConfig;</code></pre>
+
+  <p><strong>確認 <code>package.json</code> 中的建置指令：</strong></p>
+  <pre><code>{
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  }
+}</code></pre>
+
+  <h2>4. 處理潛在的 Google 服務費用</h2>
+  <p>檢查是否啟用了 Firebase 或 Genkit AI，並參考指南關閉不必要的 API 使用。</p>
+
+  <h2>5. 解決 TypeScript 型別錯誤</h2>
+  <p><strong>修改 TileState 定義：</strong></p>
+  <pre><code>export interface TileState {
+  id: string;
+  value: number;
+  height: number;
+  row: number;
+  col: number;
+  isNew: boolean;
+  isMerged: boolean;
+  previousRow: number;
+  previousCol: number;
+  mergedFrom?: [string, string] | null;
+  mesh?: THREE.Mesh;
+}</code></pre>
+
+  <p><strong>更新程式邏輯</strong>：請見原文中各段詳述，包括 <code>addRandomTile</code>、<code>processMove</code> 的邏輯修正。</p>
+
+  <h2>6. 執行建置與輸出</h2>
+  <pre><code>npm run build</code></pre>
+  <p><strong>若遇到 EBUSY 錯誤，請參照建議操作關閉鎖定的資源。</strong></p>
+
+  <h2>7. 本地測試靜態網站</h2>
+  <p>使用本地 HTTP 伺服器：</p>
+  <ul>
+    <li>Python：
+      <pre><code>cd out
+python -m http.server</code></pre>
+    </li>
+    <li>Node.js <code>serve</code>：
+      <pre><code>npm install -g serve
+serve out</code></pre>
+    </li>
+  </ul>
+
+  <h2>8. 部署到子目錄 (如 <code>/pages/3d2048</code>)</h2>
+  <ol>
+    <li>在 <code>next.config.ts</code> 中使用 <code>basePath</code> 並讀取 <code>NEXT_PUBLIC_BASE_PATH</code>。</li>
+    <li>建置前設定環境變數：
+      <pre><code># Windows PowerShell
+$env:NEXT_PUBLIC_BASE_PATH="/pages/3d2048"; npm run build
+
+# macOS/Linux
+NEXT_PUBLIC_BASE_PATH=/pages/3d2048 npm run build</code></pre>
+    </li>
+  </ol>
+
+  <h2>9. 最終部署</h2>
+  <p>將 <code>out</code> 資料夾內容上傳至對應的主機目錄中即可。</p>
+
+  <h2>10. 總結與後續</h2>
+  <ul>
+    <li>完成本地理解、建置、型別錯誤修正與靜態輸出設定。</li>
+    <li>實現部署至根目錄與子目錄的能力。</li>
+    <li>接下來可持續優化 UI、遊戲邏輯或整合 AI 功能。</li>
+  </ul>
+
+</body>
+</html>
