@@ -1,147 +1,388 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <title>Firebas Studio專案轉移本地開發與靜態部署指南</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body { font-family: sans-serif; line-height: 1.6; padding: 2rem; max-width: 960px; margin: auto; background: #fff; color: #333; }
-    h1, h2, h3 { margin-top: 2em; }
-    code { background: #f4f4f4; padding: 0.2em 0.4em; border-radius: 4px; }
-    pre { background: #f4f4f4; padding: 1em; overflow-x: auto; border-radius: 4px; }
-    a { color: #0070f3; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    ul, ol { margin-left: 2em; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebas Studio專案轉移本地開發與靜態部署指南</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; margin: 20px; }
+        h1, h2, h3 { color: #333; }
+        h1 { border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        h2 { border-bottom: 1px solid #eee; padding-bottom: 5px; margin-top: 30px; }
+        pre { background-color: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        code { font-family: monospace; background-color: #f0f0f0; padding: 2px 4px; border-radius: 3px; }
+        pre code { background-color: transparent; padding: 0; }
+        ul, ol { margin-left: 20px; }
+        li { margin-bottom: 5px; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 15px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        a { color: #007bff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
 </head>
 <body>
-  <h1>Firebas Studio專案轉移本地開發與靜態部署指南</h1>
 
-  <h2>引言</h2>
-  <p>本指南記錄了將從 Firebase (或其他來源) 取得的 3D2048 (方塊疊疊樂) Next.js 專案，在本地環境進行開發、疑難排解，並最終建置與部署為純靜態網站的完整步驟。這些步驟基於一次實際的開發與除錯過程。</p>
+    <h1>Firebas Studio專案轉移本地開發與靜態部署指南</h1>
 
-  <h2>1. 專案初始化與理解 (Cascade <code>/initmd</code> 流程)</h2>
-  <ul>
-    <li><strong>閱讀 <code>README.md</code></strong>：獲取專案的基本介紹、安裝指南與開發腳本。</li>
-    <li><strong>檢視專案檔案結構</strong>：全面掃描專案中的所有目錄和檔案。</li>
-    <li><strong>生成輔助理解文件</strong>：
-      <ul>
-        <li><code>TODO.md</code>：待辦事項與功能規劃。</li>
-        <li><code>FRAMEWORK.md</code>：技術棧說明。</li>
-        <li><code>FLOW.md</code>：主要功能流程圖 (Mermaid 語法)。</li>
-        <li><code>INIT.md</code>：初始化摘要文件。</li>
-      </ul>
-    </li>
-  </ul>
+    <h2>引言</h2>
 
-  <h2>2. 環境設定與首次建置準備</h2>
-  <ol>
-    <li>
-      <strong>確保開發環境</strong>：
-      <ul>
-        <li>安裝 <a href="https://nodejs.org/">Node.js</a> (建議 LTS)。</li>
-        <li>可選用 <code>yarn</code>：<code>npm install -g yarn</code></li>
-      </ul>
-    </li>
-    <li>
-      <strong>安裝依賴</strong>：
-      <pre><code>npm install
-# 或者使用 yarn
-# yarn install</code></pre>
-    </li>
-  </ol>
+    <p>本指南記錄了將從 Firebase (或其他來源) 取得的 3D2048 (方塊疊疊樂) Next.js 專案，在本地環境進行開發、疑難排解，並最終建置與部署為純靜態網站的完整步驟。這些步驟基於一次實際的開發與除錯過程。</p>
 
-  <h2>3. 配置 Next.js 靜態網站匯出</h2>
-  <p><strong>修改 <code>next.config.ts</code></strong>：</p>
-  <pre><code>import type { NextConfig } from 'next';
+    <h2>1. 專案初始化與理解 (Cascade <code>/initmd</code> 流程)</h2>
 
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+    <p>在開始任何程式碼修改之前，首要任務是深入理解專案的結構、技術棧與主要功能。當您指示 Cascade (AI 助手) 執行 <code>/initmd</code> 指令時，進行了以下操作以達成此目的：</p>
+
+    <ul>
+        <li><strong>閱讀 <code>README.md</code></strong>：獲取專案的基本介紹、安裝指南與開發腳本。</li>
+        <li><strong>檢視專案檔案結構</strong>：全面掃描專案中的所有目錄和檔案，以理解程式碼組織方式、主要組件位置以及不同技術的整合方式。</li>
+        <li><strong>生成輔助理解文件</strong>：
+            <ul>
+                <li><code>TODO.md</code>：整理專案的待辦事項、潛在改進點與未來功能擴展方向。</li>
+                <li><code>FRAMEWORK.md</code>：詳細描述專案使用的主要框架與技術 (Next.js, React, Three.js, TypeScript, Tailwind CSS, Genkit AI, Firebase 等)。</li>
+                <li><code>FLOW.md</code>：使用 Mermaid 語法繪製專案的主要功能流程圖，例如遊戲初始化、玩家操作、方塊移動與合併、狀態更新等。</li>
+                <li><code>INIT.md</code>：彙總以上所有資訊，形成一份專案的整體初始化摘要，包含技術概覽、核心組件、主要流程及潛在擴展點。</li>
+            </ul>
+        </li>
+    </ul>
+
+    <p>這些步驟與產生的文件為後續的開發與除錯工作奠定了堅實的基礎。</p>
+
+    <h2>2. 環境設定與首次建置準備</h2>
+
+    <ol>
+        <li>
+            <strong>確保開發環境</strong>：
+            <ul>
+                <li>安裝 <a href="https://nodejs.org/">Node.js</a> (建議使用 LTS 版本)，它會同時安裝 npm。</li>
+                <li>您可以選擇使用 yarn (<code>npm install -g yarn</code>) 作為套件管理器。</li>
+            </ul>
+        </li>
+        <li>
+            <strong>安裝專案依賴</strong>：
+            <p>在專案根目錄下開啟終端機，執行以下指令安裝所有必要的套件：</p>
+            <pre><code class="language-bash">npm install
+# 或者如果您使用 yarn
+# yarn install
+</code></pre>
+        </li>
+    </ol>
+
+    <h2>3. 配置 Next.js 靜態網站匯出</h2>
+
+    <p>為了讓專案能夠作為純前端靜態網站運行，不依賴 Node.js 後端，我們需要設定 Next.js 的靜態匯出功能。</p>
+
+    <ul>
+        <li>
+            <p><strong>修改 <code>next.config.ts</code> (或 <code>next.config.js</code>)</strong>：<br>
+            開啟此檔案，並加入 <code>output: 'export'</code> 選項。</p>
+
+            <pre><code class="language-typescript">// next.config.ts
+import type { NextConfig } from 'next';
+
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ''; // 後續步驟會用到
 
 const nextConfig: NextConfig = {
-  output: 'export',
-  basePath: basePath,
+  output: 'export', // <-- 加入此行
+  basePath: basePath, // <-- 後續步驟會用到
+  // ... 其他設定
   images: {
+    // 如果您的專案使用 next/image 且需要外部圖片，
+    // 靜態匯出時可能需要 unoptimized: true，或確保圖片路徑正確
+    // unoptimized: true, // 範例
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'placehold.co',
+        port: '',
         pathname: '/**',
       },
     ],
   },
+  typescript: {
+    // ignoreBuildErrors: true, // 建議修復錯誤而非忽略
+  },
 };
 
-export default nextConfig;</code></pre>
+export default nextConfig;
+</code></pre>
+        </li>
+        <li>
+            <p><strong>確認 <code>package.json</code> 中的建置指令</strong>：<br>
+            確保 <code>scripts</code> 中的 <code>build</code> 指令是 <code>next build</code>。</p>
 
-  <p><strong>確認 <code>package.json</code> 中的建置指令：</strong></p>
-  <pre><code>{
+            <pre><code class="language-json">// package.json
+{
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build", // <-- 確認此行
     "start": "next start",
     "lint": "next lint"
   }
-}</code></pre>
+  // ... 其他內容
+}
+</code></pre>
+        </li>
+    </ul>
 
-  <h2>4. 處理潛在的 Google 服務費用</h2>
-  <p>檢查是否啟用了 Firebase 或 Genkit AI，並參考指南關閉不必要的 API 使用。</p>
+    <h2>4. 處理潛在的 Google 服務費用</h2>
 
-  <h2>5. 解決 TypeScript 型別錯誤</h2>
-  <p><strong>修改 TileState 定義：</strong></p>
-  <pre><code>export interface TileState {
+    <p>專案中使用了 Firebase 和 Genkit AI (整合 Google Gemini 模型)，這些服務在特定用量下可能產生費用。</p>
+
+    <ul>
+        <li><strong>Firebase</strong>：檢查專案中是否有 Firebase 後端服務的初始化程式碼 (例如 <code>firebase.initializeApp()</code>) 或相關設定檔 (如 <code>.firebaserc</code>, <code>firebase.json</code>)。在此次開發過程中，未發現直接的 Firebase 後端服務使用，因此推斷短期內不會因 Firebase 後端服務產生費用。</li>
+        <li><strong>Genkit AI (Google AI - Gemini)</strong>：在 <code>src/ai/genkit.ts</code> 中發現了 Google AI Gemini 模型的配置。雖然程式碼中可能未實際調用 AI 功能，但 API 金鑰的配置意味著若有調用則可能產生費用。</li>
+    </ul>
+
+    <p><strong>建議措施</strong>：</p>
+    <ol>
+        <li>登入您的 <a href="https://console.cloud.google.com/">Google Cloud Console</a>。</li>
+        <li>檢查相關 API (例如 Vertex AI, Generative Language API) 是否已啟用。</li>
+        <li>檢視「帳單」和「API 用量」部分，監控是否有非預期的費用或 API 呼叫。</li>
+        <li>如果您確定短期內不會使用 AI 功能，可以考慮暫時註解或移除 <code>src/ai/genkit.ts</code> 中的 AI 配置，或移除相關的 API 金鑰環境變數，以避免意外觸發。</li>
+    </ol>
+
+    <h2>5. 解決 TypeScript 型別錯誤</h2>
+
+    <p>在首次嘗試執行 <code>npm run build</code> 時，遇到了 TypeScript 型別錯誤，主要集中在 <code>src/lib/game-utils.ts</code> 中關於 <code>TileState</code> 的處理。</p>
+
+    <ul>
+        <li><strong>錯誤原因</strong>：<code>TileState</code> 型別定義中的某些動畫相關屬性 (如 <code>previousRow</code>, <code>previousCol</code>, <code>isNew</code>, <code>isMerged</code>) 被定義為可選的 (optional, 使用 <code>?:</code>)，但在遊戲 logique 中賦值給 <code>currentGrid</code> 的元素時，TypeScript 編譯器期望這些屬性是必須存在的 (non-optional)。</li>
+        <li>
+            <p><strong>解決步驟</strong>：</p>
+            <ol>
+                <li>
+                    <p><strong>修改 <code>src/types/index.ts</code> 中的 <code>TileState</code> 定義</strong>：<br>
+                    將相關屬性從可選改為必須。</p>
+                    <pre><code class="language-typescript">// src/types/index.ts
+export interface TileState {
   id: string;
   value: number;
   height: number;
   row: number;
   col: number;
-  isNew: boolean;
-  isMerged: boolean;
-  previousRow: number;
-  previousCol: number;
+  
+  // For animation purposes - 改為必須
+  isNew: boolean;       // 原為 isNew?: boolean;
+  isMerged: boolean;    // 原為 isMerged?: boolean;
+  previousRow: number;  // 原為 previousRow?: number;
+  previousCol: number;  // 原為 previousCol?: number;
   mergedFrom?: [string, string] | null;
   mesh?: THREE.Mesh;
-}</code></pre>
+}
+</code></pre>
+                </li>
+                <li>
+                    <p><strong>更新 <code>src/lib/game-utils.ts</code> 中創建 <code>TileState</code> 物件的 logique</strong>：</p>
+                    <ul>
+                        <li>
+                            <p><strong><code>addRandomTile</code> 函式</strong>：確保新生成的方塊 (<code>newTile</code>) 包含所有必要的屬性。</p>
+                            <pre><code class="language-typescript">// src/lib/game-utils.ts (部分程式碼)
+const newTile: TileState = {
+  id: generateId(),
+  value,
+  height: BASE_TILE_HEIGHT_UNIT,
+  row,
+  col,
+  isNew: true,
+  isMerged: false,        // 新增：新方塊未合併
+  previousRow: row,       // 新增：新方塊的初始位置即為其"前一個"位置
+  previousCol: col,       // 新增
+};
+</code></pre>
+                        </li>
+                        <li>
+                            <p><strong><code>processMove</code> 函式</strong>：</p>
+                            <ul>
+                                <li>
+                                    <p>在函式開頭，當從原始 <code>grid</code> 複製到 <code>currentGrid</code> 時，為所有現存方塊初始化動畫相關屬性：</p>
+                                    <pre><code class="language-typescript">// src/lib/game-utils.ts (部分程式碼)
+let currentGrid = grid.map(rowArr => 
+  rowArr.map(tile => 
+    tile 
+      ? { 
+          ...tile, 
+          previousRow: tile.row, 
+          previousCol: tile.col, 
+          isNew: false,       // 現有方塊不是新生成的
+          isMerged: false     // 初始狀態未合併
+        } 
+      : null
+  )
+);
+</code></pre>
+                                </li>
+                                <li>
+                                    <p><strong>合併方塊 (<code>mergedTile</code>)</strong>：確保 <code>isNew: false</code> (透過 <code>...nextTile</code> 繼承自已初始化的 <code>currentGrid</code> 中的方塊) 且 <code>isMerged: true</code> 被正確設定。<code>previousRow</code> 和 <code>previousCol</code> 應為觸發合併的那個移動方塊的原始位置。</p>
+                                    <pre><code class="language-typescript">// src/lib/game-utils.ts (部分程式碼 - mergedTile 創建)
+const mergedTile: TileState = {
+  ...nextTile, // nextTile 已經有 isNew: false, isMerged: false
+  value: mergedTileValue,
+  height: tile.height + nextTile.height,
+  isMerged: true, // 明確設定為 true
+  mergedFrom: [tile.id, nextTile.id],
+  previousRow: tile.row, // 移動方塊的原始 row
+  previousCol: tile.col, // 移動方塊的原始 col
+  row: nextR, // 合併後的位置 (目標方塊的位置)
+  col: nextC, // 合併後的位置
+};
+</code></pre>
+                                </li>
+                                <li>
+                                    <p><strong>移動到空格的方塊</strong>：確保 <code>isNew: false</code> 和 <code>isMerged: false</code> (透過 <code>...tile</code> 繼承)。<code>previousRow</code> 和 <code>previousCol</code> 為移動前方塊的原始位置。</p>
+                                    <pre><code class="language-typescript">// src/lib/game-utils.ts (部分程式碼 - 移動到空格)
+currentGrid[nextR][nextC] = {
+  ...tile, // tile 已經有 isNew: false, isMerged: false
+  previousRow: tile.row, // 移動前的 row
+  previousCol: tile.col, // 移動前的 col
+  row: nextR, // 新的 row
+  col: nextC, // 新的 col
+};
+</code></pre>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+        </li>
+    </ul>
+    <p>經過以上修改，TypeScript 型別錯誤得以解決。</p>
 
-  <p><strong>更新程式邏輯</strong>：請見原文中各段詳述，包括 <code>addRandomTile</code>、<code>processMove</code> 的邏輯修正。</p>
+    <h2>6. 執行建置與輸出</h2>
 
-  <h2>6. 執行建置與輸出</h2>
-  <pre><code>npm run build</code></pre>
-  <p><strong>若遇到 EBUSY 錯誤，請參照建議操作關閉鎖定的資源。</strong></p>
+    <p>完成程式碼修改與設定後，執行建置指令：</p>
+    <pre><code class="language-bash">npm run build
+</code></pre>
 
-  <h2>7. 本地測試靜態網站</h2>
-  <p>使用本地 HTTP 伺服器：</p>
-  <ul>
-    <li>Python：
-      <pre><code>cd out
-python -m http.server</code></pre>
-    </li>
-    <li>Node.js <code>serve</code>：
-      <pre><code>npm install -g serve
-serve out</code></pre>
-    </li>
-  </ul>
+    <ul>
+        <li>
+            <p><strong><code>EBUSY: resource busy or locked</code> 錯誤排除</strong>：<br>
+            如果在建置過程中遇到類似 <code>[Error: EBUSY: resource busy or locked, rmdir 'C:\D\Vibe\3D2048\out']</code> 的錯誤，這表示 <code>out</code> 資料夾或其內容被其他程式鎖定。</p>
+            <ul>
+                <li><strong>解決方法</strong>：
+                    <ol>
+                        <li>關閉所有可能正在使用 <code>out</code> 資料夾的檔案總管視窗。</li>
+                        <li>確保沒有終端機的目前工作目錄指向 <code>out</code> 資料夾。</li>
+                        <li>如果您先前啟動了本地伺服器 (如 <code>python -m http.server</code> 或 <code>serve</code>) 來預覽 <code>out</code> 資料夾，請務必將其關閉。</li>
+                        <li>關閉並重新開啟您的程式碼編輯器。</li>
+                        <li>再次嘗試執行 <code>npm run build</code>。</li>
+                    </ol>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <p><strong>建置成功與輸出位置</strong>：<br>
+            建置成功後，所有靜態檔案將位於專案根目錄下的 <code>out</code> 資料夾中。</p>
+        </li>
+    </ul>
 
-  <h2>8. 部署到子目錄 (如 <code>/pages/3d2048</code>)</h2>
-  <ol>
-    <li>在 <code>next.config.ts</code> 中使用 <code>basePath</code> 並讀取 <code>NEXT_PUBLIC_BASE_PATH</code>。</li>
-    <li>建置前設定環境變數：
-      <pre><code># Windows PowerShell
-$env:NEXT_PUBLIC_BASE_PATH="/pages/3d2048"; npm run build
+    <h2>7. 本地測試靜態網站</h2>
 
-# macOS/Linux
-NEXT_PUBLIC_BASE_PATH=/pages/3d2048 npm run build</code></pre>
-    </li>
-  </ol>
+    <p>由於靜態檔案直接透過 <code>file://</code> 協議在瀏覽器中打開可能會有功能限制 (例如路由、資源載入)，建議使用本地 HTTP 伺服器來測試。</p>
 
-  <h2>9. 最終部署</h2>
-  <p>將 <code>out</code> 資料夾內容上傳至對應的主機目錄中即可。</p>
+    <ol>
+        <li>
+            <p><strong>使用 Python (如果已安裝)</strong>：<br>
+            開啟終端機，進入 <code>out</code> 資料夾，然後執行：</p>
+            <pre><code class="language-bash">cd out
+python -m http.server
+</code></pre>
+            <p>然後在瀏覽器中開啟 <code>http://localhost:8000</code> (或終端機提示的其他埠號)。</p>
+        </li>
+        <li>
+            <p><strong>使用 Node.js <code>serve</code> 套件</strong>：</p>
+            <ul>
+                <li>
+                    <p>全域安裝 <code>serve</code> (如果尚未安裝)：</p>
+                    <pre><code class="language-bash">npm install -g serve
+</code></pre>
+                </li>
+                <li>
+                    <p>在專案根目錄下執行 (它會自動尋找 <code>out</code> 資料夾，或者您可以指定 <code>serve out</code>)：</p>
+                    <pre><code class="language-bash">serve out
+# 或者進入 out 資料夾後執行 serve .
+# cd out
+# serve .
+</code></pre>
+                </li>
+            </ul>
+            <p>然後在瀏覽器中開啟終端機提示的網址 (通常是 <code>http://localhost:3000</code>)。</p>
+        </li>
+    </ol>
 
-  <h2>10. 總結與後續</h2>
-  <ul>
-    <li>完成本地理解、建置、型別錯誤修正與靜態輸出設定。</li>
-    <li>實現部署至根目錄與子目錄的能力。</li>
-    <li>接下來可持續優化 UI、遊戲邏輯或整合 AI 功能。</li>
-  </ul>
+    <h2>8. 部署到子目錄 (例如 <code>/pages/3d2048</code>)</h2>
+
+    <p>如果您需要將網站部署到伺服器的一個子目錄下 (例如 <code>https://yourdomain.com/pages/3d2048/</code>)，直接上傳 <code>out</code> 資料夾的內容會導致資源 (CSS, JS) 路徑錯誤。瀏覽器會嘗試從根目錄 (<code>/_next/...</code>) 而非子目錄 (<code>/pages/3d2048/_next/...</code>) 載入資源。</p>
+
+    <ul>
+        <li>
+            <p><strong>解決方案：使用環境變數動態設定 <code>basePath</code></strong></p>
+            <ol>
+                <li>
+                    <p><strong>修改 <code>next.config.ts</code></strong>：<br>
+                    確保您的 <code>next.config.ts</code> 設定 <code>basePath</code> 時讀取環境變數 <code>NEXT_PUBLIC_BASE_PATH</code>，如果該變數未設定，則預設為空字串 <code>''</code> (適用於根目錄部署或本地開發)。</p>
+                    <pre><code class="language-typescript">// next.config.ts
+import type { NextConfig } from 'next';
+
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ''; // 從環境變數讀取
+
+const nextConfig: NextConfig = {
+  output: 'export',
+  basePath: basePath, // 使用讀取到的 basePath
+  // ... 其他設定
+};
+
+export default nextConfig;
+</code></pre>
+                </li>
+                <li>
+                    <p><strong>建置時設定環境變數</strong>：<br>
+                    在執行 <code>npm run build</code> <strong>之前</strong>，根據您的作業系統設定 <code>NEXT_PUBLIC_BASE_PATH</code> 環境變數。</p>
+                    <ul>
+                        <li>
+                            <p><strong>Windows (PowerShell):</strong></p>
+                            <pre><code class="language-powershell">$env:NEXT_PUBLIC_BASE_PATH="/pages/3d2048" 
+npm run build
+</code></pre>
+                            <p>(若要在同一行執行: <code>$env:NEXT_PUBLIC_BASE_PATH="/pages/3d2048"; npm run build</code>)</p>
+                        </li>
+                        <li>
+                            <p><strong>Windows (CMD):</strong></p>
+                            <pre><code class="language-cmd">set NEXT_PUBLIC_BASE_PATH=/pages/3d2048
+npm run build
+</code></pre>
+                            <p>(或者: <code>set NEXT_PUBLIC_BASE_PATH=/pages/3d2048 && npm run build</code>)</p>
+                        </li>
+                        <li>
+                            <p><strong>Linux/macOS (bash/zsh):</strong></p>
+                            <pre><code class="language-bash">NEXT_PUBLIC_BASE_PATH=/pages/3d2048 npm run build
+</code></pre>
+                        </li>
+                    </ul>
+                    <p>建置完成後，<code>out</code> 資料夾中的 <code>index.html</code> 及所有資源連結都會自動加上您設定的 <code>basePath</code> 前綴 (例如 <code>/pages/3d2048/_next/...</code>)。</p>
+                </li>
+            </ol>
+        </li>
+    </ul>
+
+    <h2>9. 最終部署</h2>
+
+    <p>將設定好 <code>basePath</code> (如果需要) 並成功建置後產生的 <code>out</code> 資料夾的<strong>所有內容</strong>上傳到您的網頁伺服器對應的目錄下 (根目錄或指定的子目錄)。</p>
+
+    <h2>10. 總結與後續</h2>
+
+    <p>透過以上步驟，我們成功地：</p>
+    <ul>
+        <li>理解了專案結構與技術。</li>
+        <li>配置了 Next.js 進行靜態網站匯出。</li>
+        <li>評估並提出了管理潛在 Google 服務費用的建議。</li>
+        <li>解決了關鍵的 TypeScript 型別錯誤，使專案能夠成功建置。</li>
+        <li>學會了如何在本地測試靜態網站。</li>
+        <li>掌握了如何透過 <code>basePath</code> 環境變數將專案部署到伺服器的子目錄。</li>
+    </ul>
+
+    <p>接下來，您可以持續優化遊戲功能、UI/UX，或進一步探索 AI 功能的整合。祝您開發順利！</p>
 
 </body>
 </html>
