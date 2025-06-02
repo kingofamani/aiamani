@@ -1,0 +1,160 @@
+<h1>Google Studio Apps Vite 專案本地開發與部署指南</h1>
+
+<p>本指南旨在記錄從 Google Studio Apps 下載 Vite (React + TypeScript) 專案後，在本地進行開發、修改、以及最終將其發佈為靜態網頁的完整流程。</p>
+
+<h2>階段一：專案設定與初步探索</h2>
+
+<h3>1. 取得專案</h3>
+<p>首先，從 Google Studio Apps 或其他來源下載專案檔案到您的本地開發環境。</p>
+
+<h3>2. 專案結構理解 (模擬 <code>/initmd</code>)</h3>
+<p>在開始編碼前，建議先熟悉專案的結構和關鍵檔案，這有助於後續的開發。</p>
+<ul>
+   <li><strong><code>README.md</code></strong>: 通常包含專案的基本介紹、設定指南和執行指令。</li>
+   <li><strong><code>package.json</code></strong>: 列出專案依賴、開發依賴以及可執行的 <code>scripts</code> (例如 <code>dev</code>, <code>build</code>)。</li>
+   <li><strong><code>vite.config.ts</code></strong>: Vite 的設定檔，用於配置建置選項、路徑別名等。</li>
+   <li><strong><code>tsconfig.json</code></strong>: TypeScript 的設定檔。</li>
+   <li><strong><code>src/</code> 目錄</strong>: 包含主要的原始碼。
+     <ul>
+       <li><strong><code>App.tsx</code></strong>: React 應用程式的主要進入點和佈局元件。</li>
+       <li><strong><code>main.tsx</code> (或 <code>index.tsx</code>)</strong>: 將 React 應用程式掛載到 DOM 的地方。</li>
+       <li><strong><code>components/</code></strong>: 存放可重用的 React 元件。</li>
+       <li><strong><code>hooks/</code></strong>: 存放自訂 React Hooks (例如本專案的 <code>useTetris.ts</code> 包含核心遊戲邏輯)。</li>
+       <li><strong><code>constants.ts</code></strong>: 定義遊戲常數。</li>
+       <li><strong><code>types.ts</code></strong>: TypeScript 型別定義。</li>
+     </ul>
+   </li>
+   <li><strong><code>index.html</code></strong>: 應用程式的 HTML 入口檔案。</li>
+</ul>
+
+<h3>3. 安裝依賴</h3>
+<p>開啟終端機，進入專案根目錄，然後執行以下指令安裝所有必要的依賴：</p>
+<pre><code class="language-bash">npm install
+</code></pre>
+
+<h3>4. 環境變數 (可選)</h3>
+<p>如果專案需要特定的環境變數 (例如 API 金鑰)，通常會在根目錄建立一個 <code>.env.local</code> 檔案來設定它們。例如，本專案提到了 <code>GEMINI_API_KEY</code>，但核心遊戲功能不依賴它。</p>
+
+<h3>5. 啟動開發伺服器</h3>
+<p>安裝完依賴後，執行以下指令啟動 Vite 開發伺服器：</p>
+<pre><code class="language-bash">npm run dev
+</code></pre>
+<p>開發伺服器通常會運行在 <code>http://localhost:5173</code> (或其他指定的埠號)。您可以在瀏覽器中開啟此網址查看即時更新的應用程式。</p>
+
+<h2>階段二：UI 修改與開發迭代</h2>
+
+<h3>1. UI 調整範例：移動控制按鈕</h3>
+<p>在此專案中，我們進行了一項 UI 調整：將「暫停遊戲」和「重新開始」按鈕從預設位置移動到右側邊欄的頂部。</p>
+<ul>
+   <li><strong>目標檔案</strong>: <code>src/App.tsx</code></li>
+   <li><strong>修改內容</strong>:
+     <ol>
+       <li>找到控制按鈕的 JSX 程式碼區塊。</li>
+       <li>將其移動到右側邊欄 (<code><aside></code>) 結構中，置於 <code>NextPiecePreview</code> 和 <code>Scoreboard</code> 元件之前。</li>
+       <li>確保移除或修正任何因移動而產生的重複程式碼或錯誤的 CSS class (例如，我們修正了意外複製按鈕並使用非標準 <code>d-none</code> class 的問題)。</li>
+     </ol>
+   </li>
+</ul>
+
+<h3>2. 解決 TypeScript 型別問題</h3>
+<p>在開發過程中，可能會遇到 TypeScript 的 lint 錯誤，例如找不到 React 的型別定義 (<code>Could not find a declaration file for module 'react'</code>)。</p>
+<ul>
+   <li><strong>解決方案</strong>: 安裝對應的型別定義套件。
+     <pre><code class="language-bash">npm install --save-dev @types/react
+     </code></pre>
+   </li>
+   <li>安裝後，開發伺服器通常會自動重新編譯，lint 錯誤應會消失。</li>
+</ul>
+
+<h2>階段三：準備靜態網頁發佈</h2>
+
+<p>當開發完成，準備將應用程式部署為靜態網頁時，需要進行建置。</p>
+
+<h3>1. 本地建置與預覽 (部署到根目錄)</h3>
+<ul>
+   <li><strong>建置專案</strong>: 執行以下指令，Vite 會將靜態檔案輸出到 <code>dist</code> 資料夾。
+     <pre><code class="language-bash">npm run build
+     </code></pre>
+   </li>
+   <li><strong>本地預覽建置成果</strong>: 使用 Vite 提供的預覽伺服器。
+     <pre><code class="language-bash">npm run preview
+     </code></pre>
+     這會在本地啟動一個伺服器 (通常在 <code>http://localhost:4173</code>) 來供應 <code>dist</code> 資料夾的內容。
+   </li>
+</ul>
+
+<h3>2. 設定子路徑部署 (例如部署到 <code>https://yourdomain.com/your-app/</code>)</h3>
+<p>如果您的應用程式需要部署到伺服器上的一個子路徑 (例如，本專案目標是 <code>/pages/tetris/</code>)，則需要配置 Vite 的 <code>base</code> 選項。</p>
+
+<ul>
+   <li><strong>a. 修改 <code>vite.config.ts</code></strong>:
+     <p>讓 Vite 設定檔能夠讀取環境變數來設定 <code>base</code> 路徑。</p>
+     <pre><code class="language-typescript">// vite.config.ts
+import { defineConfig, loadEnv } from 'vite';
+import path from 'path';
+
+export default defineConfig(({ mode }) => {
+    const env = loadEnv(mode, process.cwd(), '');
+    const basePath = env.VITE_BASE_PATH || '/'; // 從環境變數讀取，預設為 '/'
+
+    return {
+      base: basePath, // 設定 base 路徑
+      define: {
+        'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
+        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
+      },
+      resolve: {
+        alias: {
+          '@': path.resolve(__dirname, '.'),
+        }
+      }
+    };
+});
+     </code></pre>
+   </li>
+
+   <li><strong>b. 修改 <code>package.json</code> 的 <code>scripts</code></strong>:
+     <p>新增指令，方便本地和線上版本的建置與預覽。</p>
+     <pre><code class="language-json">// package.json (scripts 部分)
+"scripts": {
+  "dev": "vite",
+  "build": "vite build",
+  "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+  "preview": "vite preview",
+  "preview:local": "npm run build && vite preview",
+  "preview:online": "cross-env VITE_BASE_PATH=/pages/tetris/ npm run build && vite preview"
+},
+     </code></pre>
+     <p><em>注意</em>: <code>preview:online</code> 指令使用了 <code>cross-env</code> 來跨平台設定環境變數。</p>
+   </li>
+
+   <li><strong>c. 安裝 <code>cross-env</code> (如果尚未安裝)</strong>:
+     <pre><code class="language-bash">npm install --save-dev cross-env
+     </code></pre>
+   </li>
+</ul>
+
+<h2>階段四：建置、預覽與部署</h2>
+
+<p>完成上述設定後，您可以使用以下指令進行建置和預覽：</p>
+
+<h3>1. 建置與預覽本地版本 (用於根目錄部署)</h3>
+<pre><code class="language-bash">npm run preview:local
+</code></pre>
+<p>這會以 <code>base: '/'</code> 設定建置專案，並啟動預覽伺服器。</p>
+
+<h3>2. 建置與預覽線上版本 (用於子路徑部署)</h3>
+<p>例如，要部署到 <code>/pages/tetris/</code>：</p>
+<pre><code class="language-bash">npm run preview:online
+</code></pre>
+<p>這會設定 <code>VITE_BASE_PATH</code> 為 <code>/pages/tetris/</code>，然後建置專案並啟動預覽伺服器。在瀏覽器中打開預覽時，網址應包含該子路徑 (例如 <code>http://localhost:4173/pages/tetris/</code>)，且所有資源都應從此基礎路徑載入。</p>
+
+<h3>3. 部署到實際伺服器</h3>
+<ul>
+   <li><strong>對於根目錄部署</strong>: 將執行 <code>npm run build</code> (或 <code>npm run preview:local</code> 中的建置部分) 後生成的 <code>dist</code> 資料夾內的 <strong>所有內容</strong> 上傳到您網站的根目錄。</li>
+   <li><strong>對於子路徑部署</strong>: 將執行 <code>npm run build</code> (在 <code>preview:online</code> 指令中，已設定 <code>VITE_BASE_PATH</code> 環境變數) 後生成的 <code>dist</code> 資料夾內的 <strong>所有內容</strong> 上傳到您伺服器上對應的子目錄 (例如，如果目標是 <code>https://aiamani.com/pages/tetris</code>，則上傳到伺服器上 <code>pages/tetris/</code> 這個目錄)。</li>
+</ul>
+
+<h2>結論</h2>
+
+<p>遵循以上步驟，您可以有效地在本地開發 Vite 專案，進行必要的修改，並最終將其建置為靜態網頁，準備部署到根目錄或特定的子路徑。</p>
