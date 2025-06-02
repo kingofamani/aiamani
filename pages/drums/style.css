@@ -1,0 +1,79 @@
+body {
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+    margin: 0;
+}
+
+h1 {
+    color: #333;
+}
+
+.drum-kit {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    justify-content: center;
+    gap: 20px; /* Space between pads */
+    padding: 20px;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.drum-pad {
+    width: 120px;
+    height: 120px;
+    border: 2px solid #555;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    background-color: #fff;
+    transition: transform 0.1s ease, background-color 0.1s ease;
+    user-select: none; /* Prevent text selection on click */
+    font-weight: bold;
+    color: #333;
+}
+
+.drum-pad:hover {
+    background-color: #f9f9f9;
+}
+
+.drum-pad.playing {
+    transform: scale(0.95);
+    background-color: #cceeff; /* Light blue when playing */
+    border-color: #007bff;
+}
+
+#repeat-button {
+    padding: 15px 30px;
+    font-size: 1.2em;
+    color: white;
+    background-color: #28a745; /* Green */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+#repeat-button:hover {
+    background-color: #218838;
+}
+
+#repeat-button:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+}
+
+#status-message {
+    margin-top: 15px;
+    color: #555;
+    min-height: 1.2em; /* Reserve space for message */
+}

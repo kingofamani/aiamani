@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>簡易爵士鼓</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>簡易爵士鼓</h1>
+    <div class="drum-kit">
+        <div class="drum-pad" data-sound="kick">
+            <span>大鼓 (Kick)</span>
+            <audio id="kick" src="sounds/kick.mp3"></audio>
+        </div>
+        <div class="drum-pad" data-sound="snare">
+            <span>軍鼓 (Snare)</span>
+            <audio id="snare" src="sounds/snare.mp3"></audio>
+        </div>
+        <div class="drum-pad" data-sound="hihat-closed">
+            <span>閉合鈸 (Hi-Hat Closed)</span>
+            <audio id="hihat-closed" src="sounds/hihat-closed.mp3"></audio>
+        </div>
+        <div class="drum-pad" data-sound="tom1">
+            <span>中鼓1 (Tom 1)</span>
+            <audio id="tom1" src="sounds/tom1.mp3"></audio>
+        </div>
+        <div class="drum-pad" data-sound="crash">
+            <span>碎音鈸 (Crash)</span>
+            <audio id="crash" src="sounds/crash.mp3"></audio>
+        </div>
+        <div class="drum-pad" data-sound="ride">
+            <span>叮叮鈸 (Ride)</span>
+            <audio id="ride" src="sounds/ride.mp3"></audio>
+        </div>
+    </div>
+
+    <button id="repeat-button">Repeat</button>
+    <p id="status-message"></p>
+
+    <script src="script.js"></script>
+</body>
+</html>
