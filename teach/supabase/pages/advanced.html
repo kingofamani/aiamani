@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase 進階功能與管理 | Supabase + Heroku 教學</title>
+    <meta name="description" content="Supabase 進階功能與管理教學，包含即時資料同步、資料庫管理與安全性設定">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <!-- 字體圖標 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 導航欄 -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="../index.html" class="navbar-logo">SUPABASE + HEROKU</a>
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="navbar-menu">
+                <li class="navbar-item"><a href="../index.html" class="navbar-link">首頁</a></li>
+                <li class="navbar-item"><a href="supabase.html" class="navbar-link">Supabase</a></li>
+                <li class="navbar-item"><a href="heroku.html" class="navbar-link">Heroku</a></li>
+                <li class="navbar-item"><a href="advanced.html" class="navbar-link">進階功能</a></li>
+                <li class="navbar-item"><a href="checklist.html" class="navbar-link">部署檢查</a></li>
+                <li class="navbar-item"><a href="faq.html" class="navbar-link">常見問題</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 頁面標題 -->
+    <section class="section" style="padding-top: 120px;">
+        <div class="container">
+            <h1>Supabase 進階功能與管理</h1>
+            <p class="hero-subtitle">探索 Supabase 的進階功能，提升您的應用程式體驗</p>
+        </div>
+    </section>
+
+    <!-- 主要內容 -->
+    <section class="section">
+        <div class="container">
+            <div class="grid">
+                <!-- 側邊欄 -->
+                <div class="col-4">
+                    <div style="position: sticky; top: 100px;">
+                        <h3>目錄</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: var(--spacing-xs);"><a href="#realtime">即時資料同步</a></li>
+                            <li style="margin-bottom: var(--spacing-xs);"><a href="#database-management">資料庫管理</a></li>
+                            <li style="margin-bottom: var(--spacing-xs);"><a href="#security">安全性設定</a></li>
+                        </ul>
+                        
+                        <div class="alert alert-info" style="margin-top: var(--spacing-l);">
+                            <h4>提示</h4>
+                            <p>這些進階功能可以大幅提升您的應用程式體驗，但請根據您的實際需求選擇性地實現。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 主要內容 -->
+                <div class="col-8">
+                    <!-- 即時資料同步 -->
+                    <div id="realtime">
+                        <h2>即時資料同步 (Real-time)</h2>
+                        
+                        <div class="step">
+                            <h3>啟用資料表即時功能</h3>
+                            <p>Supabase 提供即時資料同步功能，讓您的應用程式能夠實時接收資料庫變更。</p>
+                            <ol>
+                                <li>在 Supabase Dashboard 中，點擊左側選單的「Database」</li>
+                                <li>選擇「Replication」</li>
+                                <li>找到您想啟用即時功能的資料表（例如 <code>subscriptions</code>）</li>
+                                <li>將其即時設置從「Disabled」切換為「Enabled」</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>前端整合</h3>
+                            <p>要在前端應用程式中使用即時功能，您需要安裝 Supabase JavaScript 客戶端：</p>
+                            <div class="code-block">
+                                <pre><code>npm install @supabase/supabase-js</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            
+                            <p>然後，您可以訂閱資料表變更：</p>
+                            <div class="code-block">
+                                <pre><code>import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = 'https://your-project-id.supabase.co'
+const supabaseKey = 'your-anon-key'
+const supabase = createClient(supabaseUrl, supabaseKey)
+
+// 訂閱 subscriptions 資料表的所有變更
+const subscription = supabase
+  .channel('table-db-changes')
+  .on(
+    'postgres_changes',
+    {
+      event: '*',
+      schema: 'public',
+      table: 'subscriptions'
+    },
+    (payload) => {
+      console.log('變更收到:', payload)
+      // 在這裡更新 UI
+    }
+  )
+  .subscribe()</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            
+                            <p>您可以根據需要過濾特定事件類型：</p>
+                            <ul>
+                                <li><code>INSERT</code>：新記錄插入</li>
+                                <li><code>UPDATE</code>：記錄更新</li>
+                                <li><code>DELETE</code>：記錄刪除</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <h4>即時功能提示</h4>
+                            <p>即時功能在免費方案中有一定的限制。如果您的應用程式需要大量即時更新，請考慮升級到付費方案。</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 資料庫管理 -->
+                    <div id="database-management" style="margin-top: var(--spacing-xl);">
+                        <h2>資料庫管理</h2>
+                        
+                        <div class="step">
+                            <h3>查看使用量</h3>
+                            <p>定期監控您的資料庫使用情況是良好的管理實踐：</p>
+                            <ol>
+                                <li>在 Supabase Dashboard 中，點擊左側選單的「Settings」</li>
+                                <li>選擇「Usage」</li>
+                                <li>查看資料庫大小、API 請求數、存儲使用量等指標</li>
+                            </ol>
+                            <p>這有助於您了解資源使用情況，避免超出限制。</p>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>備份資料庫</h3>
+                            <p>定期備份您的資料庫是防止資料丟失的重要措施：</p>
+                            <ol>
+                                <li>在 Supabase Dashboard 中，點擊左側選單的「Settings」</li>
+                                <li>選擇「Database」</li>
+                                <li>在「Backups」部分，點擊「Download backup」</li>
+                            </ol>
+                            <p>您也可以使用 pgAdmin 或 pg_dump 工具進行更靈活的備份：</p>
+                            <div class="code-block">
+                                <pre><code>pg_dump -h aws-0-ap-southeast-1.pooler.supabase.com -p 5432 -U postgres.xxxxxxxxxxxx -d postgres -F c -b -v -f backup.dump</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>監控效能</h3>
+                            <p>您可以使用 SQL Editor 執行查詢來監控資料庫效能：</p>
+                            <div class="code-block">
+                                <pre><code>-- 查看當前活動查詢
+SELECT pid, age(clock_timestamp(), query_start), usename, query
+FROM pg_stat_activity
+WHERE query != '<IDLE>' AND query NOT ILIKE '%pg_stat_activity%'
+ORDER BY query_start desc;</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            
+                            <div class="code-block">
+                                <pre><code>-- 查看資料表大小
+SELECT
+  relname AS "Table",
+  pg_size_pretty(pg_total_relation_size(relid)) AS "Size",
+  pg_size_pretty(pg_total_relation_size(relid) - pg_relation_size(relid)) AS "External Size"
+FROM pg_catalog.pg_statio_user_tables
+ORDER BY pg_total_relation_size(relid) DESC;</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-warning">
+                            <h4>效能提示</h4>
+                            <p>定期清理不必要的資料和優化查詢可以顯著提高資料庫效能。考慮為頻繁查詢的欄位添加索引。</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 安全性設定 -->
+                    <div id="security" style="margin-top: var(--spacing-xl);">
+                        <h2>安全性設定</h2>
+                        
+                        <div class="step">
+                            <h3>Row Level Security (RLS)</h3>
+                            <p>Row Level Security 允許您控制哪些用戶可以訪問哪些資料行，這是實現多租戶應用程式的關鍵：</p>
+                            <div class="code-block">
+                                <pre><code>-- 啟用 RLS
+ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE app_settings ENABLE ROW LEVEL SECURITY;
+
+-- 創建策略：用戶只能訪問自己的訂閱
+CREATE POLICY "用戶可以查看自己的訂閱"
+  ON subscriptions
+  FOR SELECT
+  USING (auth.uid() = user_id);
+
+-- 創建策略：用戶只能更新自己的訂閱
+CREATE POLICY "用戶可以更新自己的訂閱"
+  ON subscriptions
+  FOR UPDATE
+  USING (auth.uid() = user_id);</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            <p>這些策略確保用戶只能訪問和修改自己的資料，即使他們知道其他記錄的 ID。</p>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>API 金鑰管理</h3>
+                            <p>Supabase 提供兩種主要的 API 金鑰：</p>
+                            <ul>
+                                <li><strong>anon 金鑰</strong>：用於公開操作，如用戶註冊和登入</li>
+                                <li><strong>service_role 金鑰</strong>：具有管理員權限，應該只在服務器端使用</li>
+                            </ul>
+                            <p>安全最佳實踐：</p>
+                            <ol>
+                                <li>定期更換 service_role 金鑰（在 Settings > API）</li>
+                                <li>限制 anon 金鑰的權限，只允許必要的操作</li>
+                                <li>永遠不要在客戶端代碼中暴露 service_role 金鑰</li>
+                                <li>使用環境變數存儲金鑰，而不是硬編碼</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>設置 JWT 過期時間</h3>
+                            <p>您可以自定義 JWT 令牌的過期時間，平衡安全性和用戶體驗：</p>
+                            <ol>
+                                <li>在 Supabase Dashboard 中，點擊左側選單的「Authentication」</li>
+                                <li>選擇「Settings」</li>
+                                <li>在「JWT Expiry」字段中設置令牌過期時間（以秒為單位）</li>
+                            </ol>
+                            <p>較短的過期時間提高安全性，但可能需要用戶更頻繁地重新登入。</p>
+                        </div>
+                        
+                        <div class="alert alert-warning">
+                            <h4>安全提示</h4>
+                            <p>安全是一個持續的過程。定期審查您的安全設置，關注 Supabase 的安全更新，並遵循最佳實踐。</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 結論 -->
+                    <div style="margin-top: var(--spacing-xl); text-align: center;">
+                        <h2>進一步探索</h2>
+                        <p>Supabase 提供了豐富的功能，本頁面只涵蓋了一部分進階功能。您還可以探索：</p>
+                        <ul style="text-align: left; display: inline-block;">
+                            <li>身份驗證與授權</li>
+                            <li>存儲服務</li>
+                            <li>Edge Functions</li>
+                            <li>向量搜索</li>
+                            <li>WebHooks</li>
+                        </ul>
+                        <p>查看 <a href="https://supabase.com/docs" target="_blank">Supabase 官方文檔</a> 了解更多信息。</p>
+                        <a href="checklist.html" class="btn btn-primary">前往部署檢查清單</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 頁腳 -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <p>&copy; 2025 Supabase + Heroku 部署教學 | 為網頁開發者打造</p>
+            <ul class="footer-links">
+                <li><a href="../index.html" class="footer-link">首頁</a></li>
+                <li><a href="supabase.html" class="footer-link">Supabase</a></li>
+                <li><a href="heroku.html" class="footer-link">Heroku</a></li>
+                <li><a href="faq.html" class="footer-link">常見問題</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script src="../assets/js/main.js"></script>
+</body>
+</html>

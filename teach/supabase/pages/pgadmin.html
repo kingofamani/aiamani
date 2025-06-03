@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pgAdmin 資料遷移 | Supabase + Heroku 教學</title>
+    <meta name="description" content="使用 pgAdmin 進行 PostgreSQL 資料庫遷移到 Supabase 的詳細步驟。">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <!-- 字體圖標 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 導航欄 -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="../index.html" class="navbar-logo">SUPABASE + HEROKU</a>
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="navbar-menu">
+                <li class="navbar-item"><a href="../index.html" class="navbar-link">首頁</a></li>
+                <li class="navbar-item"><a href="supabase.html" class="navbar-link">Supabase</a></li>
+                <li class="navbar-item"><a href="heroku.html" class="navbar-link">Heroku</a></li>
+                <li class="navbar-item"><a href="advanced.html" class="navbar-link">進階功能</a></li>
+                <li class="navbar-item"><a href="checklist.html" class="navbar-link">部署檢查</a></li>
+                <li class="navbar-item"><a href="faq.html" class="navbar-link">常見問題</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 頁面標題 -->
+    <section class="section" style="padding-top: 120px;">
+        <div class="container">
+            <h1>pgAdmin 資料遷移教學</h1>
+            <p>本頁教學將引導您如何使用 pgAdmin 工具，將本地 PostgreSQL 資料庫中的特定資料表遷移到 Supabase。</p>
+        </div>
+    </section>
+
+    <!-- 主要內容 -->
+    <section class="section">
+        <div class="container">
+            <div class="grid">
+                <!-- 側邊欄 -->
+                <div class="col-4">
+                    <div style="position: sticky; top: 100px;">
+                        <h3>快速導覽</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: var(--spacing-xs);"><a href="#export-local" class="smooth-scroll">步驟 1: 從本地資料庫匯出</a></li>
+                            <li style="margin-bottom: var(--spacing-xs);"><a href="#modify-sql" class="smooth-scroll">步驟 2: 修改 SQL 檔案</a></li>
+                            <li style="margin-bottom: var(--spacing-xs);"><a href="#import-supabase" class="smooth-scroll">步驟 3: 匯入到 Supabase</a></li>
+                        </ul>
+                        <div class="alert alert-info" style="margin-top: var(--spacing-l);">
+                            <h4>提示</h4>
+                            <p>此方法適用於需要手動選擇特定資料表並進行遷移的場景。</p>
+                            <p style="margin-top: var(--spacing-s);"><a href="supabase.html#data-migration" class="link-discreet">返回 Supabase 資料遷移主頁</a></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 主要教學內容 -->
+                <div class="col-8">
+                    <div id="export-local" class="step-content-item" style="margin-bottom: var(--spacing-xl);">
+                        <h2>步驟 1: 從本地資料庫匯出資料</h2>
+                        
+                        <div class="step-item" style="margin-top: var(--spacing-m);">
+                            <h4>1. 開啟 pgAdmin:</h4>
+                            <ul>
+                                <li>連接到您的本地 PostgreSQL 伺服器。</li>
+                            </ul>
+                        </div>
+
+                        <div class="step-item" style="margin-top: var(--spacing-m);">
+                            <h4>2. 選擇要備份的資料庫 (包含資料表建立與資料轉移):</h4>
+                            <ul>
+                                <li>在左側物件瀏覽器中，右鍵點擊包含 <code>app_settings</code> 和 <code>subscriptions</code> 資料表的資料庫。</li>
+                                <li>選擇「Backup...」。</li>
+                            </ul>
+                        </div>
+
+                        <div class="step-item" style="margin-top: var(--spacing-m);">
+                            <h4>3. 在「Backup」對話方塊中設定:</h4>
+                            <p style="margin-top: var(--spacing-s);"><strong>General (一般) 標籤頁:</strong></p>
+                            <ul>
+                                <li><strong>Filename (檔案名稱):</strong> 指定匯出檔案位置，例如 <code>starbaba_backup.sql</code>。</li>
+                                <li><strong>Format (格式):</strong> 選擇「Plain」。</li>
+                            </ul>
+                            <p style="margin-top: var(--spacing-s);"><strong>Objects (物件) 標籤頁:</strong></p>
+                            <ul>
+                                <li>展開您的綱要 (通常是 <code>public</code>)。</li>
+                                <li>在「Tables」清單中，<strong>只勾選</strong> <code>app_settings</code> 和 <code>subscriptions</code>。</li>
+                                <li>確保其他資料表是未勾選狀態。</li>
+                                <li><strong>也要勾選✅「Sequences」</strong> (用於 SERIAL 欄位)。</li>
+                            </ul>
+                            <p style="margin-top: var(--spacing-s);"><strong>Dump Options (傾印選項) 標籤頁:</strong></p>
+                            <ul>
+                                <li><strong>Use Insert Commands:</strong> ✅ 勾選。</li>
+                                <li><strong>Use Column Inserts:</strong> ✅ 勾選 (推薦)。</li>
+                                <li><strong>Owner:</strong> ❌ 取消勾選。</li>
+                                <li><strong>Privileges:</strong> ❌ 取消勾選。</li>
+                            </ul>
+                        </div>
+
+                        <div class="step-item" style="margin-top: var(--spacing-m);">
+                            <h4>4. 執行備份:</h4>
+                            <ul>
+                                <li>點擊「Backup」按鈕。</li>
+                                <li>等待匯出完成。</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="modify-sql" class="step-content-item" style="margin-bottom: var(--spacing-xl);">
+                        <h2>步驟 2: 修改 SQL 檔案</h2>
+                        <div class="step-item" style="margin-top: var(--spacing-m);">
+                            <h4>1. 開啟匯出的 <code>.sql</code> 檔案:</h4>
+                            <ul>
+                                <li>使用文字編輯器（如 VS Code、Notepad++）開啟。</li>
+                            </ul>
+                        </div>
+                        <div class="step-item" style="margin-top: var(--spacing-m);">
+                            <h4>2. 移除 schema 前綴:</h4>
+                            <ul>
+                                <li>將檔案中所有的⭐ <code>public.</code> 字串刪除。</li>
+                                <li>例如：將 <code>public.app_settings</code> 改為 <code>app_settings</code>。</li>
+                            </ul>
+                        </div>
+                        <div class="step-item" style="margin-top: var(--spacing-m);">
+                            <h4>3. 檢查並修正:</h4>
+                            <ul>
+                                <li>確認 SQL 語法正確。</li>
+                                <li>移除不必要的 Owner 或 Grant 語句。</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="import-supabase" class="step-content-item" style="margin-bottom: var(--spacing-xl);">
+                        <h2>步驟 3: 匯入到 Supabase</h2>
+                        <div class="step-item" style="margin-top: var(--spacing-m);">
+                            <h4>1. 回到 Supabase SQL Editor:</h4>
+                            <ul>
+                                <li>在 Supabase Dashboard 左側選單點擊「SQL Editor」。</li>
+                                <li>複製修改後的 <code>.sql</code> 檔案內容。</li>
+                            </ul>
+                        </div>
+                        <div class="step-item" style="margin-top: var(--spacing-m);">
+                            <h4>2. 貼上並執行:</h4>
+                            <ul>
+                                <li>將 SQL 內容貼上到 SQL Editor 中。</li>
+                                <li>點擊「Run」執行。</li>
+                            </ul>
+                        </div>
+                        <div class="step-item" style="margin-top: var(--spacing-m);">
+                            <h4>3. 驗證資料:</h4>
+                            <ul>
+                                <li>前往「Table Editor」。</li>
+                                <li>檢查 <code>app_settings</code> 和 <code>subscriptions</code> 資料表。</li>
+                                <li>確認資料已正確匯入。</li>
+                            </ul>
+                        </div>
+                    </div>
+                     <div class="alert alert-success">
+                        <p>🎉 恭喜！您已成功使用 pgAdmin 將資料遷移到 Supabase。</p>
+                    </div>
+                    <div style="margin-top: var(--spacing-xl); text-align: center; margin-bottom: var(--spacing-l);">
+                        <a href="supabase.html#data-migration" class="btn btn-secondary">返回 Supabase 資料遷移教學</a>
+                        <a href="../index.html" class="btn btn-primary" style="margin-left: var(--spacing-s);">回到首頁</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 頁腳 -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; <span id="currentYear"></span> Supabase + Heroku 部署教學. </p>
+            <p>靈感來自 <a href="https://www.bang-olufsen.com" target="_blank" rel="noopener noreferrer" class="link-discreet">Bang & Olufsen</a> 極簡設計風格.</p>
+        </div>
+    </footer>
+
+    <script src="../assets/js/main.js"></script>
+</body>
+</html>

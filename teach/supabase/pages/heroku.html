@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask 應用程式部署到 Heroku | Supabase + Heroku 教學</title>
+    <meta name="description" content="完整的 Flask 應用程式部署到 Heroku 教學，從環境設置到應用上線的詳細步驟">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <!-- 字體圖標 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 導航欄 -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="../index.html" class="navbar-logo">SUPABASE + HEROKU</a>
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="navbar-menu">
+                <li class="navbar-item"><a href="../index.html" class="navbar-link">首頁</a></li>
+                <li class="navbar-item"><a href="supabase.html" class="navbar-link">Supabase</a></li>
+                <li class="navbar-item"><a href="heroku.html" class="navbar-link">Heroku</a></li>
+                <li class="navbar-item"><a href="advanced.html" class="navbar-link">進階功能</a></li>
+                <li class="navbar-item"><a href="checklist.html" class="navbar-link">部署檢查</a></li>
+                <li class="navbar-item"><a href="faq.html" class="navbar-link">常見問題</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 頁面標題 -->
+    <section class="section" style="padding-top: 120px;">
+        <div class="container">
+            <h1>Flask 應用程式部署到 Heroku</h1>
+            
+            <!-- 進度指示器 -->
+            <div class="progress-bar">
+                <div class="progress-step active" data-step="1">1</div>
+                <div class="progress-step" data-step="2">2</div>
+                <div class="progress-step" data-step="3">3</div>
+                <div class="progress-step" data-step="4">4</div>
+                <div class="progress-step" data-step="5">5</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 主要內容 -->
+    <section class="section">
+        <div class="container">
+            <div class="grid">
+                <!-- 側邊欄 -->
+                <div class="col-4">
+                    <div style="position: sticky; top: 100px;">
+                        <h3>目錄</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: var(--spacing-xs);"><a href="#preparation">前置準備</a></li>
+                            <li style="margin-bottom: var(--spacing-xs);"><a href="#deploy-files">準備部署檔案</a></li>
+                            <li style="margin-bottom: var(--spacing-xs);"><a href="#create-app">建立 Heroku 應用程式</a></li>
+                            <li style="margin-bottom: var(--spacing-xs);"><a href="#env-vars">設定環境變數</a></li>
+                            <li style="margin-bottom: var(--spacing-xs);"><a href="#deploy-app">部署應用程式</a></li>
+                            <li style="margin-bottom: var(--spacing-xs);"><a href="#monitor">監控與維護</a></li>
+                        </ul>
+                        
+                        <div class="alert alert-warning" style="margin-top: var(--spacing-l);">
+                            <h4>重要提示</h4>
+                            <p>部署前請確保已完成 Procfile 設定、requirements.txt 更新、環境變數配置，並進行本地測試。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 主要內容 -->
+                <div class="col-8">
+                    <!-- 前置準備 -->
+                    <div id="preparation" class="step-content" style="display: block;">
+                        <h2>前置準備</h2>
+                        
+                        <div class="step">
+                            <h3>註冊 Heroku 帳號</h3>
+                            <p>前往 <a href="https://heroku.com" target="_blank">heroku.com</a> 註冊免費帳號，並驗證您的電子信箱。</p>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>安裝 Heroku CLI</h3>
+                            <p>Heroku CLI 是一個命令行工具，用於創建和管理 Heroku 應用程式。</p>
+                            
+                            <h4>Windows</h4>
+                            <p>下載並安裝 <a href="https://devcenter.heroku.com/articles/heroku-cli#install-the-heroku-cli" target="_blank">Heroku CLI for Windows</a></p>
+                            
+                            <h4>macOS</h4>
+                            <div class="code-block">
+                                <pre><code>brew tap heroku/brew && brew install heroku</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            
+                            <h4>Linux</h4>
+                            <div class="code-block">
+                                <pre><code>curl https://cli-assets.heroku.com/install.sh | sh</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>登入 Heroku CLI</h3>
+                            <p>安裝完成後，在終端機中執行以下命令登入您的 Heroku 帳號：</p>
+                            <div class="code-block">
+                                <pre><code>heroku login</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            <p>這將打開瀏覽器視窗，引導您完成登入流程。</p>
+                        </div>
+                        
+                        <div class="step-navigation">
+                            <button class="btn btn-secondary prev-step" disabled>上一步</button>
+                            <button class="btn btn-primary next-step">下一步</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 準備部署檔案 -->
+                    <div id="deploy-files" class="step-content" style="display: none;">
+                        <h2>準備部署檔案</h2>
+                        
+                        <div class="step">
+                            <h3>確認 Procfile 存在</h3>
+                            <p>在您的專案根目錄中，創建一個名為 <code>Procfile</code> 的檔案（注意沒有副檔名）：</p>
+                            <div class="code-block">
+                                <pre><code>web: python run.py</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            <p>這告訴 Heroku 如何啟動您的應用程式。如果您的入口點不是 <code>run.py</code>，請相應調整。</p>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>確認 requirements.txt 完整</h3>
+                            <p>確保您的 <code>requirements.txt</code> 檔案包含所有必要的依賴項：</p>
+                            <div class="code-block">
+                                <pre><code>pip freeze > requirements.txt</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            <p>檢查生成的 <code>requirements.txt</code> 檔案，確保它包含所有必要的套件，如 Flask、psycopg2-binary 等。</p>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>建立 runtime.txt (可選)</h3>
+                            <p>如果您需要指定 Python 版本，可以創建一個 <code>runtime.txt</code> 檔案：</p>
+                            <div class="code-block">
+                                <pre><code>python-3.11.0</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            <p>這告訴 Heroku 使用 Python 3.11.0 運行您的應用程式。</p>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <h4>依賴項提示</h4>
+                            <p>確保您的 <code>requirements.txt</code> 中不包含開發環境特有的套件，如 pytest 或 debug 工具，以減少部署大小和提高安全性。</p>
+                        </div>
+                        
+                        <div class="step-navigation">
+                            <button class="btn btn-secondary prev-step">上一步</button>
+                            <button class="btn btn-primary next-step">下一步</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 建立 Heroku 應用程式 -->
+                    <div id="create-app" class="step-content" style="display: none;">
+                        <h2>建立 Heroku 應用程式</h2>
+                        
+                        <div class="step">
+                            <h3>建立應用程式</h3>
+                            <p>在您的專案目錄中，執行以下命令創建一個新的 Heroku 應用程式：</p>
+                            <div class="code-block">
+                                <pre><code>heroku create your-app-name</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            <p>將 <code>your-app-name</code> 替換為您想要的應用程式名稱。這將成為您應用程式的 URL 一部分：<code>https://your-app-name.herokuapp.com</code></p>
+                            <p>如果您省略應用程式名稱，Heroku 將自動生成一個隨機名稱。</p>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>確認應用程式創建</h3>
+                            <p>執行以下命令查看您的 Heroku 應用程式列表：</p>
+                            <div class="code-block">
+                                <pre><code>heroku apps</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            <p>您應該能看到剛剛創建的應用程式。</p>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <h4>應用程式命名提示</h4>
+                            <p>Heroku 應用程式名稱在整個 Heroku 平台中必須是唯一的。如果您選擇的名稱已被使用，您將收到錯誤訊息，需要選擇另一個名稱。</p>
+                        </div>
+                        
+                        <div class="step-navigation">
+                            <button class="btn btn-secondary prev-step">上一步</button>
+                            <button class="btn btn-primary next-step">下一步</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 設定環境變數 -->
+                    <div id="env-vars" class="step-content" style="display: none;">
+                        <h2>設定環境變數</h2>
+                        
+                        <div class="step">
+                            <h3>設定密鑰</h3>
+                            <p>使用以下命令設定應用程式的密鑰：</p>
+                            <div class="code-block">
+                                <pre><code>heroku config:set SECRET_KEY=your-secret-key</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            <p>將 <code>your-secret-key</code> 替換為一個安全的隨機字串。</p>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>設定 Supabase 連線字串</h3>
+                            <p>設定 Supabase 資料庫連線字串：</p>
+                            <div class="code-block">
+                                <pre><code>heroku config:set DATABASE_URL="postgresql://postgres.xxxxxxxxxxxx:password@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres"</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            <p>請使用您在 Supabase 設置中獲得的 Connection pooling 連線字串。</p>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>設定其他環境變數</h3>
+                            <p>根據您的應用程式需求，設定其他必要的環境變數：</p>
+                            <div class="code-block">
+                                <pre><code>heroku config:set FLASK_ENV=production
+heroku config:set SUPABASE_URL=https://xxxxxxxxxxxx.supabase.co
+heroku config:set SUPABASE_ANON_KEY=your-anon-key</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>確認環境變數</h3>
+                            <p>執行以下命令查看所有設定的環境變數：</p>
+                            <div class="code-block">
+                                <pre><code>heroku config</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            <p>確保所有必要的環境變數都已正確設定。</p>
+                        </div>
+                        
+                        <div class="alert alert-warning">
+                            <h4>安全提示</h4>
+                            <p>環境變數中的敏感資訊（如密碼、API 金鑰）不應出現在您的代碼或版本控制系統中。始終使用環境變數來管理這些敏感資訊。</p>
+                        </div>
+                        
+                        <div class="step-navigation">
+                            <button class="btn btn-secondary prev-step">上一步</button>
+                            <button class="btn btn-primary next-step">下一步</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 部署應用程式 -->
+                    <div id="deploy-app" class="step-content" style="display: none;">
+                        <h2>部署應用程式</h2>
+                        
+                        <div class="step">
+                            <h3>確認 Git 提交</h3>
+                            <p>確保您的所有更改都已提交到 Git：</p>
+                            <div class="code-block">
+                                <pre><code>git add .
+git commit -m "準備部署到 Heroku"</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>部署到 Heroku</h3>
+                            <p>使用以下命令將您的應用程式部署到 Heroku：</p>
+                            <div class="code-block">
+                                <pre><code>git push heroku main</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            <p>如果您的主分支名稱是 <code>master</code> 而不是 <code>main</code>，請相應調整命令：</p>
+                            <div class="code-block">
+                                <pre><code>git push heroku master</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>查看應用程式</h3>
+                            <p>部署完成後，使用以下命令在瀏覽器中打開您的應用程式：</p>
+                            <div class="code-block">
+                                <pre><code>heroku open</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            <p>或者直接訪問 <code>https://your-app-name.herokuapp.com</code></p>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <h4>部署提示</h4>
+                            <p>首次部署可能需要幾分鐘時間。如果遇到問題，請查看部署日誌以獲取更多信息。</p>
+                        </div>
+                        
+                        <div class="step-navigation">
+                            <button class="btn btn-secondary prev-step">上一步</button>
+                            <button class="btn btn-primary next-step">下一步</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 監控與維護 -->
+                    <div id="monitor" class="step-content" style="display: none;">
+                        <h2>監控與維護</h2>
+                        
+                        <div class="step">
+                            <h3>查看日誌</h3>
+                            <p>使用以下命令查看應用程式的日誌：</p>
+                            <div class="code-block">
+                                <pre><code>heroku logs --tail</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            <p>這將顯示實時日誌，幫助您診斷問題。</p>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>檢查應用程式狀態</h3>
+                            <p>使用以下命令查看應用程式的狀態：</p>
+                            <div class="code-block">
+                                <pre><code>heroku ps</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            <p>這將顯示您的應用程式正在運行的進程。</p>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>擴展應用程式</h3>
+                            <p>如果需要，您可以調整應用程式的資源：</p>
+                            <div class="code-block">
+                                <pre><code>heroku ps:scale web=1</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            <p>這將設置 web 進程的數量為 1。根據您的需求和計劃，您可以調整這個數字。</p>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>更新應用程式</h3>
+                            <p>當您需要更新應用程式時，只需提交更改並再次推送到 Heroku：</p>
+                            <div class="code-block">
+                                <pre><code>git add .
+git commit -m "更新應用程式"
+git push heroku main</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <h4>維護提示</h4>
+                            <p>定期檢查您的應用程式日誌和性能指標，及時發現並解決問題。考慮設置監控工具，如 New Relic 或 Papertrail，以獲得更詳細的監控數據。</p>
+                        </div>
+                        
+                        <div class="step-navigation">
+                            <button class="btn btn-secondary prev-step">上一步</button>
+                            <a href="checklist.html" class="btn btn-primary">前往部署檢查清單</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 頁腳 -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <p>&copy; 2025 Supabase + Heroku 部署教學 | 為網頁開發者打造</p>
+            <ul class="footer-links">
+                <li><a href="../index.html" class="footer-link">首頁</a></li>
+                <li><a href="supabase.html" class="footer-link">Supabase</a></li>
+                <li><a href="heroku.html" class="footer-link">Heroku</a></li>
+                <li><a href="faq.html" class="footer-link">常見問題</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script src="../assets/js/main.js"></script>
+</body>
+</html>

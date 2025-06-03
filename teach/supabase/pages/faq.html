@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>常見問題解答 | Supabase + Heroku 教學</title>
+    <meta name="description" content="Supabase 與 Heroku 部署過程中的常見問題解答，幫助您解決部署中遇到的各種問題">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <!-- 字體圖標 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 導航欄 -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="../index.html" class="navbar-logo">SUPABASE + HEROKU</a>
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="navbar-menu">
+                <li class="navbar-item"><a href="../index.html" class="navbar-link">首頁</a></li>
+                <li class="navbar-item"><a href="supabase.html" class="navbar-link">Supabase</a></li>
+                <li class="navbar-item"><a href="heroku.html" class="navbar-link">Heroku</a></li>
+                <li class="navbar-item"><a href="advanced.html" class="navbar-link">進階功能</a></li>
+                <li class="navbar-item"><a href="checklist.html" class="navbar-link">部署檢查</a></li>
+                <li class="navbar-item"><a href="faq.html" class="navbar-link">常見問題</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 頁面標題 -->
+    <section class="section" style="padding-top: 120px;">
+        <div class="container">
+            <h1>常見問題解答</h1>
+            <p class="hero-subtitle">解決 Supabase 與 Heroku 部署過程中的常見疑難問題</p>
+        </div>
+    </section>
+
+    <!-- 主要內容 -->
+    <section class="section">
+        <div class="container">
+            <div class="grid">
+                <div class="col-4">
+                    <div style="position: sticky; top: 100px;">
+                        <h3>問題分類</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: var(--spacing-xs);"><a href="#supabase-issues">Supabase 相關問題</a></li>
+                            <li style="margin-bottom: var(--spacing-xs);"><a href="#heroku-issues">Heroku 相關問題</a></li>
+                            <li style="margin-bottom: var(--spacing-xs);"><a href="#integration-issues">整合相關問題</a></li>
+                            <li style="margin-bottom: var(--spacing-xs);"><a href="#troubleshooting">故障排除</a></li>
+                        </ul>
+                        
+                        <div class="alert alert-info" style="margin-top: var(--spacing-l);">
+                            <h4>提示</h4>
+                            <p>點擊問題標題可展開或收合答案。如果您的問題未在此列出，請參考官方文檔或社區論壇。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-8">
+                    <!-- Supabase 相關問題 -->
+                    <div id="supabase-issues">
+                        <h2>Supabase 相關問題</h2>
+                        
+                        <div class="accordion">
+                            <div class="accordion-header">
+                                <h3>為什麼必須使用 Connection pooling 而非直接連接？</h3>
+                                <span class="accordion-arrow">+</span>
+                            </div>
+                            <div class="accordion-content">
+                                <p>使用 Connection pooling 有以下優勢：</p>
+                                <ul>
+                                    <li><strong>穩定性更好</strong>：避免連接數超限問題，特別是在多用戶環境下</li>
+                                    <li><strong>效能更佳</strong>：連接池管理可減少連接建立的開銷，提高響應速度</li>
+                                    <li><strong>適合生產環境</strong>：這是 Supabase 官方推薦的最佳實務</li>
+                                </ul>
+                                <p>直接連接可能導致 DNS 解析失敗、連接超時等問題，尤其在生產環境中更為明顯。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion">
+                            <div class="accordion-header">
+                                <h3>如何解決 Supabase 連接數超限問題？</h3>
+                                <span class="accordion-arrow">+</span>
+                            </div>
+                            <div class="accordion-content">
+                                <p>Supabase 免費方案有連接數限制，解決方法包括：</p>
+                                <ol>
+                                    <li>使用 Connection pooling 連接方式</li>
+                                    <li>在應用程式中實現連接池管理</li>
+                                    <li>確保不使用時關閉連接</li>
+                                    <li>考慮升級到付費方案以獲得更多連接數</li>
+                                </ol>
+                                <p>最重要的是，始終使用 Connection pooling 連接字串，格式如：<code>postgresql://postgres.xxxxxxxxxxxx:password@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres</code></p>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion">
+                            <div class="accordion-header">
+                                <h3>如何在 Supabase 中備份和還原資料？</h3>
+                                <span class="accordion-arrow">+</span>
+                            </div>
+                            <div class="accordion-content">
+                                <p>Supabase 提供多種備份和還原資料的方法：</p>
+                                <h4>備份資料</h4>
+                                <ol>
+                                    <li><strong>使用 Supabase Dashboard</strong>：在 Settings > Database > Backups 中下載備份</li>
+                                    <li><strong>使用 pgAdmin</strong>：連接到 Supabase 資料庫，使用 pgAdmin 的備份功能</li>
+                                    <li><strong>使用 pg_dump</strong>：在命令行中執行 <code>pg_dump</code> 命令</li>
+                                </ol>
+                                <h4>還原資料</h4>
+                                <ol>
+                                    <li><strong>使用 SQL Editor</strong>：將 SQL 備份檔案內容貼到 SQL Editor 中執行</li>
+                                    <li><strong>使用 psql</strong>：通過命令行工具 <code>psql</code> 還原資料</li>
+                                </ol>
+                                <p>注意：免費方案的備份功能可能有限制，建議定期手動備份重要資料。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion">
+                            <div class="accordion-header">
+                                <h3>Supabase 的資料庫大小限制是多少？</h3>
+                                <span class="accordion-arrow">+</span>
+                            </div>
+                            <div class="accordion-content">
+                                <p>Supabase 的資料庫大小限制取決於您的方案：</p>
+                                <ul>
+                                    <li><strong>免費方案</strong>：500MB 資料庫空間</li>
+                                    <li><strong>Pro 方案</strong>：8GB 資料庫空間</li>
+                                    <li><strong>Team 方案</strong>：可根據需求調整</li>
+                                    <li><strong>Enterprise 方案</strong>：自定義容量</li>
+                                </ul>
+                                <p>如果您接近限制，可以考慮：</p>
+                                <ol>
+                                    <li>清理不必要的資料</li>
+                                    <li>優化資料庫結構</li>
+                                    <li>使用外部存儲服務存儲大型檔案</li>
+                                    <li>升級到更高級的方案</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <div class="accordion">
+                            <div class="accordion-header">
+                                <h3>什麼是 Supabase 的資料列級安全性 (RLS)？為什麼它很重要？</h3>
+                                <span class="accordion-arrow">+</span>
+                            </div>
+                            <div class="accordion-content">
+                                <p>資料列級安全性 (RLS) 是 PostgreSQL 的一個強大功能，Supabase 將其整合得非常好。它允許您為資料庫的每個資料表定義精細的存取控制策略。</p>
+                                <p><strong>重要性:</strong></p>
+                                <ul>
+                                    <li><strong>精確控制</strong>: 您可以指定哪些使用者 (或角色) 可以對哪些資料列執行哪些操作 (SELECT, INSERT, UPDATE, DELETE)。例如，使用者只能看到或修改自己的資料。</li>
+                                    <li><strong>安全性</strong>: RLS 是保護資料免於未經授權存取的關鍵機制，即使使用公開的 <code>anon</code> 金鑰，RLS 策略依然會強制執行。</li>
+                                    <li><strong>預設關閉</strong>: 新建立的資料表預設情況下 RLS 是關閉的，這意味著如果沒有啟用 RLS 並設定策略，擁有 <code>anon</code> 金鑰的任何人都可以讀取所有資料。<strong>因此，為包含敏感資料的資料表啟用 RLS 並設定適當的策略至關重要。</strong></li>
+                                </ul>
+                                <p><strong>如何啟用與設定:</strong></p>
+                                <p>您可以在 Supabase Dashboard 的 Table Editor 中為每個資料表啟用 RLS。啟用後，您需要使用 SQL 撰寫策略。例如，允許使用者讀取自己的個人資料 (假設資料表為 <code>profiles</code>，且有 <code>user_id</code> 欄位對應 <code>auth.uid()</code>)：</p>
+                                <div class="code-block">
+                                    <pre><code>CREATE POLICY "Enable read access for own data"
+ON public.profiles FOR SELECT
+USING (auth.uid() = user_id);</code></pre>
+                                    <button class="copy-btn">複製</button>
+                                </div>
+                                <p>Supabase 提供了許多範例和文件來幫助您開始設定 RLS 策略。</p>
+                            </div>
+                        </div>
+
+                        <div class="accordion">
+                            <div class="accordion-header">
+                                <h3>Supabase 有哪些 API 金鑰？我該如何管理它們？</h3>
+                                <span class="accordion-arrow">+</span>
+                            </div>
+                            <div class="accordion-content">
+                                <p>Supabase 主要有兩種 API 金鑰：</p>
+                                <ul>
+                                    <li><strong><code>anon</code> (Anonymous Key)</strong>: 公開金鑰，用於客戶端應用程式（如瀏覽器或行動應用程式）進行匿名或使用者級別的存取。它遵循您設定的資料列級安全性 (RLS) 策略。</li>
+                                    <li><strong><code>service_role</code> (Service Role Key)</strong>: 私密金鑰，擁有超級管理員權限，可以繞過所有 RLS 策略。<strong>此金鑰非常敏感，絕不能洩露到客戶端或前端程式碼中。</strong> 應僅在受信任的伺服器環境中使用。</li>
+                                </ul>
+                                <p><strong>管理建議:</strong></p>
+                                <ul>
+                                    <li><code>anon</code> 金鑰可以嵌入到前端應用程式中。</li>
+                                    <li><code>service_role</code> 金鑰應作為環境變數儲存在您的後端伺服器（例如 Heroku 的 Config Vars），絕不硬編碼到程式碼中，並確保您的 <code>.env</code> 檔案在 <code>.gitignore</code> 中。</li>
+                                    <li>定期檢視並考慮輪換金鑰，特別是當懷疑金鑰可能已洩露時。</li>
+                                    <li>您可以在 Supabase Dashboard > Project Settings > API 中找到這些金鑰。</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Heroku 相關問題 -->
+                    <div id="heroku-issues" style="margin-top: var(--spacing-xl);">
+                        <h2>Heroku 相關問題</h2>
+                        
+                        <div class="accordion">
+                            <div class="accordion-header">
+                                <h3>Heroku 部署失敗，如何排查？</h3>
+                                <span class="accordion-arrow">+</span>
+                            </div>
+                            <div class="accordion-content">
+                                <p>Heroku 部署失敗的常見原因和解決方法：</p>
+                                <ol>
+                                    <li><strong>查看日誌</strong>：執行 <code>heroku logs --tail</code> 查看詳細錯誤信息</li>
+                                    <li><strong>檢查 Procfile</strong>：確保 Procfile 格式正確，沒有多餘的空格或換行</li>
+                                    <li><strong>檢查 requirements.txt</strong>：確保所有依賴項都已列出且版本兼容</li>
+                                    <li><strong>檢查環境變數</strong>：執行 <code>heroku config</code> 確認所有必要的環境變數都已設置</li>
+                                    <li><strong>檢查 Python 版本</strong>：確保 runtime.txt 中指定的 Python 版本 Heroku 支持</li>
+                                    <li><strong>本地測試</strong>：在部署前先在本地環境測試應用程式</li>
+                                </ol>
+                                <p>如果問題仍然存在，可以嘗試：</p>
+                                <ul>
+                                    <li>重新創建 Heroku 應用程式</li>
+                                    <li>使用 <code>heroku builds:purge</code> 清除構建緩存</li>
+                                    <li>檢查 Heroku 狀態頁面，確認服務是否正常運行</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion">
+                            <div class="accordion-header">
+                                <h3>Heroku 應用程式啟動後立即崩潰，如何解決？</h3>
+                                <span class="accordion-arrow">+</span>
+                            </div>
+                            <div class="accordion-content">
+                                <p>應用程式啟動後立即崩潰的常見原因：</p>
+                                <ol>
+                                    <li><strong>端口綁定問題</strong>：確保應用程式監聽 <code>process.env.PORT</code> 或 <code>os.environ.get('PORT')</code></li>
+                                    <li><strong>資料庫連接問題</strong>：檢查資料庫連接字串是否正確，特別是使用 Supabase 時確保使用 Connection pooling</li>
+                                    <li><strong>依賴項問題</strong>：確保所有必要的依賴項都已在 requirements.txt 中列出</li>
+                                    <li><strong>環境變數缺失</strong>：檢查應用程式是否依賴未設置的環境變數</li>
+                                </ol>
+                                <p>解決步驟：</p>
+                                <ol>
+                                    <li>執行 <code>heroku logs --tail</code> 查看詳細錯誤信息</li>
+                                    <li>在本地使用相同的環境變數測試應用程式</li>
+                                    <li>嘗試在 Procfile 中添加 <code>--log-file=-</code> 參數以獲取更多日誌信息</li>
+                                    <li>確保應用程式能夠處理 Heroku 的 SIGTERM 信號</li>
+                                </ol>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion">
+                            <div class="accordion-header">
+                                <h3>如何處理 Heroku 的休眠問題？</h3>
+                                <span class="accordion-arrow">+</span>
+                            </div>
+                            <div class="accordion-content">
+                                <p>Heroku 免費方案的應用程式在 30 分鐘無活動後會進入休眠狀態，這會導致首次訪問較慢。解決方法：</p>
+                                <ol>
+                                    <li><strong>升級到付費方案</strong>：Hobby 方案及以上不會休眠</li>
+                                    <li><strong>使用外部服務定期 ping</strong>：設置服務如 UptimeRobot 每 25-30 分鐘 ping 一次您的應用程式</li>
+                                    <li><strong>實現自我 ping</strong>：在應用程式中添加定時任務，定期訪問自身</li>
+                                </ol>
+                                <p>注意：濫用免費方案（如使用腳本防止休眠）可能違反 Heroku 的服務條款。如果應用程式需要持續運行，建議升級到付費方案。</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 整合相關問題 -->
+                    <div id="integration-issues" style="margin-top: var(--spacing-xl);">
+                        <h2>整合相關問題</h2>
+                        
+                        <div class="accordion">
+                            <div class="accordion-header">
+                                <h3>Heroku 應用程式無法連接到 Supabase 資料庫，如何解決？</h3>
+                                <span class="accordion-arrow">+</span>
+                            </div>
+                            <div class="accordion-content">
+                                <p>Heroku 應用程式無法連接到 Supabase 資料庫的常見原因：</p>
+                                <ol>
+                                    <li><strong>連接字串錯誤</strong>：確保使用正確的 Connection pooling 連接字串</li>
+                                    <li><strong>環境變數問題</strong>：檢查 <code>DATABASE_URL</code> 環境變數是否正確設置</li>
+                                    <li><strong>引號問題</strong>：確保連接字串中的特殊字符（如密碼中的特殊字符）正確轉義</li>
+                                    <li><strong>IP 限制</strong>：檢查 Supabase 是否啟用了 IP 限制，如果是，確保 Heroku 的 IP 範圍在允許列表中</li>
+                                </ol>
+                                <p>解決步驟：</p>
+                                <ol>
+                                    <li>在 Heroku Dashboard 中檢查環境變數</li>
+                                    <li>使用 <code>heroku run bash</code> 連接到應用程式，嘗試手動連接資料庫</li>
+                                    <li>檢查 Supabase Dashboard 中的連接設置</li>
+                                    <li>確保使用 <code>aws-0-ap-southeast-1.pooler.supabase.com</code> 這樣的 pooler 主機名</li>
+                                </ol>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion">
+                            <div class="accordion-header">
+                                <h3>如何優化 Supabase 和 Heroku 之間的連接性能？</h3>
+                                <span class="accordion-arrow">+</span>
+                            </div>
+                            <div class="accordion-content">
+                                <p>優化 Supabase 和 Heroku 之間連接性能的方法：</p>
+                                <ol>
+                                    <li><strong>使用 Connection pooling</strong>：確保使用 Supabase 的連接池功能</li>
+                                    <li><strong>選擇相近區域</strong>：將 Heroku 應用程式和 Supabase 專案部署在相同或相近的地理區域</li>
+                                    <li><strong>實現應用層緩存</strong>：使用 Redis 或內存緩存減少資料庫查詢</li>
+                                    <li><strong>優化查詢</strong>：確保 SQL 查詢高效，使用適當的索引</li>
+                                    <li><strong>批量操作</strong>：盡可能使用批量插入/更新而非單條操作</li>
+                                    <li><strong>連接池設置</strong>：根據應用程式需求調整連接池大小</li>
+                                </ol>
+                                <p>在 Flask 應用程式中，可以使用 SQLAlchemy 的連接池設置：</p>
+                                <div class="code-block">
+                                    <pre><code>app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_size': 10,
+    'pool_recycle': 60,
+    'pool_pre_ping': True
+}</code></pre>
+                                    <button class="copy-btn">複製</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 故障排除 -->
+                    <div id="troubleshooting" style="margin-top: var(--spacing-xl);">
+                        <h2>故障排除</h2>
+                        
+                        <div class="accordion">
+                            <div class="accordion-header">
+                                <h3>應用程式部署後出現 500 錯誤，如何排查？</h3>
+                                <span class="accordion-arrow">+</span>
+                            </div>
+                            <div class="accordion-content">
+                                <p>500 錯誤表示服務器內部錯誤，排查步驟：</p>
+                                <ol>
+                                    <li><strong>查看日誌</strong>：執行 <code>heroku logs --tail</code> 查看詳細錯誤信息</li>
+                                    <li><strong>檢查資料庫連接</strong>：確認資料庫連接字串正確且資料庫可訪問</li>
+                                    <li><strong>檢查應用程式代碼</strong>：特別關注異常處理部分</li>
+                                    <li><strong>檢查環境變數</strong>：確保所有必要的環境變數都已正確設置</li>
+                                    <li><strong>本地重現</strong>：嘗試在本地環境中重現錯誤</li>
+                                </ol>
+                                <p>常見的 500 錯誤原因：</p>
+                                <ul>
+                                    <li>資料庫連接失敗</li>
+                                    <li>應用程式代碼中的未處理異常</li>
+                                    <li>環境變數缺失或錯誤</li>
+                                    <li>依賴項版本不兼容</li>
+                                    <li>資源限制（如記憶體不足）</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion">
+                            <div class="accordion-header">
+                                <h3>如何解決資料庫遷移過程中的問題？</h3>
+                                <span class="accordion-arrow">+</span>
+                            </div>
+                            <div class="accordion-content">
+                                <p>資料庫遷移過程中常見問題及解決方法：</p>
+                                <h4>1. 資料類型不兼容</h4>
+                                <p>PostgreSQL 的某些資料類型可能與其他資料庫不完全兼容。解決方法：</p>
+                                <ul>
+                                    <li>在遷移前檢查資料類型映射</li>
+                                    <li>使用適當的轉換函數</li>
+                                    <li>考慮使用中間格式（如 CSV）進行遷移</li>
+                                </ul>
+                                
+                                <h4>2. 字符編碼問題</h4>
+                                <p>不同資料庫可能使用不同的字符編碼。解決方法：</p>
+                                <ul>
+                                    <li>確保源資料庫和目標資料庫使用相同的字符編碼（如 UTF-8）</li>
+                                    <li>在遷移過程中明確指定字符編碼</li>
+                                </ul>
+                                
+                                <h4>3. 外鍵約束問題</h4>
+                                <p>遷移時外鍵約束可能導致問題。解決方法：</p>
+                                <ul>
+                                    <li>按正確的順序遷移資料表（先遷移被引用的表）</li>
+                                    <li>暫時禁用外鍵約束，遷移完成後重新啟用</li>
+                                </ul>
+                                
+                                <h4>4. 大量資料遷移超時</h4>
+                                <p>大量資料遷移可能導致超時。解決方法：</p>
+                                <ul>
+                                    <li>分批遷移資料</li>
+                                    <li>使用專用的資料遷移工具</li>
+                                    <li>考慮使用 Supabase 的 pgAdmin 介面進行操作</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion">
+                            <div class="accordion-header">
+                                <h3>應用程式性能問題如何診斷和優化？</h3>
+                                <span class="accordion-arrow">+</span>
+                            </div>
+                            <div class="accordion-content">
+                                <p>診斷和優化應用程式性能的方法：</p>
+                                <h4>診斷步驟</h4>
+                                <ol>
+                                    <li><strong>識別瓶頸</strong>：使用性能監控工具（如 New Relic、Datadog）</li>
+                                    <li><strong>分析日誌</strong>：查找慢查詢或高延遲操作</li>
+                                    <li><strong>檢查資源使用情況</strong>：監控 CPU、記憶體、網絡使用情況</li>
+                                    <li><strong>前端性能分析</strong>：使用瀏覽器開發工具分析前端性能</li>
+                                </ol>
+                                
+                                <h4>優化策略</h4>
+                                <ol>
+                                    <li><strong>資料庫優化</strong>：
+                                        <ul>
+                                            <li>添加適當的索引</li>
+                                            <li>優化 SQL 查詢</li>
+                                            <li>實現查詢緩存</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>應用程式優化</strong>：
+                                        <ul>
+                                            <li>實現資料緩存（如使用 Redis）</li>
+                                            <li>優化代碼邏輯</li>
+                                            <li>使用異步處理長時間運行的任務</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>前端優化</strong>：
+                                        <ul>
+                                            <li>最小化和壓縮靜態資源</li>
+                                            <li>實現懶加載</li>
+                                            <li>優化圖片和媒體文件</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>基礎設施優化</strong>：
+                                        <ul>
+                                            <li>升級 Heroku 方案以獲得更多資源</li>
+                                            <li>使用 CDN 分發靜態內容</li>
+                                            <li>考慮使用 Heroku 的自動擴展功能</li>
+                                        </ul>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 頁腳 -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <p>&copy; 2025 Supabase + Heroku 部署教學 | 為網頁開發者打造</p>
+            <ul class="footer-links">
+                <li><a href="../index.html" class="footer-link">首頁</a></li>
+                <li><a href="supabase.html" class="footer-link">Supabase</a></li>
+                <li><a href="heroku.html" class="footer-link">Heroku</a></li>
+                <li><a href="faq.html" class="footer-link">常見問題</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script src="../assets/js/main.js"></script>
+</body>
+</html>

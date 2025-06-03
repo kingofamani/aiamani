@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>部署檢查清單 | Supabase + Heroku 教學</title>
+    <meta name="description" content="Supabase 與 Heroku 部署前的完整檢查清單，確保部署過程順利無誤">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <!-- 字體圖標 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 導航欄 -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="../index.html" class="navbar-logo">SUPABASE + HEROKU</a>
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="navbar-menu">
+                <li class="navbar-item"><a href="../index.html" class="navbar-link">首頁</a></li>
+                <li class="navbar-item"><a href="supabase.html" class="navbar-link">Supabase</a></li>
+                <li class="navbar-item"><a href="heroku.html" class="navbar-link">Heroku</a></li>
+                <li class="navbar-item"><a href="advanced.html" class="navbar-link">進階功能</a></li>
+                <li class="navbar-item"><a href="checklist.html" class="navbar-link">部署檢查</a></li>
+                <li class="navbar-item"><a href="faq.html" class="navbar-link">常見問題</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 頁面標題 -->
+    <section class="section" style="padding-top: 120px;">
+        <div class="container">
+            <h1>部署檢查清單</h1>
+            <p class="hero-subtitle">確保您的 Supabase + Heroku 部署過程順利無誤</p>
+        </div>
+    </section>
+
+    <!-- 主要內容 -->
+    <section class="section">
+        <div class="container">
+            <div class="grid">
+                <div class="col-6">
+                    <h2>Supabase 設定檢查</h2>
+                    <ul class="checklist">
+                        <li class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="supabase-1">
+                            <label for="supabase-1">已建立 Supabase 專案</label>
+                        </li>
+                        <li class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="supabase-2">
+                            <label for="supabase-2">已使用 Connection pooling 連線字串</label>
+                        </li>
+                        <li class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="supabase-3">
+                            <label for="supabase-3">資料表結構已建立</label>
+                        </li>
+                        <li class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="supabase-4">
+                            <label for="supabase-4">資料已成功遷移</label>
+                        </li>
+                        <li class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="supabase-5">
+                            <label for="supabase-5">本地連線測試通過</label>
+                        </li>
+                        <li class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="supabase-6">
+                            <label for="supabase-6">已設定適當的資料庫權限</label>
+                        </li>
+                        <li class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="supabase-7">
+                            <label for="supabase-7">已備份重要資料</label>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="col-6">
+                    <h2>Heroku 部署檢查</h2>
+                    <ul class="checklist">
+                        <li class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="heroku-1">
+                            <label for="heroku-1">Heroku 應用程式已建立</label>
+                        </li>
+                        <li class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="heroku-2">
+                            <label for="heroku-2">環境變數已設定</label>
+                        </li>
+                        <li class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="heroku-3">
+                            <label for="heroku-3">Procfile 已正確設定</label>
+                        </li>
+                        <li class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="heroku-4">
+                            <label for="heroku-4">requirements.txt 已更新</label>
+                        </li>
+                        <li class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="heroku-5">
+                            <label for="heroku-5">應用程式成功部署</label>
+                        </li>
+                        <li class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="heroku-6">
+                            <label for="heroku-6">API 端點正常運作</label>
+                        </li>
+                        <li class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="heroku-7">
+                            <label for="heroku-7">前端頁面正常顯示</label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="grid" style="margin-top: var(--spacing-xl);">
+                <div class="col-12">
+                    <h2>驗證測試檢查</h2>
+                    <ul class="checklist">
+                        <li class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="test-1">
+                            <label for="test-1">新增資料功能正常</label>
+                        </li>
+                        <li class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="test-2">
+                            <label for="test-2">編輯資料功能正常</label>
+                        </li>
+                        <li class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="test-3">
+                            <label for="test-3">刪除資料功能正常</label>
+                        </li>
+                        <li class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="test-4">
+                            <label for="test-4">統計計算正確顯示</label>
+                        </li>
+                        <li class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="test-5">
+                            <label for="test-5">響應時間在可接受範圍內</label>
+                        </li>
+                        <li class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="test-6">
+                            <label for="test-6">錯誤處理機制正常運作</label>
+                        </li>
+                        <li class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="test-7">
+                            <label for="test-7">跨瀏覽器兼容性測試通過</label>
+                        </li>
+                        <li class="checklist-item">
+                            <input type="checkbox" class="checklist-checkbox" id="test-8">
+                            <label for="test-8">移動裝置顯示正常</label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="alert alert-info" style="margin-top: var(--spacing-xl);">
+                <h3>檢查清單說明</h3>
+                <p>此檢查清單會自動保存您的勾選狀態，方便您追蹤部署進度。完成所有檢查項目後，您的 Supabase + Heroku 應用程式應該已經成功部署並正常運作。</p>
+                <p>如果在部署過程中遇到任何問題，請參考 <a href="faq.html">常見問題</a> 頁面或查閱相關文檔。</p>
+            </div>
+            
+            <div style="text-align: center; margin-top: var(--spacing-xl);">
+                <button id="reset-checklist" class="btn btn-secondary">重置檢查清單</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 頁腳 -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <p>&copy; 2025 Supabase + Heroku 部署教學 | 為網頁開發者打造</p>
+            <ul class="footer-links">
+                <li><a href="../index.html" class="footer-link">首頁</a></li>
+                <li><a href="supabase.html" class="footer-link">Supabase</a></li>
+                <li><a href="heroku.html" class="footer-link">Heroku</a></li>
+                <li><a href="faq.html" class="footer-link">常見問題</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script src="../assets/js/main.js"></script>
+    <script>
+        // 重置檢查清單
+        document.getElementById('reset-checklist').addEventListener('click', function() {
+            if (confirm('確定要重置所有檢查項目嗎？')) {
+                const checkboxes = document.querySelectorAll('.checklist-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                localStorage.removeItem('checklistState');
+                
+                // 移除完成樣式
+                const listItems = document.querySelectorAll('.checklist-item');
+                listItems.forEach(item => {
+                    item.classList.remove('completed');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

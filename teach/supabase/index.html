@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase + Heroku 部署教學 | 網頁開發者指南</title>
+    <meta name="description" content="為網頁開發者打造的 Supabase PostgreSQL 與 Heroku Flask 部署完整教學，極簡風格呈現">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- 字體圖標 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 導航欄 -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="index.html" class="navbar-logo">SUPABASE + HEROKU</a>
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="navbar-menu">
+                <li class="navbar-item"><a href="index.html" class="navbar-link">首頁</a></li>
+                <li class="navbar-item"><a href="pages/supabase.html" class="navbar-link">Supabase</a></li>
+                <li class="navbar-item"><a href="pages/heroku.html" class="navbar-link">Heroku</a></li>
+                <li class="navbar-item"><a href="pages/advanced.html" class="navbar-link">進階功能</a></li>
+                <li class="navbar-item"><a href="pages/checklist.html" class="navbar-link">部署檢查</a></li>
+                <li class="navbar-item"><a href="pages/faq.html" class="navbar-link">常見問題</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 英雄區塊 -->
+    <section class="hero">
+        <div class="container hero-content">
+            <h1 class="hero-title">Supabase + Heroku 部署指南</h1>
+            <p class="hero-subtitle">為網頁開發者打造的完整部署教學，從環境設置到應用上線的全流程指南</p>
+            <a href="pages/supabase.html" class="btn btn-primary">開始學習</a>
+        </div>
+    </section>
+
+    <!-- 內容概覽區 -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">技術概覽</h2>
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-database" style="color: var(--color-supabase);"></i>
+                    </div>
+                    <h3>Supabase</h3>
+                    <p>開源的 Firebase 替代方案，提供 PostgreSQL 資料庫、身份驗證、即時訂閱、存儲等功能，讓後端開發更簡單高效。</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-cloud-upload-alt" style="color: var(--color-heroku);"></i>
+                    </div>
+                    <h3>Heroku</h3>
+                    <p>強大的雲端平台即服務 (PaaS)，支援多種程式語言，提供簡單的部署流程，讓開發者專注於應用程式開發而非基礎設施。</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-code-branch" style="color: var(--color-accent);"></i>
+                    </div>
+                    <h3>整合優勢</h3>
+                    <p>結合 Supabase 的資料庫能力與 Heroku 的部署便利性，打造完整的全端應用解決方案，加速開發流程，降低維護成本。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 教學路徑區 -->
+    <section class="section" style="background-color: var(--color-light-gray);">
+        <div class="container">
+            <h2 class="section-title">學習路徑</h2>
+            <div class="steps">
+                <div class="step">
+                    <h3>環境準備</h3>
+                    <p>設置開發環境，安裝必要工具與套件，為 Supabase 與 Heroku 部署做好準備工作。</p>
+                    <a href="pages/supabase.html#preparation" class="btn btn-secondary">查看詳情</a>
+                </div>
+                <div class="step">
+                    <h3>Supabase 設置</h3>
+                    <p>建立 Supabase 專案，設定 PostgreSQL 資料庫，取得連線資訊，進行資料遷移與測試。</p>
+                    <a href="pages/supabase.html" class="btn btn-secondary">查看詳情</a>
+                </div>
+                <div class="step">
+                    <h3>Heroku 部署</h3>
+                    <p>準備 Flask 應用程式部署檔案，建立 Heroku 應用，設定環境變數，完成部署與監控。</p>
+                    <a href="pages/heroku.html" class="btn btn-secondary">查看詳情</a>
+                </div>
+                <div class="step">
+                    <h3>整合與測試</h3>
+                    <p>確保 Supabase 與 Heroku 整合正常運作，進行功能測試，優化應用程式性能。</p>
+                    <a href="pages/checklist.html" class="btn btn-secondary">查看詳情</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 重要提示區 -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">重要提示</h2>
+            <div class="grid">
+                <div class="col-6">
+                    <div class="alert alert-info">
+                        <h3>Supabase 連線最佳實踐</h3>
+                        <p>使用 Supabase 時，務必選擇 Connection pooling 連線方式，而非直接連接。這能提供更好的穩定性、效能與連接管理，避免連接數超限問題。</p>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="alert alert-warning">
+                        <h3>Heroku 部署檢查清單</h3>
+                        <p>部署到 Heroku 前，確保已完成 Procfile 設定、requirements.txt 更新、環境變數配置，並進行本地測試。這些步驟對於成功部署至關重要。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 開始行動區 -->
+    <section class="section" style="background-color: var(--color-light-gray);">
+        <div class="container" style="text-align: center;">
+            <h2 class="section-title">準備好開始了嗎？</h2>
+            <p style="max-width: 600px; margin: 0 auto var(--spacing-l);">跟隨我們的教學，輕鬆完成 Supabase 與 Heroku 的部署與整合，打造高效能的全端應用。</p>
+            <a href="pages/supabase.html" class="btn btn-primary">開始學習</a>
+        </div>
+    </section>
+
+    <!-- 頁腳 -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <p>&copy; 2025 Supabase + Heroku 部署教學 | 為網頁開發者打造</p>
+            <ul class="footer-links">
+                <li><a href="index.html" class="footer-link">首頁</a></li>
+                <li><a href="pages/supabase.html" class="footer-link">Supabase</a></li>
+                <li><a href="pages/heroku.html" class="footer-link">Heroku</a></li>
+                <li><a href="pages/faq.html" class="footer-link">常見問題</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
+</body>
+</html>

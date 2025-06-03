@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase PostgreSQL 資料庫部署 | Supabase + Heroku 教學</title>
+    <meta name="description" content="完整的 Supabase PostgreSQL 資料庫部署教學，從註冊帳號到資料遷移的詳細步驟">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <!-- 字體圖標 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 導航欄 -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="../index.html" class="navbar-logo">SUPABASE + HEROKU</a>
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="navbar-menu">
+                <li class="navbar-item"><a href="../index.html" class="navbar-link">首頁</a></li>
+                <li class="navbar-item"><a href="supabase.html" class="navbar-link">Supabase</a></li>
+                <li class="navbar-item"><a href="heroku.html" class="navbar-link">Heroku</a></li>
+                <li class="navbar-item"><a href="advanced.html" class="navbar-link">進階功能</a></li>
+                <li class="navbar-item"><a href="checklist.html" class="navbar-link">部署檢查</a></li>
+                <li class="navbar-item"><a href="faq.html" class="navbar-link">常見問題</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 頁面標題 -->
+    <section class="section" style="padding-top: 120px;">
+        <div class="container">
+            <h1>Supabase PostgreSQL 資料庫部署</h1>
+            
+            <!-- 進度指示器 -->
+            <div class="progress-bar">
+                <div class="progress-step active" data-step="1">1</div>
+                <div class="progress-step" data-step="2">2</div>
+                <div class="progress-step" data-step="3">3</div>
+                <div class="progress-step" data-step="4">4</div>
+                <div class="progress-step" data-step="5">5</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 主要內容 -->
+    <section class="section">
+        <div class="container">
+            <div class="grid">
+                <!-- 側邊欄 -->
+                <div class="col-4">
+                    <div style="position: sticky; top: 100px;">
+                        <h3>目錄</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: var(--spacing-xs);"><a href="#preparation">前置準備</a></li>
+                            <li style="margin-bottom: var(--spacing-xs);"><a href="#create-project">建立 Supabase 專案</a></li>
+                            <li style="margin-bottom: var(--spacing-xs);"><a href="#connection-info">取得資料庫連線資訊</a></li>
+                            <li style="margin-bottom: var(--spacing-xs);"><a href="#local-setup">設定本地環境</a></li>
+                            <li style="margin-bottom: var(--spacing-xs);"><a href="#database-structure">建立資料庫結構</a></li>
+                            <li style="margin-bottom: var(--spacing-xs);"><a href="#data-migration">資料遷移</a></li>
+                            <li style="margin-bottom: var(--spacing-xs);"><a href="#supabase-cli">使用 Supabase CLI</a></li>
+                            <li style="margin-bottom: var(--spacing-xs);"><a href="#test-connection">測試連線</a></li>
+                        </ul>
+                        
+                        <div class="alert alert-info" style="margin-top: var(--spacing-l);">
+                            <h4>重要提示</h4>
+                            <p>使用 Supabase 時，務必選擇 Connection pooling 連線方式，而非直接連接。這能提供更好的穩定性與效能。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 主要內容 -->
+                <div class="col-8">
+                    <!-- 前置準備 -->
+                    <div id="preparation" class="step-content" style="display: block;">
+                        <h2>前置準備</h2>
+                        
+                        <div class="step">
+                            <h3>註冊 Supabase 帳號</h3>
+                            <p>前往 <a href="https://supabase.com" target="_blank">supabase.com</a> 註冊免費帳號。您可以使用 GitHub、Google 或 Email 註冊。</p>
+                            <p>免費方案包含：</p>
+                            <ul>
+                                <li>500MB 資料庫空間</li>
+                                <li>50MB 檔案儲存</li>
+                                <li>50,000 月活躍使用者</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>安裝 Supabase CLI (可選，但推薦)</h3>
+                            <p>Supabase CLI 可以幫助您在本地開發和管理 Supabase 專案。</p>
+                            
+                            <h4>Windows (PowerShell)</h4>
+                            <div class="code-block">
+                                <pre><code># 安裝 Scoop (如果沒有的話)
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+irm get.scoop.sh | iex
+
+# 安裝 Supabase CLI
+scoop install supabase</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            
+                            <h4>macOS</h4>
+                            <div class="code-block">
+                                <pre><code>brew install supabase/tap/supabase</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            
+                            <h4>Linux</h4>
+                            <div class="code-block">
+                                <pre><code>npm install -g supabase</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                        </div>
+                        
+                        <div class="step-navigation">
+                            <button class="btn btn-secondary prev-step" disabled>上一步</button>
+                            <button class="btn btn-primary next-step">下一步</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 建立 Supabase 專案 -->
+                    <div id="create-project" class="step-content" style="display: none;">
+                        <h2>建立 Supabase 專案</h2>
+                        
+                        <div class="step">
+                            <h3>建立新專案</h3>
+                            <p>登入 <a href="https://app.supabase.com" target="_blank">Supabase Dashboard</a>，點擊「New project」按鈕。</p>
+                            <p>如果您是首次使用，系統會自動為您建立一個預設組織。</p>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>設定專案資訊</h3>
+                            <ul>
+                                <li><strong>Name</strong>: 輸入您喜歡的專案名稱，例如 <code>my-app</code></li>
+                                <li><strong>Database Password</strong>: 設定一個強密碼（<strong>請記住，稍後需要使用</strong>）</li>
+                                <li><strong>Region</strong>: 選擇最接近您用戶的區域（如 Southeast Asia (Singapore)）</li>
+                                <li><strong>Pricing Plan</strong>: 選擇「Free」</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>等待專案建立</h3>
+                            <p>通常需要 1-2 分鐘完成專案建立。建立完成後，您將看到專案的 Dashboard。</p>
+                        </div>
+                        
+                        <div class="alert alert-warning">
+                            <h4>注意事項</h4>
+                            <p>請務必妥善保存您的資料庫密碼，這將用於後續的資料庫連接。如果忘記密碼，可以在專案設定中重設，但這會導致現有連接失效。</p>
+                        </div>
+                        
+                        <div class="step-navigation">
+                            <button class="btn btn-secondary prev-step">上一步</button>
+                            <button class="btn btn-primary next-step">下一步</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 取得資料庫連線資訊 -->
+                    <div id="connection-info" class="step-content" style="display: none;">
+                        <h2>取得資料庫連線資訊 (重要步驟)</h2>
+                        
+                        <div class="step">
+                            <h3>進入專案設定</h3>
+                            <p>在 Supabase Dashboard 中，點擊左側選單的「Settings」，然後選擇「Database」。</p>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>選擇正確的連線方式</h3>
+                            <p>在「Connection string」區段，您會看到兩個選項：</p>
+                            <ol>
+                                <li>❌ <strong>「Direct connection」</strong> - 直接連接</li>
+                                <li>✅ <strong>「Connection pooling」</strong> - 連接池 ⭐</li>
+                            </ol>
+                            <p class="alert alert-info" style="font-weight: bold;">📢 請務必選擇第二項 ⭐「Connection pooling」！</p>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>為什麼必須使用 Connection Pooling？</h3>
+                            <ul>
+                                <li>✅ <strong>穩定性更好</strong>：避免連接數超限問題</li>
+                                <li>✅ <strong>效能更佳</strong>：連接池管理，減少連接建立開銷</li>
+                                <li>✅ <strong>適合生產環境</strong>：Supabase 推薦的最佳實務</li>
+                                <li>❌ <strong>Direct connection 問題</strong>：容易遇到 DNS 解析失敗、連接超時等問題</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>複製 Connection pooling 連線字串</h3>
+                            <p>選擇「Transaction pooler」模式，複製類似以下格式的 URI：</p>
+                            <div class="code-block">
+                                <pre><code>postgresql://postgres.xxxxxxxxxxxx:password@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            
+                            <h4>連線字串格式說明</h4>
+                            <ul>
+                                <li><strong>Host</strong>: <code>aws-0-ap-southeast-1.pooler.supabase.com</code> (注意有 <code>.pooler</code>)</li>
+                                <li><strong>Port</strong>: <code>5432</code> (Transaction pooler) 或 <code>6543</code> (Session pooler)</li>
+                                <li><strong>Database</strong>: <code>postgres</code></li>
+                                <li><strong>Username</strong>: <code>postgres.xxxxxxxxxxxx</code> (注意前綴格式)</li>
+                                <li><strong>Password</strong>: 您在建立專案時設定的密碼</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="step-navigation">
+                            <button class="btn btn-secondary prev-step">上一步</button>
+                            <button class="btn btn-primary next-step">下一步</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 設定本地環境 -->
+                    <div id="local-setup" class="step-content" style="display: none;">
+                        <h2>設定本地環境</h2>
+                        
+                        <div class="step">
+                            <h3>更新 .env 檔案</h3>
+                            <p>在您的專案根目錄中，建立或更新 <code>.env</code> 檔案：</p>
+                            <div class="code-block">
+                                <pre><code># Flask 設定
+SECRET_KEY=your-secret-key-here
+
+# 🔥 重要：使用 Connection pooling 連線字串
+DATABASE_URL=postgresql://postgres.xxxxxxxxxxxx:your-password@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres
+
+# Supabase 額外資訊 (可選，未來擴展用)
+SUPABASE_URL=https://xxxxxxxxxxxx.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>取得 Supabase API 金鑰 (可選，未來擴展用)</h3>
+                            <p>在 Supabase Dashboard > Settings > API 中，您可以找到並複製「anon」和「service_role」金鑰。</p>
+                            <p>這些金鑰在使用 Supabase 的身份驗證、存儲等功能時會用到。</p>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <h4>環境變數安全提示</h4>
+                            <p>請確保 <code>.env</code> 檔案已加入 <code>.gitignore</code>，避免敏感資訊被提交到版本控制系統。在生產環境中，應使用環境變數管理系統而非檔案。</p>
+                        </div>
+                        
+                        <div class="step-navigation">
+                            <button class="btn btn-secondary prev-step">上一步</button>
+                            <button class="btn btn-primary next-step">下一步</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 建立資料庫結構 -->
+                    <div id="database-structure" class="step-content" style="display: none;">
+                        <h2>建立資料庫結構</h2>
+                        
+                        <div class="step">
+                            <h3>使用 Supabase SQL Editor</h3>
+                            <p>Supabase 提供了一個方便的 SQL 編輯器，可以直接在瀏覽器中執行 SQL 命令。</p>
+                            <ol>
+                                <li>在 Supabase Dashboard 左側選單點擊「SQL Editor」</li>
+                                <li>點擊「+ New query」創建新查詢</li>
+                                <li>輸入您的 SQL 命令，例如：</li>
+                            </ol>
+                            
+                            <div class="code-block">
+                                <pre><code>-- 創建應用設置表
+CREATE TABLE app_settings (
+    id SERIAL PRIMARY KEY,
+    key VARCHAR(255) NOT NULL UNIQUE,
+    value TEXT,
+    description TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 創建訂閱表
+CREATE TABLE subscriptions (
+    id SERIAL PRIMARY KEY,
+    user_id UUID NOT NULL,
+    plan_id VARCHAR(255) NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    start_date TIMESTAMP WITH TIME ZONE NOT NULL,
+    end_date TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            
+                            <p>點擊「Run」執行 SQL 命令。</p>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>驗證資料表創建</h3>
+                            <p>在 Supabase Dashboard 左側選單點擊「Table Editor」，您應該能看到剛剛創建的資料表。</p>
+                        </div>
+                        
+                        <div class="step-navigation">
+                            <button class="btn btn-secondary prev-step">上一步</button>
+                            <button class="btn btn-primary next-step">下一步</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 資料遷移 -->
+                    <div id="data-migration" class="step-content" style="display: none;">
+                        <h2>資料遷移</h2>
+                        
+                        <div class="step">
+                            <h3>準備遷移資料</h3>
+                            <p>資料遷移是將現有資料庫結構和資料移動到新 Supabase 專案的過程。您可以透過 Supabase Studio 直接操作、使用 Supabase CLI 進行遷移，或是利用像 pgAdmin 這類的圖形化工具。以下將介紹幾種常用的方法：</p>
+                            <p>若您偏好使用 pgAdmin 並需要從現有 PostgreSQL 資料庫匯出特定資料表，可以參考我們的詳細教學：<a href="pgadmin.html" class="link-discreet">使用 pgAdmin 進行資料遷移教學</a>。</p>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>方法 1：使用 SQL 匯入</h3>
+                            <p>如果您有現有資料的 SQL 匯出檔案，可以直接在 SQL Editor 中執行：</p>
+                            <ol>
+                                <li>在 Supabase Dashboard 左側選單點擊「SQL Editor」</li>
+                                <li>點擊「+ New query」創建新查詢</li>
+                                <li>將您的 SQL 插入語句貼上，例如：</li>
+                            </ol>
+                            
+                            <div class="code-block">
+                                <pre><code>-- 插入應用設置數據
+INSERT INTO app_settings (key, value, description) VALUES
+('site_name', 'My Application', '網站名稱'),
+('theme', 'light', '網站主題'),
+('maintenance_mode', 'false', '維護模式開關');
+
+-- 插入訂閱數據
+INSERT INTO subscriptions (user_id, plan_id, status, start_date, end_date) VALUES
+('d0e7df7e-ae5a-4a8e-b8df-9ac2c0e4888f', 'basic', 'active', '2025-01-01', '2026-01-01'),
+('f3a8f8d7-ae5a-4a8e-b8df-9ac2c0e48123', 'premium', 'active', '2025-02-15', '2026-02-15');</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>方法 2：使用 CSV 匯入</h3>
+                            <p>Supabase 支援通過 CSV 檔案匯入資料：</p>
+                            <ol>
+                                <li>在 Supabase Dashboard 左側選單點擊「Table Editor」</li>
+                                <li>選擇目標資料表</li>
+                                <li>點擊「Import」按鈕</li>
+                                <li>選擇您的 CSV 檔案並按照指示完成匯入</li>
+                            </ol>
+                            <p>CSV 檔案的第一行應該是欄位名稱，與資料表結構匹配。</p>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>方法 3：使用程式碼匯入</h3>
+                            <p>您也可以使用程式碼將資料從舊資料庫遷移到 Supabase：</p>
+                            
+                            <div class="code-block">
+                                <pre><code>import psycopg2
+import os
+from dotenv import load_dotenv
+
+# 載入環境變數
+load_dotenv()
+
+# 連接到舊資料庫
+old_conn = psycopg2.connect(os.getenv('OLD_DATABASE_URL'))
+old_cursor = old_conn.cursor()
+
+# 連接到 Supabase
+supabase_conn = psycopg2.connect(os.getenv('DATABASE_URL'))
+supabase_cursor = supabase_conn.cursor()
+
+try:
+    # 從舊資料庫讀取資料
+    old_cursor.execute("SELECT key, value, description FROM app_settings")
+    settings = old_cursor.fetchall()
+    
+    # 插入到 Supabase
+    for setting in settings:
+        supabase_cursor.execute(
+            "INSERT INTO app_settings (key, value, description) VALUES (%s, %s, %s)",
+            setting
+        )
+    
+    # 提交事務
+    supabase_conn.commit()
+    print(f"成功遷移 {len(settings)} 條設置記錄")
+    
+except Exception as e:
+    supabase_conn.rollback()
+    print(f"遷移失敗: {e}")
+    
+finally:
+    old_cursor.close()
+    old_conn.close()
+    supabase_cursor.close()
+    supabase_conn.close()</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-warning">
+                            <h4>遷移注意事項</h4>
+                            <p>資料遷移前請確保：</p>
+                            <ul>
+                                <li>已備份所有重要資料</li>
+                                <li>目標資料表結構已正確創建</li>
+                                <li>資料類型兼容（特別是日期、時間和特殊類型）</li>
+                                <li>考慮外鍵約束和資料依賴關係，按正確順序遷移</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="step-navigation">
+                            <button class="btn btn-secondary prev-step">上一步</button>
+                            <button class="btn btn-primary next-step">下一步</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 使用 Supabase CLI -->
+                    <div id="supabase-cli" class="step-content" style="display: none;">
+                        <h2>使用 Supabase CLI</h2>
+                        
+                        <div class="step">
+                            <h3>初始化本地 Supabase 專案</h3>
+                            <p>Supabase CLI 可以幫助您在本地開發和管理 Supabase 專案，特別適合團隊協作和版本控制。</p>
+                            
+                            <div class="code-block">
+                                <pre><code># 初始化 Supabase 專案
+supabase init</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            
+                            <p>這將在您的專案目錄中創建一個 <code>supabase</code> 資料夾，包含配置文件和遷移腳本。</p>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>啟動本地 Supabase 開發環境</h3>
+                            <p>您可以在本地運行 Supabase 進行開發和測試：</p>
+                            
+                            <div class="code-block">
+                                <pre><code># 啟動本地 Supabase
+supabase start</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            
+                            <p>這將啟動一個本地 Docker 容器，包含 PostgreSQL 資料庫、Auth、Storage 等服務。</p>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>創建資料庫遷移</h3>
+                            <p>使用 CLI 創建和管理資料庫遷移：</p>
+                            
+                            <div class="code-block">
+                                <pre><code># 創建新的遷移腳本
+supabase migration new create_users_table</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                            
+                            <p>這將在 <code>supabase/migrations</code> 目錄中創建一個新的 SQL 文件，您可以在其中編寫資料庫變更。</p>
+                            
+                            <div class="code-block">
+                                <pre><code>-- 在遷移文件中編寫 SQL
+create table public.users (
+  id uuid references auth.users not null primary key,
+  email text not null unique,
+  name text,
+  avatar_url text,
+  created_at timestamptz default now() not null,
+  updated_at timestamptz default now() not null
+);
+
+-- 創建 RLS 策略
+alter table public.users enable row level security;
+create policy "Users can view their own profile" on public.users
+  for select using (auth.uid() = id);
+create policy "Users can update their own profile" on public.users
+  for update using (auth.uid() = id);</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>應用遷移</h3>
+                            <p>將遷移應用到本地或遠程資料庫：</p>
+                            
+                            <div class="code-block">
+                                <pre><code># 應用到本地資料庫
+supabase db reset
+
+# 應用到遠程資料庫 (需要先設置 access token)
+supabase link --project-ref your-project-ref
+supabase db push</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>生成類型</h3>
+                            <p>為您的資料庫結構生成 TypeScript 類型定義（如果您的前端使用 TypeScript）：</p>
+                            
+                            <div class="code-block">
+                                <pre><code># 生成類型定義
+supabase gen types typescript --local > types/supabase.ts</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <h4>CLI 最佳實踐</h4>
+                            <p>使用 Supabase CLI 的建議：</p>
+                            <ul>
+                                <li>將遷移文件納入版本控制</li>
+                                <li>使用有意義的遷移名稱</li>
+                                <li>在本地測試遷移後再應用到生產環境</li>
+                                <li>使用 CI/CD 流程自動應用遷移</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="step-navigation">
+                            <button class="btn btn-secondary prev-step">上一步</button>
+                            <button class="btn btn-primary next-step">下一步</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 測試連線 -->
+                    <div id="test-connection" class="step-content" style="display: none;">
+                        <h2>測試連線</h2>
+                        
+                        <div class="step">
+                            <h3>使用 Python 測試連線</h3>
+                            <p>使用 Python 和 psycopg2 測試與 Supabase 的連線：</p>
+                            
+                            <div class="code-block">
+                                <pre><code>import psycopg2
+import os
+from dotenv import load_dotenv
+
+# 載入環境變數
+load_dotenv()
+
+# 取得連線字串
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+try:
+    # 建立連線
+    conn = psycopg2.connect(DATABASE_URL)
+    
+    # 建立游標
+    cursor = conn.cursor()
+    
+    # 執行測試查詢
+    cursor.execute("SELECT current_database(), current_user, version();")
+    
+    # 獲取結果
+    result = cursor.fetchone()
+    print(f"資料庫: {result[0]}")
+    print(f"使用者: {result[1]}")
+    print(f"版本: {result[2]}")
+    
+    # 測試讀取資料表
+    cursor.execute("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';")
+    tables = cursor.fetchall()
+    print("\n可用資料表:")
+    for table in tables:
+        print(f"- {table[0]}")
+    
+    print("\n連線測試成功！")
+    
+except Exception as e:
+    print(f"連線失敗: {e}")
+    
+finally:
+    # 關閉連線
+    if 'conn' in locals() and conn is not None:
+        cursor.close()
+        conn.close()
+        print("連線已關閉")</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>使用 JavaScript 測試連線</h3>
+                            <p>使用 Node.js 和 pg 套件測試與 Supabase 的連線：</p>
+                            
+                            <div class="code-block">
+                                <pre><code>const { Pool } = require('pg');
+require('dotenv').config();
+
+// 取得連線字串
+const DATABASE_URL = process.env.DATABASE_URL;
+
+// 建立連線池
+const pool = new Pool({
+  connectionString: DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false // 如果需要 SSL 連線
+  }
+});
+
+async function testConnection() {
+  let client;
+  
+  try {
+    // 取得連線
+    client = await pool.connect();
+    
+    // 執行測試查詢
+    const result = await client.query('SELECT current_database(), current_user, version();');
+    console.log(`資料庫: ${result.rows[0].current_database}`);
+    console.log(`使用者: ${result.rows[0].current_user}`);
+    console.log(`版本: ${result.rows[0].version}`);
+    
+    // 測試讀取資料表
+    const tablesResult = await client.query(
+      "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';"
+    );
+    
+    console.log('\n可用資料表:');
+    tablesResult.rows.forEach(row => {
+      console.log(`- ${row.table_name}`);
+    });
+    
+    console.log('\n連線測試成功！');
+    
+  } catch (err) {
+    console.error('連線失敗:', err);
+  } finally {
+    // 釋放連線
+    if (client) {
+      client.release();
+      console.log('連線已釋放');
+    }
+    
+    // 關閉連線池
+    await pool.end();
+  }
+}
+
+testConnection();</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <h3>使用 Supabase JavaScript 客戶端測試</h3>
+                            <p>如果您使用 Supabase JavaScript 客戶端，可以這樣測試：</p>
+                            
+                            <div class="code-block">
+                                <pre><code>import { createClient } from '@supabase/supabase-js';
+
+// 初始化 Supabase 客戶端
+const supabaseUrl = 'https://your-project-id.supabase.co';
+const supabaseKey = 'your-anon-key';
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+async function testSupabaseConnection() {
+  try {
+    // 測試查詢
+    const { data, error } = await supabase
+      .from('app_settings')
+      .select('*')
+      .limit(5);
+    
+    if (error) {
+      throw error;
+    }
+    
+    console.log('連線成功！');
+    console.log('查詢結果:', data);
+    
+  } catch (error) {
+    console.error('連線或查詢失敗:', error.message);
+  }
+}
+
+testSupabaseConnection();</code></pre>
+                                <button class="copy-btn">複製</button>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <h4>連線問題排查</h4>
+                            <p>如果連線測試失敗，請檢查：</p>
+                            <ul>
+                                <li>連線字串是否正確（特別是使用 Connection pooling 而非直接連接）</li>
+                                <li>密碼是否正確</li>
+                                <li>IP 限制是否已設置（如果有）</li>
+                                <li>防火牆或網絡限制</li>
+                                <li>SSL 設置（某些環境可能需要 SSL 連接）</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="step-navigation">
+                            <button class="btn btn-secondary prev-step">上一步</button>
+                            <a href="heroku.html" class="btn btn-primary">前往 Heroku 部署教學</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 頁腳 -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <p>&copy; 2025 Supabase + Heroku 部署教學 | 為網頁開發者打造</p>
+            <ul class="footer-links">
+                <li><a href="../index.html" class="footer-link">首頁</a></li>
+                <li><a href="supabase.html" class="footer-link">Supabase</a></li>
+                <li><a href="heroku.html" class="footer-link">Heroku</a></li>
+                <li><a href="faq.html" class="footer-link">常見問題</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script src="../assets/js/main.js"></script>
+</body>
+</html>
