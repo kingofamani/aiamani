@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI提示詞生成器</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'PingFang TC', 'Noto Sans TC', sans-serif;
+      background-color: #f0f4f8;
+    }
+    .scrollbar-thin::-webkit-scrollbar {
+      width: 4px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 4px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+    .tech-checkbox:checked + label {
+      background-color: #3b82f6;
+      color: white;
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+  <div class="flex flex-col h-screen">
+    <!-- 頂部導航 -->
+    <header class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-4 shadow-md">
+      <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-bold flex items-center">
+          <i class="fas fa-magic mr-2"></i>
+          AI提示詞生成器
+        </h1>
+        <div class="text-sm">
+          <span class="bg-blue-800 px-3 py-1 rounded-full">Vibe Coding 助手</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 主要內容區 -->
+    <div class="flex flex-1 overflow-hidden">
+      <!-- 左側提示詞專案區 (20%) -->
+      <div class="w-1/5 bg-white border-r border-gray-200 flex flex-col">
+        <div class="p-4 border-b border-gray-200 bg-gray-50">
+          <div class="flex justify-between items-center mb-3">
+            <h2 class="font-bold text-gray-700">提示詞專案</h2>
+            <button id="addProjectBtn" class="bg-blue-500 hover:bg-blue-600 text-white rounded-full w-7 h-7 flex items-center justify-center transition-colors">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+          <div class="flex space-x-1">
+            <div class="relative flex-1">
+              <input type="text" id="searchProject" placeholder="搜尋專案..." class="w-full pl-8 pr-2 py-1 border border-gray-300 rounded-md text-sm">
+              <i class="fas fa-search absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
+            </div>
+            <button id="sortProjectBtn" class="bg-gray-200 hover:bg-gray-300 rounded-md px-2 text-gray-600 text-sm flex items-center">
+              <i class="fas fa-sort"></i>
+            </button>
+          </div>
+        </div>
+        <div id="projectList" class="flex-1 overflow-y-auto scrollbar-thin p-2 space-y-1">
+          <!-- 專案列表將由JS動態生成 -->
+        </div>
+      </div>
+
+      <!-- 中間技術區 (20%) -->
+      <div class="w-1/5 bg-gray-50 border-r border-gray-200 flex flex-col">
+        <div class="p-4 border-b border-gray-200 bg-gray-100">
+          <h2 class="font-bold text-gray-700 mb-1">技術選擇</h2>
+          <p id="currentProjectName" class="text-sm text-blue-600 font-medium">請先選擇專案</p>
+        </div>
+        <div class="flex-1 overflow-y-auto scrollbar-thin p-4">
+          <div class="mb-6">
+            <h3 class="font-medium text-gray-700 mb-2 flex items-center">
+              <i class="fas fa-code mr-2 text-blue-500"></i>前端技術
+            </h3>
+            <div class="space-y-2">
+              <div class="flex items-center">
+                <input type="checkbox" id="tech_html" class="tech-checkbox hidden" value="HTML靜態" checked disabled>
+                <label for="tech_html" class="flex-1 px-3 py-2 bg-blue-500 text-white rounded-md text-sm cursor-not-allowed flex items-center">
+                  <i class="fab fa-html5 mr-2"></i>HTML靜態
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <h3 class="font-medium text-gray-700 mb-2 flex items-center">
+              <i class="fas fa-paint-brush mr-2 text-purple-500"></i>樣式技術
+            </h3>
+            <div class="space-y-2">
+              <div class="flex items-center">
+                <input type="checkbox" id="tech_tailwind" class="tech-checkbox hidden" value="Tailwindcss" checked>
+                <label for="tech_tailwind" class="flex-1 px-3 py-2 bg-blue-500 text-white rounded-md text-sm cursor-pointer flex items-center">
+                  <i class="fab fa-css3 mr-2"></i>Tailwindcss
+                </label>
+              </div>
+              <div class="flex items-center">
+                <input type="checkbox" id="tech_bootstrap" class="tech-checkbox hidden" value="Bootstrap">
+                <label for="tech_bootstrap" class="flex-1 px-3 py-2 bg-gray-200 text-gray-700 rounded-md text-sm cursor-pointer hover:bg-gray-300 flex items-center">
+                  <i class="fab fa-bootstrap mr-2"></i>Bootstrap
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <h3 class="font-medium text-gray-700 mb-2 flex items-center">
+              <i class="fas fa-database mr-2 text-green-500"></i>儲存技術
+            </h3>
+            <div class="space-y-2">
+              <div class="flex items-center">
+                <input type="checkbox" id="tech_localstorage" class="tech-checkbox hidden" value="Local Storage">
+                <label for="tech_localstorage" class="flex-1 px-3 py-2 bg-gray-200 text-gray-700 rounded-md text-sm cursor-pointer hover:bg-gray-300 flex items-center">
+                  <i class="fas fa-save mr-2"></i>Local Storage
+                </label>
+              </div>
+              <div class="flex items-center">
+                <input type="checkbox" id="tech_sessionstorage" class="tech-checkbox hidden" value="Session Storage">
+                <label for="tech_sessionstorage" class="flex-1 px-3 py-2 bg-gray-200 text-gray-700 rounded-md text-sm cursor-pointer hover:bg-gray-300 flex items-center">
+                  <i class="fas fa-clock mr-2"></i>Session Storage
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <h3 class="font-medium text-gray-700 mb-2 flex items-center">
+              <i class="fas fa-image mr-2 text-yellow-500"></i>圖片技術
+            </h3>
+            <div class="space-y-2">
+              <div class="flex items-center">
+                <input type="checkbox" id="tech_flaticon" class="tech-checkbox hidden" value="FLATICON">
+                <label for="tech_flaticon" class="flex-1 px-3 py-2 bg-gray-200 text-gray-700 rounded-md text-sm cursor-pointer hover:bg-gray-300 flex items-center">
+                  <i class="fas fa-icons mr-2"></i>FLATICON
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <h3 class="font-medium text-gray-700 mb-2 flex items-center">
+              <i class="fas fa-cube mr-2 text-red-500"></i>3D技術
+            </h3>
+            <div class="space-y-2">
+              <div class="flex items-center">
+                <input type="checkbox" id="tech_threejs" class="tech-checkbox hidden" value="Three.js">
+                <label for="tech_threejs" class="flex-1 px-3 py-2 bg-gray-200 text-gray-700 rounded-md text-sm cursor-pointer hover:bg-gray-300 flex items-center">
+                  <i class="fas fa-cubes mr-2"></i>Three.js
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <h3 class="font-medium text-gray-700 mb-2 flex items-center">
+              <i class="fas fa-volume-up mr-2 text-orange-500"></i>音效技術
+            </h3>
+            <div class="space-y-2">
+              <div class="flex items-center">
+                <input type="checkbox" id="tech_webaudio" class="tech-checkbox hidden" value="Web Audio API">
+                <label for="tech_webaudio" class="flex-1 px-3 py-2 bg-gray-200 text-gray-700 rounded-md text-sm cursor-pointer hover:bg-gray-300 flex items-center">
+                  <i class="fas fa-music mr-2"></i>Web Audio API
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <h3 class="font-medium text-gray-700 mb-2 flex items-center">
+              <i class="fas fa-microchip mr-2 text-indigo-500"></i>進階-硬體技術
+            </h3>
+            <div class="space-y-2">
+              <div class="flex items-center">
+                <input type="checkbox" id="tech_gyro" class="tech-checkbox hidden" value="陀螺儀">
+                <label for="tech_gyro" class="flex-1 px-3 py-2 bg-gray-200 text-gray-700 rounded-md text-sm cursor-pointer hover:bg-gray-300 flex items-center">
+                  <i class="fas fa-mobile-alt mr-2"></i>陀螺儀
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <h3 class="font-medium text-gray-700 mb-2 flex items-center">
+              <i class="fas fa-bolt mr-2 text-yellow-600"></i>進階-即時技術
+            </h3>
+            <div class="space-y-2">
+              <div class="flex items-center">
+                <input type="checkbox" id="tech_mqtt" class="tech-checkbox hidden" value="MQTT">
+                <label for="tech_mqtt" class="flex-1 px-3 py-2 bg-gray-200 text-gray-700 rounded-md text-sm cursor-pointer hover:bg-gray-300 flex items-center">
+                  <i class="fas fa-exchange-alt mr-2"></i>MQTT
+                </label>
+              </div>
+              <div class="flex items-center">
+                <input type="checkbox" id="tech_websockets" class="tech-checkbox hidden" value="Websockets">
+                <label for="tech_websockets" class="flex-1 px-3 py-2 bg-gray-200 text-gray-700 rounded-md text-sm cursor-pointer hover:bg-gray-300 flex items-center">
+                  <i class="fas fa-plug mr-2"></i>Websockets
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <h3 class="font-medium text-gray-700 mb-2 flex items-center">
+              <i class="fas fa-puzzle-piece mr-2 text-pink-500"></i>進階-其他技術
+            </h3>
+            <div class="space-y-2">
+              <div class="flex items-center">
+                <input type="checkbox" id="tech_youtube" class="tech-checkbox hidden" value="Youtube">
+                <label for="tech_youtube" class="flex-1 px-3 py-2 bg-gray-200 text-gray-700 rounded-md text-sm cursor-pointer hover:bg-gray-300 flex items-center">
+                  <i class="fab fa-youtube mr-2"></i>Youtube
+                </label>
+              </div>
+              <div class="flex items-center">
+                <input type="checkbox" id="tech_line" class="tech-checkbox hidden" value="LINE">
+                <label for="tech_line" class="flex-1 px-3 py-2 bg-gray-200 text-gray-700 rounded-md text-sm cursor-pointer hover:bg-gray-300 flex items-center">
+                  <i class="fab fa-line mr-2"></i>LINE
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <h3 class="font-medium text-gray-700 mb-2 flex items-center">
+              <i class="fas fa-list-alt mr-2 text-teal-500"></i>功能描述
+            </h3>
+            <textarea id="functionDesc" class="w-full h-32 p-3 border border-gray-300 rounded-md text-sm" placeholder="請輸入網站功能描述..."></textarea>
+          </div>
+
+          <button id="generateBtn" class="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-md font-medium flex items-center justify-center mb-4 transition-colors">
+            <i class="fas fa-wand-magic-sparkles mr-2"></i>生成提示詞
+          </button>
+        </div>
+      </div>
+
+      <!-- 右側提示詞區 (60%) -->
+      <div class="w-3/5 bg-white flex flex-col">
+        <div class="p-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
+          <h2 class="font-bold text-gray-700">生成的提示詞</h2>
+          <div class="space-x-2">
+            <button id="savePromptBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm flex items-center transition-colors">
+              <i class="fas fa-save mr-2"></i>儲存
+            </button>
+            <button id="copyPromptBtn" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-md text-sm flex items-center transition-colors">
+              <i class="fas fa-copy mr-2"></i>複製
+            </button>
+          </div>
+        </div>
+        <div class="flex-1 p-4 overflow-hidden">
+          <textarea id="promptOutput" class="w-full h-full p-4 border border-gray-300 rounded-md text-sm font-mono scrollbar-thin" placeholder="生成的提示詞將顯示在這裡..." readonly></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 新增專案彈出視窗 -->
+  <div id="addProjectModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg p-6 w-96 shadow-xl">
+      <h3 class="text-xl font-bold mb-4 text-gray-800">新增提示詞專案</h3>
+      <div class="mb-4">
+        <label for="projectName" class="block text-sm font-medium text-gray-700 mb-1">專案名稱</label>
+        <input type="text" id="projectName" class="w-full p-2 border border-gray-300 rounded-md">
+      </div>
+      <div class="flex justify-end space-x-3">
+        <button id="cancelAddProject" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">取消</button>
+        <button id="confirmAddProject" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors">確認</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 編輯專案彈出視窗 -->
+  <div id="editProjectModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg p-6 w-96 shadow-xl">
+      <h3 class="text-xl font-bold mb-4 text-gray-800">編輯專案名稱</h3>
+      <div class="mb-4">
+        <label for="editProjectName" class="block text-sm font-medium text-gray-700 mb-1">專案名稱</label>
+        <input type="text" id="editProjectName" class="w-full p-2 border border-gray-300 rounded-md">
+      </div>
+      <div class="flex justify-end space-x-3">
+        <button id="cancelEditProject" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">取消</button>
+        <button id="confirmEditProject" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors">確認</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 確認覆蓋提示詞彈出視窗 -->
+  <div id="confirmOverwriteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg p-6 w-96 shadow-xl">
+      <h3 class="text-xl font-bold mb-2 text-gray-800">確認覆蓋</h3>
+      <p class="text-gray-600 mb-4">生成新的提示詞將覆蓋目前的內容，確定要繼續嗎？</p>
+      <div class="flex justify-end space-x-3">
+        <button id="cancelOverwrite" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">取消</button>
+        <button id="confirmOverwrite" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors">確認覆蓋</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 確認刪除專案彈出視窗 -->
+  <div id="confirmDeleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg p-6 w-96 shadow-xl">
+      <h3 class="text-xl font-bold mb-2 text-gray-800">確認刪除</h3>
+      <p class="text-gray-600 mb-4">確定要刪除此專案嗎？此操作無法復原。</p>
+      <div class="flex justify-end space-x-3">
+        <button id="cancelDelete" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">取消</button>
+        <button id="confirmDelete" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors">確認刪除</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 通知提示 -->
+  <div id="notification" class="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg transform transition-transform duration-300 translate-y-20 flex items-center">
+    <i class="fas fa-check-circle mr-2"></i>
+    <span id="notificationText">操作成功！</span>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // 生成隨機字串
+      function generateRandomString(length) {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        let result = '';
+        for (let i = 0; i < length; i++) {
+          result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return result;
+      }
+      
+      // 技術詳細資訊
+      const techDetails = {
+        "HTML靜態": "前端技術：HTML,Javascript,CSS",
+        "Tailwindcss": "樣式技術：Tailwindcss CDN",
+        "Bootstrap": "樣式技術：Bootstrap CDN",
+        "Local Storage": "儲存技術：Local Storage來儲存資料",
+        "Session Storage": "儲存技術：Session Storage來儲存資料",
+        "FLATICON": "取得圖片連結：https://www.flaticon.com/\\n圖片url範例：https://cdn-icons-png.flaticon.com/128/15813/15813002.png",
+        "Three.js": "Three.js、GSAP 動畫(使用CDN)",
+        "Web Audio API": "Web Audio API(純音,正弦波生成音效)",
+        "陀螺儀": "平板電腦加速度計和陀螺儀數據(後端需使用HTTPS SSL)",
+        "MQTT": "即時技術：MQTT客戶端庫使用mqtt.js(CDN)\\n\\t免費EMQX MQTT服務\\n\\tBroker:broker.emqx.io\\n\\tWebSocket 端口:8083\\n\\tWebSocket Secure 端口:8084\\n\\tTOPIC頻道名稱(全站統一訂閱和發佈TOPIC)：" + generateRandomString(10) + "/all\\n\\tCDN網執址：https://cdnjs.cloudflare.com/ajax/libs/mqtt/4.3.7/mqtt.min.js",
+        "Websockets": "Python + websockets庫",
+        "Youtube": "影片技術：Youtube Player iFrame API",
+        "LINE": "LINE技術：RESTful連接後端，你只要寫前端RESTful連接line messaging api程式，不需要寫後端技術。\\nRESTful規格書參考： @https://github.com/kingofamani/AmaniLine/blob/main/API_Documentation.md"
+      };
+
+      // 初始化本地存儲
+      if (!localStorage.getItem('aiPromptProjects')) {
+        localStorage.setItem('aiPromptProjects', JSON.stringify([]));
+      }
+
+      // 獲取DOM元素
+      const projectList = document.getElementById('projectList');
+      const currentProjectName = document.getElementById('currentProjectName');
+      const functionDesc = document.getElementById('functionDesc');
+      const promptOutput = document.getElementById('promptOutput');
+      const addProjectBtn = document.getElementById('addProjectBtn');
+      const addProjectModal = document.getElementById('addProjectModal');
+      const projectNameInput = document.getElementById('projectName');
+      const cancelAddProject = document.getElementById('cancelAddProject');
+      const confirmAddProject = document.getElementById('confirmAddProject');
+      const editProjectModal = document.getElementById('editProjectModal');
+      const editProjectNameInput = document.getElementById('editProjectName');
+      const cancelEditProject = document.getElementById('cancelEditProject');
+      const confirmEditProject = document.getElementById('confirmEditProject');
+      const generateBtn = document.getElementById('generateBtn');
+      const confirmOverwriteModal = document.getElementById('confirmOverwriteModal');
+      const cancelOverwrite = document.getElementById('cancelOverwrite');
+      const confirmOverwrite = document.getElementById('confirmOverwrite');
+      const confirmDeleteModal = document.getElementById('confirmDeleteModal');
+      const cancelDelete = document.getElementById('cancelDelete');
+      const confirmDelete = document.getElementById('confirmDelete');
+      const savePromptBtn = document.getElementById('savePromptBtn');
+      const copyPromptBtn = document.getElementById('copyPromptBtn');
+      const searchProject = document.getElementById('searchProject');
+      const sortProjectBtn = document.getElementById('sortProjectBtn');
+      const notification = document.getElementById('notification');
+
+      // 當前選中的專案
+      let currentProject = null;
+      let sortOrder = 'name-asc'; // 預設排序方式
+      let projectToDelete = null; // 要刪除的專案ID
+      let projectToEdit = null; // 要編輯的專案ID
+
+      // 顯示通知
+      function showNotification(message) {
+        const notificationText = document.getElementById('notificationText');
+        notificationText.textContent = message;
+        notification.classList.remove('translate-y-20');
+        notification.classList.add('translate-y-0');
+        
+        setTimeout(() => {
+          notification.classList.remove('translate-y-0');
+          notification.classList.add('translate-y-20');
+        }, 3000);
+      }
+
+      // 加載專案列表
+      function loadProjects(filter = '') {
+        const projects = JSON.parse(localStorage.getItem('aiPromptProjects'));
+        
+        // 根據排序方式排序專案
+        if (sortOrder === 'name-asc') {
+          projects.sort((a, b) => a.name.localeCompare(b.name));
+        } else if (sortOrder === 'name-desc') {
+          projects.sort((a, b) => b.name.localeCompare(a.name));
+        } else if (sortOrder === 'date-asc') {
+          projects.sort((a, b) => new Date(a.date) - new Date(b.date));
+        } else if (sortOrder === 'date-desc') {
+          projects.sort((a, b) => new Date(b.date) - new Date(a.date));
+        }
+        
+        projectList.innerHTML = '';
+        
+        const filteredProjects = projects.filter(project => 
+          project.name.toLowerCase().includes(filter.toLowerCase())
+        );
+        
+        if (filteredProjects.length === 0) {
+          projectList.innerHTML = `
+            <div class="text-center py-6 text-gray-500">
+              <i class="fas fa-folder-open text-3xl mb-2"></i>
+              <p class="text-sm">尚無專案${filter ? '符合搜尋條件' : ''}</p>
+            </div>
+          `;
+          return;
+        }
+        
+        filteredProjects.forEach(project => {
+          const projectItem = document.createElement('div');
+          projectItem.className = `p-3 rounded-md cursor-pointer flex justify-between items-center ${currentProject && currentProject.id === project.id ? 'bg-blue-100 border-l-4 border-blue-500' : 'hover:bg-gray-100'}`;
+          projectItem.innerHTML = `
+            <div class="flex-1">
+              <div class="font-medium text-gray-800">${project.name}</div>
+              <div class="text-xs text-gray-500">${new Date(project.date).toLocaleDateString()}</div>
+            </div>
+            <div class="flex space-x-1">
+              <button class="edit-project text-gray-400 hover:text-blue-500 p-1" data-id="${project.id}">
+                <i class="fas fa-pen"></i>
+              </button>
+              <button class="delete-project text-gray-400 hover:text-red-500 p-1" data-id="${project.id}">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
+          `;
+          
+          projectItem.addEventListener('click', (e) => {
+            if (!e.target.closest('.delete-project') && !e.target.closest('.edit-project')) {
+              selectProject(project);
+            }
+          });
+          
+          projectList.appendChild(projectItem);
+        });
+        
+        // 添加刪除事件監聽器
+        document.querySelectorAll('.delete-project').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const projectId = btn.getAttribute('data-id');
+            showDeleteConfirmation(projectId);
+          });
+        });
+
+        // 添加編輯事件監聽器
+        document.querySelectorAll('.edit-project').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const projectId = btn.getAttribute('data-id');
+            showEditProjectModal(projectId);
+          });
+        });
+      }
+
+      // 顯示刪除確認對話框
+      function showDeleteConfirmation(projectId) {
+        projectToDelete = projectId;
+        confirmDeleteModal.classList.remove('hidden');
+      }
+
+      // 顯示編輯專案對話框
+      function showEditProjectModal(projectId) {
+        const projects = JSON.parse(localStorage.getItem('aiPromptProjects'));
+        const project = projects.find(p => p.id === projectId);
+        
+        if (project) {
+          projectToEdit = projectId;
+          editProjectNameInput.value = project.name;
+          editProjectModal.classList.remove('hidden');
+        }
+      }
+
+      // 編輯專案名稱
+      function editProjectName() {
+        const newName = editProjectNameInput.value.trim();
+        
+        if (!newName) {
+          alert('請輸入專案名稱');
+          return;
+        }
+        
+        const projects = JSON.parse(localStorage.getItem('aiPromptProjects'));
+        const projectIndex = projects.findIndex(p => p.id === projectToEdit);
+        
+        if (projectIndex !== -1) {
+          projects[projectIndex].name = newName;
+          localStorage.setItem('aiPromptProjects', JSON.stringify(projects));
+          
+          // 如果編輯的是當前選中的專案，更新顯示
+          if (currentProject && currentProject.id === projectToEdit) {
+            currentProject.name = newName;
+            currentProjectName.textContent = newName;
+          }
+          
+          loadProjects(searchProject.value);
+          showNotification('專案名稱已更新');
+        }
+        
+        editProjectModal.classList.add('hidden');
+        projectToEdit = null;
+      }
+
+      // 選擇專案
+      function selectProject(project) {
+        currentProject = project;
+        currentProjectName.textContent = project.name;
+        
+        // 重置所有技術選擇
+        document.querySelectorAll('.tech-checkbox').forEach(checkbox => {
+          if (checkbox.id !== 'tech_html') { // HTML靜態始終保持選中
+            checkbox.checked = false;
+            checkbox.nextElementSibling.classList.remove('bg-blue-500', 'text-white');
+            checkbox.nextElementSibling.classList.add('bg-gray-200', 'text-gray-700');
+          }
+        });
+        
+        // 設置已保存的技術選擇
+        if (project.technologies) {
+          project.technologies.forEach(tech => {
+            const checkbox = document.querySelector(`input[value="${tech}"]`);
+            if (checkbox && checkbox.id !== 'tech_html') {
+              checkbox.checked = true;
+              checkbox.nextElementSibling.classList.remove('bg-gray-200', 'text-gray-700');
+              checkbox.nextElementSibling.classList.add('bg-blue-500', 'text-white');
+            }
+          });
+        }
+        
+        // 設置功能描述和提示詞
+        functionDesc.value = project.functionDesc || '';
+        promptOutput.value = project.prompt || '';
+        
+        // 更新專案列表UI
+        loadProjects(searchProject.value);
+      }
+
+      // 刪除專案
+      function deleteProject(projectId) {
+        const projects = JSON.parse(localStorage.getItem('aiPromptProjects'));
+        const updatedProjects = projects.filter(p => p.id !== projectId);
+        localStorage.setItem('aiPromptProjects', JSON.stringify(updatedProjects));
+        
+        if (currentProject && currentProject.id === projectId) {
+          currentProject = null;
+          currentProjectName.textContent = '請先選擇專案';
+          functionDesc.value = '';
+          promptOutput.value = '';
+        }
+        
+        loadProjects(searchProject.value);
+        showNotification('專案已刪除');
+      }
+
+      // 生成提示詞
+      function generatePrompt() {
+        if (!currentProject) {
+          alert('請先選擇或創建一個專案');
+          return;
+        }
+        
+        if (promptOutput.value.trim() !== '') {
+          confirmOverwriteModal.classList.remove('hidden');
+          return;
+        }
+        
+        doGeneratePrompt();
+      }
+
+      // 實際生成提示詞的函數
+      function doGeneratePrompt() {
+        const selectedTechs = [];
+        const techDetailsList = [];
+        
+        document.querySelectorAll('.tech-checkbox:checked').forEach(checkbox => {
+          selectedTechs.push(checkbox.value);
+          techDetailsList.push(getTechDetail(checkbox.value));
+        });
+        
+        const template = `我要建立web版的${currentProject.name}
+
+## 技術：
+
+${techDetailsList.join('\n')}
+
+## 功能：
+
+${functionDesc.value}
+
+## 限制： 
+
+- UI介面：使用RWD，且將長、寬設成螢幕的100%比例
+- 請幫我規劃這個網站可以有哪些功能，
+- 我要先做MVP產品，
+- 以繁體中文回答。`;
+        
+        promptOutput.value = template;
+        
+        // 更新專案資料
+        saveCurrentProject();
+        showNotification('提示詞已生成');
+      }
+
+      // 獲取技術詳細資訊
+      function getTechDetail(techName) {
+        return techDetails[techName] || techName;
+      }
+
+      // 保存當前專案
+      function saveCurrentProject() {
+        if (!currentProject) {
+          showNotification('請先選擇一個專案');
+          return;
+        };
+        
+        const selectedTechs = [];
+        document.querySelectorAll('.tech-checkbox:checked').forEach(checkbox => {
+          selectedTechs.push(checkbox.value);
+        });
+        
+        const projects = JSON.parse(localStorage.getItem('aiPromptProjects'));
+        const projectIndex = projects.findIndex(p => p.id === currentProject.id);
+        
+        if (projectIndex !== -1) {
+          projects[projectIndex] = {
+            ...currentProject,
+            technologies: selectedTechs,
+            functionDesc: functionDesc.value,
+            prompt: promptOutput.value
+          };
+          
+          localStorage.setItem('aiPromptProjects', JSON.stringify(projects));
+          currentProject = projects[projectIndex];
+          showNotification('專案已儲存');
+        }
+      }
+
+      // 複製提示詞
+      function copyPrompt() {
+        if (!promptOutput.value.trim()) {
+          showNotification('提示詞為空，無法複製');
+          return;
+        }
+        
+        navigator.clipboard.writeText(promptOutput.value).then(() => {
+          showNotification('提示詞已複製到剪貼簿');
+        }).catch(err => {
+          console.error('複製失敗: ', err);
+          showNotification('複製失敗，請手動複製');
+        });
+      }
+
+      // 事件監聽器
+      addProjectBtn.addEventListener('click', () => {
+        projectNameInput.value = '';
+        addProjectModal.classList.remove('hidden');
+        projectNameInput.focus();
+      });
+
+      cancelAddProject.addEventListener('click', () => {
+        addProjectModal.classList.add('hidden');
+      });
+
+      confirmAddProject.addEventListener('click', () => {
+        const projectName = projectNameInput.value.trim();
+        if (!projectName) {
+          alert('請輸入專案名稱');
+          return;
+        }
+        
+        const projects = JSON.parse(localStorage.getItem('aiPromptProjects'));
+        const newProject = {
+          id: Date.now().toString(),
+          name: projectName,
+          date: new Date().toISOString(),
+          technologies: ['HTML靜態', 'Tailwindcss'],
+          functionDesc: '',
+          prompt: ''
+        };
+        
+        projects.push(newProject);
+        localStorage.setItem('aiPromptProjects', JSON.stringify(projects));
+        
+        addProjectModal.classList.add('hidden');
+        loadProjects(searchProject.value);
+        selectProject(newProject);
+        showNotification('專案已新增');
+      });
+
+      // 編輯專案事件
+      cancelEditProject.addEventListener('click', () => {
+        editProjectModal.classList.add('hidden');
+        projectToEdit = null;
+      });
+
+      confirmEditProject.addEventListener('click', editProjectName);
+
+      generateBtn.addEventListener('click', generatePrompt);
+
+      cancelOverwrite.addEventListener('click', () => {
+        confirmOverwriteModal.classList.add('hidden');
+      });
+
+      confirmOverwrite.addEventListener('click', () => {
+        confirmOverwriteModal.classList.add('hidden');
+        doGeneratePrompt();
+      });
+
+      // 刪除確認對話框事件
+      cancelDelete.addEventListener('click', () => {
+        confirmDeleteModal.classList.add('hidden');
+        projectToDelete = null;
+      });
+
+      confirmDelete.addEventListener('click', () => {
+        if (projectToDelete) {
+          deleteProject(projectToDelete);
+          confirmDeleteModal.classList.add('hidden');
+          projectToDelete = null;
+        }
+      });
+
+      savePromptBtn.addEventListener('click', saveCurrentProject);
+      copyPromptBtn.addEventListener('click', copyPrompt);
+
+      searchProject.addEventListener('input', () => {
+        loadProjects(searchProject.value);
+      });
+
+      sortProjectBtn.addEventListener('click', () => {
+        // 切換排序方式
+        if (sortOrder === 'name-asc') {
+          sortOrder = 'name-desc';
+          sortProjectBtn.innerHTML = '<i class="fas fa-sort-alpha-up-alt"></i>';
+        } else if (sortOrder === 'name-desc') {
+          sortOrder = 'date-desc';
+          sortProjectBtn.innerHTML = '<i class="fas fa-sort-numeric-up-alt"></i>';
+        } else if (sortOrder === 'date-desc') {
+          sortOrder = 'date-asc';
+          sortProjectBtn.innerHTML = '<i class="fas fa-sort-numeric-down-alt"></i>';
+        } else {
+          sortOrder = 'name-asc';
+          sortProjectBtn.innerHTML = '<i class="fas fa-sort-alpha-down-alt"></i>';
+        }
+        
+        loadProjects(searchProject.value);
+      });
+
+      // 技術選擇切換樣式
+      document.querySelectorAll('.tech-checkbox').forEach(checkbox => {
+        if (checkbox.id !== 'tech_html') { // HTML靜態不可切換
+          checkbox.addEventListener('change', () => {
+            if (checkbox.checked) {
+              checkbox.nextElementSibling.classList.remove('bg-gray-200', 'text-gray-700');
+              checkbox.nextElementSibling.classList.add('bg-blue-500', 'text-white');
+            } else {
+              checkbox.nextElementSibling.classList.remove('bg-blue-500', 'text-white');
+              checkbox.nextElementSibling.classList.add('bg-gray-200', 'text-gray-700');
+            }
+          });
+        }
+      });
+      
+      // 監聽 Enter 鍵
+      projectNameInput.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') {
+          confirmAddProject.click();
+        }
+      });
+
+      editProjectNameInput.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') {
+          confirmEditProject.click();
+        }
+      });
+
+      // 初始加載
+      loadProjects();
+    });
+  </script>
+</body>
+</html>
